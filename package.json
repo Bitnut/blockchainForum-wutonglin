@@ -3,23 +3,63 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3",
-    "react-scripts": "2.1.5"
+    "antd": "^3.3.1",
+    "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
+    "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-json": "^2.0.2",
+    "koa-jwt": "^3.5.1",
+    "koa-logger": "^3.2.0",
+    "koa-mysql-session": "^0.0.2",
+    "koa-router": "^7.4.0",
+    "koa-session-minimal": "^3.0.4",
+    "koa-static": "^5.0.0",
+    "koa-static-cache": "^5.1.2",
+    "koa-views": "^6.1.5",
+    "koa2-history-api-fallback": "^0.0.5",
+    "markdown-it": "^8.4.2",
+    "md5": "^2.2.1",
+    "mocha": "^6.0.2",
+    "moment": "^2.24.0",
+    "mysql2": "^1.6.5",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^6.0.1",
+    "react-relay": "^1.5.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.1",
+    "react-sparklines": "^1.7.0",
+    "react-virtualized": "^9.21.0",
+    "redux": "^4.0.1",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0",
+    "relay-runtime": "^1.5.0",
+    "reqwest": "^2.0.5",
+    "sequelize": "^5.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "relay": "relay-compiler --src ./src --schema ./schema.graphql --extensions js jsx",
+    "server": "node ./server/app.js",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "babel-plugin-import": "^1.6.7",
+    "babel-plugin-relay": "^1.5.0",
+    "graphql": "^0.13.2",
+    "react-app-rewire-less": "^2.1.1",
+    "react-app-rewired": "^1.5.0",
+    "relay-compiler": "^1.5.0"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "proxy": {
+    "/auth": {
+      "target": "http://localhost:8889",
+      "changeOrigin": true
+    }
+  }
 }

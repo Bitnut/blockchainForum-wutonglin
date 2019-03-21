@@ -1,0 +1,24 @@
+.login-content{
+    z-index: 10;
+    position: relative;
+    max-width: 400px;
+    min-height: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    margin-top: 20PX;
+}
+
+.login-form {
+    max-width: 300px;
+    margin-top: auto;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+  }
+.login-form-forgot {
+    float: right;
+  }
+.login-form-button {
+    width: 100%;
+  }

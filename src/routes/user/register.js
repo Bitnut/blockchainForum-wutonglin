@@ -27,20 +27,20 @@ class RegistrationForm extends React.Component {
         const result = http.post('/auth/user/signup', values)
         result.then((res) => {
           if (res.data.success) { // 如果成功
-            sessionStorage.setItem('Forum-token', res.data.token) // 用sessionStorage把token存下来
+            localStorage.setItem('Forum-token', res.data.token) // 用localStorage把token存下来
             openNotification( // 登录成功，显示提示语
               res.data.info
             )
             this.props.onIsLoggedInChange(res.data.success);
-            this.props.history.push('/') // 进入todolist页面，登录成功
+            this.props.history.push('/') 
           } else {
             openNotification(res.data.info) // 登录失败，显示提示语
-            sessionStorage.setItem('Forum-token', null) // 将token清空
+            localStorage.setItem('Forum-token', null) // 将token清空
           }
         }, (err) => {
           console.log(err)
           this.$message.error('请求错误！')
-          sessionStorage.setItem('Forum-token', null) // 将token清空
+          localStorage.setItem('Forum-token', null) // 将token清空
         })
         return result
       }

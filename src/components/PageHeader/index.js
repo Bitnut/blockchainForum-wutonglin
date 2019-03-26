@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import logo from '../../assets/banner.jpg';
-import { Layout, Input, Menu, Divider, Button, Icon } from 'antd';
+import { Layout, Input, Menu, Divider, Button, 
+    Icon, Dropdown,  notification, Modal, Form, Checkbox, } from 'antd';
 import './index.css';
 import {
     Link
   } from 'react-router-dom'
+import Login from '../../components/login'
 const  Search = Input.Search;
 const {Header} = Layout;
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
+
 
 export default class  PageHeader extends Component{
     state = {
@@ -16,10 +17,41 @@ export default class  PageHeader extends Component{
         user: {},
         login_display: this.props.login_display,
         logout_display: this.props.logout_display,
-        size: 'large',
+        size: 'default',
+        visible: false,
+        confirmLoading: false,
+        header_display: this.props.header_display,
     }
+    userMenu = () => (
+        <Menu onClick= {this.onLogout}>
+            <Menu.Item key="setting:1"><Link to="/user/personal">个人主页</Link></Menu.Item>
+            <Menu.Item key="setting:2">喜欢的文章</Menu.Item>
+            <Menu.Item key="setting:3">香囊</Menu.Item>
+            <Menu.Item key="setting:4"><Link to="/user/settings">设置</Link></Menu.Item>
+            <Menu.Item key="setting:5">帮助与反馈</Menu.Item>
+            <Menu.Item key="setting:6"><Link to="/">退出登录</Link></Menu.Item>
+        </Menu>
+    );
     handleLogout = () => {
-        this.props.onLogout(false);
+        this.props.onLogout();
+    }
+    onLogout = ({ key }) => {
+        if(key === 'setting:6'){
+            this.handleLogout()
+        }   
+    };
+    // 一些登录对话框的函数
+    showModal = () => {
+        this.setState({
+          visible: true,
+        });
+    }
+    
+    handleCancel = () => {
+        console.log('Clicked cancel button');
+        this.setState({
+          visible: false,
+        });
     }
     componentWillMount(){
         if(this.props.location === undefined){
@@ -41,17 +73,17 @@ export default class  PageHeader extends Component{
             login_display: nextProps.login_display,
             logout_display: nextProps.logout_display
         })
-        console.log(this.state.login_display, this.state.logout_display)
+        //console.log(this.state.login_display, this.state.logout_display)
     }
     render(){
         const size = this.state.size;
         return(
-            <Header className="page-header">
+            <Header className="page-header" style={{display: this.state.header_display}}>
                 <div className="header-box">
-                    <a className="header-logo" href="/">
+                    <div className="header-logo">
                     <img src={logo} alt="logo"/>
-                    <span>区块链知识分享论坛</span>
-                    </a>
+                    <Link to="/">区块链知识分享论坛</Link>
+                    </div>
                     <div className={"header-menu"}>
                     <Menu
                     theme="light"
@@ -60,19 +92,9 @@ export default class  PageHeader extends Component{
                     defaultSelectedKeys={this.state.defaultSelectedKeys}
                     style={{ lineHeight: '62px' }}
                     >
-                    <Menu.Item key="1"><Link to="/">首页</Link></Menu.Item>
-                    <Menu.Item key="2"><Link to="/selection">分类</Link></Menu.Item>
+                    <Menu.Item key="1"><Link to="/">发现</Link></Menu.Item>
+                    <Menu.Item key="2"><Link to="/selection">关注</Link></Menu.Item>
                     <Menu.Item key="3"><Link to="/pool">奖励池</Link></Menu.Item>
-                    <SubMenu title={<span className="submenu-title-wrapper"><Icon type="setting" />Navigation Three - Submenu</span>}>
-                        <MenuItemGroup title="Item 1">
-                            <Menu.Item key="setting:1">Option 1</Menu.Item>
-                            <Menu.Item key="setting:2">Option 2</Menu.Item>
-                        </MenuItemGroup>
-                        <MenuItemGroup title="Item 2">
-                            <Menu.Item key="setting:3">Option 3</Menu.Item>
-                            <Menu.Item key="setting:4">Option 4</Menu.Item>
-                        </MenuItemGroup>
-                    </SubMenu>
                     </Menu>
                     </div>
                     <div className={"header-right"}>
@@ -90,14 +112,28 @@ export default class  PageHeader extends Component{
                         />
                         <div className={"header-rightpart"}>
                             <div className={"header-login"} style={{display: this.state.login_display}}>
-                                <Button ghost className={"login-btn"} size={size}><Link to="/user/login">登录</Link></Button>
+                                <Button ghost onClick={this.showModal} size={size} className={"login-btn"}>
+                                    登录
+                                </Button>
+                                <Modal
+                                title="Title"
+                                visible={this.state.visible}
+                                footer={null}
+                                onCancel={this.handleCancel}
+                                >
+                                <Login onIsLoggedInChange={this.props.onLoggedIn} onCancel={this.handleCancel}/>
+                                </Modal>
                                 <Divider type="vertical" style={{margin: "auto 8px"}}/>
                                 <Button className={"login-btn"} shape="round" size={size}><Link to="/user/register">注册</Link></Button>
                             </div>
                             <div className={"header-logout"} style={{display: this.state.logout_display}}>
-                                <Button ghost shape="round" className={"logout-btn"} size={size}><Link to="/user/personal">你好,欢迎！</Link></Button>
+                                <Dropdown overlay={this.userMenu}>
+                                    <a className="ant-dropdown-link">
+                                    你好,欢迎！ <Icon type="down" />
+                                    </a>
+                                </Dropdown>
                                 <Divider type="vertical" style={{margin: "auto 8px"}}/>
-                                <Button ghost shape="round" className={"logout-btn"} size={size} onClick={this.handleLogout}><Link to="/">退出登录</Link></Button>
+                                <Button type="primary" shape="round" className={"writing-btn"} size='large' onClick={this.props.onWriting}><Link to="/user/writing">写文章</Link></Button>
                             </div>
                         </div>
                     </div>

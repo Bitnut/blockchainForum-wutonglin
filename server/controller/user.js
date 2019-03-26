@@ -1,6 +1,23 @@
 const user = require('../models/mysql');
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+var fs = require("fs");  
+var path = require("path");  
+
+// 递归创建目录
+function mkdirs(dirname, callback) {  
+  fs.exists(dirname, function (exists) {  
+      if (exists) {  
+          callback();  
+      } else {  
+          // console.log(path.dirname(dirname));  
+          mkdirs(path.dirname(dirname), function () {  
+              fs.mkdir(dirname, callback);  
+              console.log('在' + path.dirname(dirname) + '目录创建好' + dirname  +'目录');
+          });  
+      }  
+  });  
+}  
 
 
 // 用户注册
@@ -29,20 +46,26 @@ const userRegistration = async function (ctx) {
     }
     return
   } else {
-    const data = ctx.request.body;
     var salt = bcrypt.genSaltSync(10);
-    data.password = bcrypt.hashSync(data.password, salt);
-    const user_name = user.newUser(data);
+    registerData.password = bcrypt.hashSync(registerData.password, salt);
+    const user_name = user.newUser(registerData);
+    const name = registerData.nickName
     const userToken = {
       nickName: user_name
     }
     const secret = 'Forum-token' // 指定密钥
     const token = jwt.sign(userToken, secret) // 签发token
+    const userinfo = user.getUserInfoByName('name')
     ctx.body = {
       success: true,
       token: token, // 返回token
+      userInfo: userinfo,
       info: '注册成功！'
     }
+    const userDir = `./server/public/${name}/assets`
+    mkdirs(userDir,(err) => {
+      console.log(err);
+    })    
   }
 }
 
@@ -56,7 +79,7 @@ const userLogin = async function (ctx) {
       }
       return
     }
-    const userInfo = await user.getUserByName(data.nickName);
+    const userInfo = await user.getUserInfoByName(data.nickName);
     if (userInfo != null) { // 如果查无此用户会返回null
       if (!bcrypt.compareSync(data.password, userInfo.user_pass)) {
         //var salt = bcrypt.genSaltSync(10);
@@ -74,6 +97,7 @@ const userLogin = async function (ctx) {
         const token = jwt.sign(userToken, secret) // 签发token
         ctx.body = {
           success: true,
+          userInfo: userInfo,
           token: token, // 返回token
           info: '登录成功！'
         }
@@ -85,8 +109,29 @@ const userLogin = async function (ctx) {
       }
     }
   }
+// 用户上传文章
+const newArticle = async function (ctx) {
+    const data = ctx.request.body
+    user.newArticle(data)
+    ctx.body = {
+      success: true,
+      articleData: data.htmlContent,
+      info: '新文章创建成功！'
+    }
+}
+
+const getArticle = async function (ctx) {
+  const id = Number(ctx.params.id)
+  result = await user.getArticle(id);
+  ctx.body = {
+    articleData: result
+  }
+}
+
 
   module.exports = {
     userLogin,
-    userRegistration
+    userRegistration,
+    newArticle,
+    getArticle
   }

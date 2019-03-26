@@ -20,6 +20,8 @@ const Forum = new Sequelize('mysql://root:123@localhost/nodesql',{
   }
 }) 
 
+
+
 module.exports = {
   Forum, // 将ATM暴露出接口方便Model调用
   config

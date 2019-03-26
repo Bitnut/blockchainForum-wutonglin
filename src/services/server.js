@@ -8,10 +8,13 @@ let http = {
 
 http.post = function (api, data) {
     return new Promise((resolve, reject) => {
-        axios.post(api, data).then((res) => {
-            resolve(res)
-        });
-    });
+            axios.post(api, data).then((res) => {
+                resolve(res)
+            },err=>{
+                console.log(err)
+                return Promise.resolve(err);
+            });
+    });  
 }
 
 http.get = function (api, data) {

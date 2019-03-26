@@ -8,42 +8,36 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-    post_name: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
-    title: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    md: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    uid: {
+    author_id: {
       type: DataTypes.STRING(40),
       allowNull: false
     },
-    moment: {
-      type: DataTypes.STRING(30),
+    post_title: {
+      type: DataTypes.STRING(100),
       allowNull: false
     },
-    comments: {
-      type: DataTypes.STRING(300),
-      allowNull: false,
-      defaultValue: '0'
+    post_content_html: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
-    pv: {
-      type: DataTypes.STRING(40),
-      allowNull: false,
-      defaultValue: '0'
+    post_content_raw: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
-    avator: {
-      type: DataTypes.STRING(100),
+    post_moment: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    post_views: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
+    post_likes: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
+    post_comments: {
+      type: DataTypes.INTEGER(11),
       allowNull: false
     }
   }, {

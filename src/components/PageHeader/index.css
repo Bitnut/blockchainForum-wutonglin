@@ -31,7 +31,7 @@
 
 .header-search{
     width: 250px;
-    padding: 12px 0px;
+    padding: 16px 0px;
 }
 
 
@@ -90,16 +90,9 @@
   .login-btn:hover{
     color: 	#FFA500;
   }
-  .logout-btn{
-    color: 	#FFA500;
-    border:none;
-  }
-  .logout-btn:hover{
-    border:#FFA500;
-  }
 
   .header-right{
-      width: 570px;
+      width: 900px;
       float: right;
       position: absolute;
       right: 20px;

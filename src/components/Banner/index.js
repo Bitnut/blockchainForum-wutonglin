@@ -6,7 +6,6 @@ import './index.css'
 
 export default class Banner extends PureComponent{
     componentDidMount(){
-
         const banner = ReactDOM.findDOMNode(this.refs.banner);
         const prevButton = banner.getElementsByClassName("slick-prev")[0];
         const nextButton = banner.getElementsByClassName("slick-next")[0];

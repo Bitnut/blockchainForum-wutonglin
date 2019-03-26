@@ -6,7 +6,7 @@ const ForumDb = db.Forum // 引入数据库
 const User = ForumDb.import(usersModel) // 用sequelize的import方法引入表结构，实例化了User。
 const Posts = ForumDb.import(postsModel) // 用sequelize的import方法引入表结构，实例化了User。
 // 登录时返回所有用户信息
-const getUserByName = async function (nickName) { 
+const getUserInfoByName = async function (nickName) { 
   const userInfo = await User.findOne({
     where: {
       user_name: nickName
@@ -42,6 +42,7 @@ const getPhoneNum = async function (phoneNum) {
 
 // 注册函数
 const newUser = async function (userInfo){  
+  const time = (new Date()).toLocaleDateString() + " " + (new Date()).toLocaleTimeString();
   const Info = await User.create(
     {
       user_id: null,
@@ -49,10 +50,48 @@ const newUser = async function (userInfo){
       user_name: userInfo.nickName,
       user_pass: userInfo.password,                    
       user_phone: userInfo.phoneNum,
-      signup_moment: userInfo.time,
+      user_avatar: '../../../../server/public/default_avator.jpg',
+      user_gender: 'secret',
+      signup_moment: time,
+      user_editor: 'rich',
+      email_message: 'no',
+      self_introduction: '这个人很懒，还没有写自我介绍',
+      reward_setting: 'yes',
+      reward_number: 3,
     }
   )
   return Info.user_name
+}
+
+const newArticle = async function (articleInfo){  
+  const time = (new Date()).toLocaleDateString() + " " + (new Date()).toLocaleTimeString();
+  const Info = await Posts.create(
+    {
+      post_id: null,
+      author_id: articleInfo.authorId,
+      post_title: articleInfo.title,
+      post_content_raw: articleInfo.rawContent,                    
+      post_content_html: articleInfo.htmlContent,
+      post_moment: time,
+      post_views: 0,
+      post_likes: 0,
+      post_comments: 0,
+    }
+  )
+  return Info.user_name
+}
+
+const getArticle = async function (id){
+  const article = await Posts.findOne(
+    {
+      where: {
+        post_id: id
+      },
+      attributes: ['post_content_html']
+    }
+    
+  )
+  return article.post_content_html
 }
 
 const changeBalance = async function (id, newbalance){ 
@@ -102,7 +141,9 @@ module.exports = {
   getNickName,
   getPhoneNum,
   newUser,
-  getUserByName, // 导出getUserById的方法，将会在controller里调用
+  getUserInfoByName, // 导出getUserById的方法，将会在controller里调用
+  newArticle,
+  getArticle,
   getBalance,
   changeBalance,
   newPassword

@@ -5,10 +5,12 @@ import PageHeader from './components/PageHeader';
 import Home  from './routes/Home';
 import Selection from './routes/Selection';
 import Pool from './routes/Pool';
-import Login from './routes/user/login';
 import Register from './routes/user/register';
 import Personal from './routes/user/personal';
+import Settings from './routes/user/settings';
+import Writing from './routes/user/writing';
 import './App.css';
+import { userInfo } from 'os';
 
 
 
@@ -20,25 +22,57 @@ class App extends Component {
     this.state = { 
       hasError: false,
       isLoggedIn: false,
-      login_display: 'block',
-      logout_display: 'none'
+      login_display: '',
+      logout_display: 'none',
+      header_display: '',
+      userInfo: {},
     };
   }
-  handleLogin = (isLoggedIn) => {
+  handleLogin = () => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     this.setState({
-      isLoggedIn: isLoggedIn,
+      isLoggedIn: true,
       login_display: 'none',
-      logout_display: 'block'
+      logout_display: '',
+      userInfo: userInfo,
     })
+    console.log(this.state.userInfo)
   }
-  handleLogout = (isLoggedIn) => {
+  handleLogout = () => {
     this.setState({
-      isLoggedIn: isLoggedIn,
-      login_display: 'block',
+      isLoggedIn: false,
+      login_display: '',
       logout_display: 'none'
     })
-    sessionStorage.clear();
-    console.log(sessionStorage.getItem('Forum-token'))
+  }
+  handleWriting = () => {
+    this.setState({
+      header_display: 'none'
+    })
+    localStorage.setItem('isWriting', 'true')
+    console.log(this.state.header_display)
+  }
+  handleExitWriting = () => {
+    this.setState({
+      header_display: ''
+    })
+    localStorage.setItem('isWriting', 'false')
+  }
+  componentWillMount() {
+    if(localStorage.getItem('isWriting')!=='false') {
+      this.setState({
+        header_display: 'none',
+      });
+    }
+    if(localStorage.getItem('userInfo')!==null){
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+      this.setState({
+        isLoggedIn: true,
+        login_display: 'none',
+        logout_display: '',
+        userInfo: userInfo
+      });
+    }
   }
   componentDidCatch(error, info) {
     // Display fallback UI
@@ -64,22 +98,22 @@ class App extends Component {
     }
     return (
       <Layout>
-        <Route render={(props) => <PageHeader onLogout={this.handleLogout} login_display={this.state.login_display} logout_display={this.state.logout_display} {...props}/>}/>
+        <div style={{display: this.state.header_display}}> 
+          <Route render={(props) => 
+          <PageHeader onLoggedIn={this.handleLogin} onLogout={this.handleLogout} 
+          login_display={this.state.login_display} logout_display={this.state.logout_display} 
+          onWriting={this.handleWriting} {...props}/>}/>
+        </div>
       <Content>
         <Layout>
           <Content style={{ minHeight: 280 }}>
           <Route exact path="/" component={Home}/>
           <Route exact path="/selection" component={Selection}/>
           <Route exact path="/pool" component={Pool}/>
-          <Route exact path="/user/login" render={(props) => <Login onIsLoggedInChange={this.handleLogin} {...props}/>}/>
           <Route exact path="/user/register" render={(props) => <Register onIsLoggedInChange={this.handleLogin} {...props}/>}/>
           <Route exact path="/user/personal" component={Personal}/>
-            {/*
-            <Route path="/Info/:bookId" component={Info}/>
-            <Route path="/Read/:chapterId" component={Read}/>
-            
-            <Route path="/Search/:search" component={Search}/> 
-             */}
+          <Route exact path="/user/settings" render={(props) => <Settings userInfo={this.state.userInfo} {...props}/>}/>
+          <Route exact path="/user/writing" render={(props) => <Writing exitWriting={this.handleExitWriting} userInfo={this.state.userInfo} {...props}/>}/>
           </Content>
         </Layout>
       </Content>

@@ -3,7 +3,7 @@ import {
     Form, Icon, Input, Button, Checkbox, Typography, notification
   } from 'antd';
 import http from '../../services/server';
-import './login.css';
+import './index.css';
 const { Title} = Typography;
 
 const openNotification = (info) => {
@@ -21,22 +21,29 @@ class NormalLoginForm extends React.Component {
       this.props.form.validateFields((err, values) => {
         if (!err) {
           const result = http.post('/auth/user/login', values)
+          if(result === 'error') {
+            localStorage.clear();
+            this.props.onCancel();
+            openNotification(
+              '请求错误请检查网络状况'
+            )
+          }
           result.then((res) => {
             if (res.data.success) { // 如果成功
               localStorage.setItem('Forum-token', res.data.token) // 用localStorage把token存下来
+              const userInfo = JSON.stringify(res.data.userInfo)
+              localStorage.setItem('userInfo', userInfo)
               openNotification( // 登录成功，显示提示语
                 res.data.info
               )
               this.props.onIsLoggedInChange();
-              this.props.history.push('/') // 进入todolist页面，登录成功
+              this.props.onCancel();
             } else {
               openNotification(res.data.info) // 登录失败，显示提示语
-              localStorage.setItem('Forum-token', null) // 将token清空
+              localStorage.clear();
             }
-          }, (err) => {
+          },(err) => {
             console.log(err)
-            this.$message.error('请求错误！')
-            localStorage.setItem('Forum-token', null) // 将token清空
           })
           return result
         }

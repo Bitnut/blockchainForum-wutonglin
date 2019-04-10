@@ -2,7 +2,7 @@ const Koa = require ('koa')
 const json = require ( 'koa-json')
 const logger = require ( 'koa-logger')
 const auth = require ( './routes/auth.js')
-//const api = require ( './server/routes/api.js')
+const api = require ( './routes/api.js')
 const jwt = require ( 'koa-jwt')
 const path = require ( 'path')
 const serve = require ( 'koa-static')
@@ -54,8 +54,12 @@ app.use(async function (ctx, next) {
   let ms = new Date() - start
   console.log('%s %s - %s', ctx.method, ctx.url, ms)
 })
-
-app.use(async function (ctx, next) {  //  如果JWT验证失败，返回验证失败信息
+app.use(jwt({
+    secret: 'Forum-token'
+}).unless({
+    path: [/\/auth/]
+}));
+app.use(async function (ctx, next) {  //  处理JWT验证错误，如果JWT验证失败，返回验证失败信息
   try {
     await next()
   } catch (err) {
@@ -77,7 +81,7 @@ app.on('error', function (err, ctx) {
 })
 
 router.use('/auth', auth.routes()) // 挂载到koa-router上，同时会让所有的auth的请求路径前面加上'/auth'的请求路径。
-//router.use('/api', api.routes()) // 所有走/api/打头的请求都需要经过jwt验证。
+router.use('/api', api.routes()) // 所有走/api/打头的请求都需要经过jwt验证。
 
 app.use(router.routes()) // 将路由规则挂载到Koa上。
 app.use(historyApiFallback())

@@ -1,18 +1,20 @@
 import 'braft-editor/dist/index.css'
 import React from 'react'
 import BraftEditor from 'braft-editor'
-import { Form, Input, Button,  Menu,  Layout, Tree, notification } from 'antd'
+import { Form, Input, Button, Layout, Tree, notification } from 'antd'
 import {
   Link
 } from 'react-router-dom'
-import http from '../../services/server';
+import { leaveWriting} from '../../redux/actions/userAction'
+import { addNewArticle, newArticle, getArticleInfo } from '../../redux/actions/writing'
+import { connect } from 'react-redux'
 import './writing.css';
-const SubMenu = Menu.SubMenu;
+
 const {
   Sider,
 } = Layout;
 
-const DirectoryTree = Tree.DirectoryTree;
+
 const { TreeNode } = Tree;
 const openNotification = (info) => {
   const args = {
@@ -23,153 +25,221 @@ const openNotification = (info) => {
 };
 
 class Wirting extends React.Component {
-  state = {
-    theme: 'dark',
-    current: '1',
-  }
-  onSelect = () => {
-    console.log('Trigger Select');
-  };
-
-  onExpand = () => {
-    console.log('Trigger Expand');
-  };
-
-  componentDidMount () {
-
-    // 异步设置编辑器内容
-    setTimeout(() => {
-      this.props.form.setFieldsValue({
-        content: BraftEditor.createEditorState('<p>Hello <b>World!</b></p>')
-      })
-    }, 1000)
-
-  }
-
-  handleSubmit = (event) => {
-
-    event.preventDefault()
-
-    this.props.form.validateFields((error, values) => {
-      if (!error) {
-        const submitData = {
-          tag: '默认文集',
-          title: values.title,
-          rawContent: values.content.toRAW(), // or values.content.toHTML()
-          htmlContent: values.content.toHTML(),
-          authorId : this.props.userInfo.user_id,
+    state = {
+        theme: 'dark',
+        current: '1',
+        treeData: [
+            { title: '默认文集' , key: '0-0' }
+        ],
+        expandedKeys: ['0-0'],
+        selectedKeys: [],
+        editArticle: ['0'],
+    }
+    onSelect = (selectedKeys) => {
+        this.setState({ selectedKeys });
+        if(selectedKeys[0] === '0-0' || selectedKeys.length === 0){
+            return
         }
-        const result = http.post('/auth/user/newarticle', submitData)
-        result.then((res) => {
-          if (res.data.success) { // 如果成功
-            openNotification( // 登录成功，显示提示语
-              res.data.info
-            )
-            this.props.history.push('/') 
-            this.props.exitWriting();
-          } 
+        this.setState({ editArticle: selectedKeys });
+        const content = this.props.userArticles[selectedKeys].post_content_html
+        const title = this.props.userArticles[selectedKeys].post_title
+        setTimeout(() => {
+            this.props.form.setFieldsValue({
+                content: BraftEditor.createEditorState(content),
+                title: title
+            })
+            }, 10)
+    }
+
+    onExpand = () => {
+        console.log('Trigger Expand');
+    };
+    addArticle = () => {
+        this.props.dispatch(addNewArticle(this.props.userId));
+    }
+    componentDidMount () {
+        // 异步设置编辑器内容
+        this.props.dispatch(getArticleInfo())
+        setTimeout(() => {
+        this.props.form.setFieldsValue({
+            content: BraftEditor.createEditorState(''),
+            title: ''
         })
-        console.log(submitData);
-      }
+        }, 1000)
+
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault()
+        this.props.form.validateFields((error, values) => {
+        if (!error) {
+            const index = parseInt(this.state.editArticle,10);
+            const postId = parseInt(this.props.userArticles[index].post_id,10)
+            const submitData = {
+                corpus: '默认文集',
+                title: values.title,
+                rawContent: values.content.toRAW(), // or values.content.toHTML()
+                htmlContent: values.content.toHTML(),
+                postId : postId,
+                release_status: 'yes'
+            }
+            let token = localStorage.getItem('Forum-token')
+            fetch('/api/user/releaseArticle', {
+                headers:{
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer ' + token,
+                },
+                method:'POST',body: JSON.stringify(submitData)}).then(response => response.json())
+                .then(data =>{
+                    if(data.success) {
+                        const userArticles = JSON.parse(localStorage.getItem('userArticles'))
+                        userArticles.splice(index,1,data.articleData)
+                        this.props.dispatch(newArticle(userArticles));
+                        openNotification(data.info);
+                        localStorage.setItem('userArticles', JSON.stringify(userArticles))
+                    } else {
+                        openNotification(data.info);
+                    }
+                    
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            console.log(submitData);
+        }
+        })
+
+    }
+    handleClick = (e) => {
+        console.log('click ', e);
+        this.setState({
+        current: e.key,
+        });
+    }
+    handleExit = () => {
+        this.props.dispatch(leaveWriting());
+        this.renderTreeNodes(this.state.treeData);
+    }
+    renderTreeNodes = data => data.map((item) => {
+        if (item.children) {
+        return (
+            <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+            </TreeNode>
+        );
+        }
+        return <TreeNode {...item} dataRef={item} />;
     })
 
-  }
-  handleClick = (e) => {
-    console.log('click ', e);
-    this.setState({
-      current: e.key,
-    });
-  }
+    onLoadData = treeNode => new Promise((resolve) => {
+        console.log(treeNode)
+        if (treeNode.props.children) {
+        resolve();
+        return;
+        }
+        setTimeout(() => {
+        treeNode.props.dataRef.children = [];
+        const article = this.props.userArticles.map(item => {return item.post_title})
+        article.forEach((item, index) => {
+            treeNode.props.dataRef.children.push({ title: [item, <Button shape="circle" icon="minus" size='small' />], key: `${index}`, isLeaf: true })
+        })
+        this.setState({
+            treeData: [...this.state.treeData],
+        });
+        resolve();
+        }, 10);
+    })
 
-  render () {
+    render () {
 
-    const { getFieldDecorator } = this.props.form
-    const controls = [
-    'undo', 'redo', 'separator',
-    'font-size', 'line-height', 'letter-spacing', 'separator',
-    'text-color', 'bold', 'italic', 'underline', 'strike-through', 'separator',
-    'superscript', 'subscript', 'remove-styles', 'emoji',  'separator', 'text-indent', 'text-align', 'separator',
-    'headings', 'list-ul', 'list-ol', 'blockquote', 'code', 'separator',
-    'link', 'separator', 'hr', 'separator',
-    'media', 'separator',
-    'clear'
-    ]
+        const { getFieldDecorator } = this.props.form
+        const controls = [
+        'undo', 'redo', 'separator',
+        'font-size', 'line-height', 'letter-spacing', 'separator',
+        'text-color', 'bold', 'italic', 'underline', 'strike-through', 'separator',
+        
+        ]
 
-    return (
-      <div className="forum-editor">
-        <Layout>
-          <Sider 
-          width= '380'
-          theme= 'light'
-          style={{
-            overflow: 'auto', height: '100vh', position: 'fixed', left: 0, width: 400 
-          }}
-          >
-            <br />
-            <div className="exit-btn"></div>
-              <Button type="primary" shape="round" size='large' style={{ width: 300 }}  onClick={this.props.exitWriting}><Link to="/">回首页</Link></Button>
-            <br />
-            <br />
-            <DirectoryTree
-              multiple
-              defaultExpandAll
-              onSelect={this.onSelect}
-              onExpand={this.onExpand}
+        return (
+        <div className="forum-editor">
+            <Layout>
+            <Sider 
+            width= '380'
+            theme= 'light'
+            style={{
+                overflow: 'auto', height: '100vh', position: 'fixed', left: 0, width: 400 
+            }}
             >
-              <TreeNode title="parent 0" key="0-0">
-                <TreeNode title="leaf 0-0" key="0-0-0" isLeaf />
-                <TreeNode title="leaf 0-1" key="0-0-1" isLeaf />
-              </TreeNode>
-              <TreeNode title="parent 1" key="0-1">
-                <TreeNode title="leaf 1-0" key="0-1-0" isLeaf />
-                <TreeNode title="leaf 1-1" key="0-1-1" isLeaf />
-              </TreeNode>
-            </DirectoryTree>
-          </Sider>
-          <Layout style={{ marginLeft: 400, height: '100vh'  }} className="editor-container" >
-              <Form onSubmit={this.handleSubmit} >
-                <Form.Item  label="文章标题">
-                  {getFieldDecorator('title', {
-                    rules: [{
-                      required: true,
-                      message: '请输入标题',
-                    }],
-                  })(
-                    <Input size="large" placeholder="请输入标题"/>
-                  )}
-                </Form.Item>
-                <Form.Item  label="文章正文" style={{height: '80vh'}}>
-                  {getFieldDecorator('content', {
-                    validateTrigger: 'onBlur',
-                    rules: [{
-                      required: true,
-                      validator: (_, value, callback) => {
-                        if (value.isEmpty()) {
-                          callback('请输入正文内容')
-                        } else {
-                          callback()
+                <br />
+                <div className="exit-btn"></div>
+                <Button type="primary" shape="round" size='large' style={{ width: 300 }}  onClick={this.handleExit}><Link to="/">回首页</Link></Button>
+                <Button shape="circle" icon="plus" size='small' onClick={this.addArticle}/>
+                <br />
+                <br />
+                <Tree 
+                loadData={this.onLoadData}
+                defaultExpandedKeys={this.state.expandedKeys}
+                defaultSelectedKeys={['0']}
+                onSelect={this.onSelect}
+                >
+                    {this.renderTreeNodes(this.state.treeData)}
+                </Tree>
+            </Sider>
+            <Layout style={{ marginLeft: 400, height: '100vh'  }} className="editor-container" >
+                <Form onSubmit={this.handleSubmit} >
+                    <Form.Item  label="文章标题">
+                    {getFieldDecorator('title', {
+                        rules: [{
+                        required: true,
+                        message: '请输入标题',
+                        }],
+                    })(
+                        <Input size="large" placeholder="请输入标题"/>
+                    )}
+                    </Form.Item>
+                    <Form.Item  label="文章正文" style={{height: '80vh'}}>
+                    {getFieldDecorator('content', {
+                        validateTrigger: 'onBlur',
+                        rules: [{
+                        required: true,
+                        validator: (_, value, callback) => {
+                            if (value.isEmpty()) {
+                            callback('请输入正文内容')
+                            } else {
+                            callback()
+                            }
                         }
-                      }
-                    }],
-                  })(
-                    <BraftEditor
-                      className="my-editor"
-                      controls={controls}
-                      placeholder="请输入正文内容"
-                    />
-                  )}
-                </Form.Item>
-                <Form.Item >
-                  <Button size="large" type="primary" htmlType="submit">提交</Button>
-                </Form.Item>
-              </Form>
-          </Layout> 
-        </Layout>
-      </div>
-    )
+                        }],
+                    })(
+                        <BraftEditor
+                        className="my-editor"
+                        controls={controls}
+                        placeholder="请输入正文内容"
+                        />
+                    )}
+                    </Form.Item>
+                    <Form.Item >
+                    <Button size="large" type="primary" htmlType="submit">提交</Button>
+                    </Form.Item>
+                </Form>
+            </Layout> 
+            </Layout>
+        </div>
+        )
 
-  }
+    }
 
 }
 
-export default Form.create()(Wirting)
+const mapStateToProps = state => {
+    const {user} = state
+    return {
+        corpus:user.userInfo.user_corpus,
+        userArticles: user.userArticles,
+        userId: user.userInfo.user_id
+    }
+}
+
+const WrappedWriting = Form.create()(Wirting)
+
+export default connect(mapStateToProps)(WrappedWriting)

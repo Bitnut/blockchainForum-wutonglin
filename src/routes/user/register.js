@@ -2,7 +2,10 @@ import React from 'react';
 import {
     Form, Input, Tooltip, Icon, Select, Checkbox, Button, AutoComplete,notification
   } from 'antd';
-  import http from '../../services/server';
+import http from '../../services/server';
+import { skipLoginByToken  } from '../../redux/actions/userAction' 
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import './register.css';
 
 const openNotification = (info) => {
@@ -28,10 +31,12 @@ class RegistrationForm extends React.Component {
         result.then((res) => {
           if (res.data.success) { // 如果成功
             localStorage.setItem('Forum-token', res.data.token) // 用localStorage把token存下来
+            localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
+            localStorage.setItem('userArticles', JSON.stringify(res.data.articles))
+            this.props.dispatch(skipLoginByToken());
             openNotification( // 登录成功，显示提示语
               res.data.info
             )
-            this.props.onIsLoggedInChange(res.data.success);
             this.props.history.push('/') 
           } else {
             openNotification(res.data.info) // 登录失败，显示提示语
@@ -205,6 +210,6 @@ class RegistrationForm extends React.Component {
   }
 }
   
-  const Register = Form.create({ name: 'register' })(RegistrationForm);
+const Register = Form.create({ name: 'register' })(RegistrationForm);
 
-export default Register
+export default withRouter(connect()(Register))

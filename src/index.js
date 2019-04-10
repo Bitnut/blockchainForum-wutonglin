@@ -8,8 +8,21 @@ import App from './App';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import 'moment/locale/zh-cn';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk'
+import { createLogger } from 'redux-logger'
+import rootReducer from './redux/reducers'
 // performance improving settings
-import configureStore from './redux/store';
+import { createStore, applyMiddleware } from 'redux'
+const middleware = [ thunk ]
+if (process.env.NODE_ENV !== 'production') {
+    middleware.push(createLogger())
+}
+const store = createStore(
+    rootReducer,
+    applyMiddleware(...middleware)
+)
+
+/*
 const { registerObserver } = require('react-perf-devtool')
 
 const options = {
@@ -23,12 +36,11 @@ function callback(measures) {
     //console.log(measures)
     // do something with the measures
 }
+*/
+
 
 //registerObserver(options, callback)
 
-
-
-const store = configureStore();
 ReactDOM.render(
 <LocaleProvider locale={zh_CN}>
     <Provider store={store}> 

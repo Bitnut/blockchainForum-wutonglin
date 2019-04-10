@@ -2,136 +2,96 @@ const user = require('../models/mysql');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 var fs = require("fs");  
-var path = require("path");  
+var path = require("path");
 
 // 递归创建目录
 function mkdirs(dirname, callback) {  
-  fs.exists(dirname, function (exists) {  
-      if (exists) {  
-          callback();  
-      } else {  
-          // console.log(path.dirname(dirname));  
-          mkdirs(path.dirname(dirname), function () {  
-              fs.mkdir(dirname, callback);  
-              console.log('在' + path.dirname(dirname) + '目录创建好' + dirname  +'目录');
-          });  
-      }  
-  });  
-}  
-
-
-// 用户注册
-const userRegistration = async function (ctx) {
-  const registerData = ctx.request.body // post过来的数据存在request.body里
-  console.log(registerData)
-  const userEmail = await user.getEmail(registerData.email)
-  const userNickName = await user.getNickName(registerData.nickName)
-  const userPhoneNum = await user.getPhoneNum(registerData.phoneNum)
-  if (userEmail !== null) {
-    ctx.body = {
-      success: false,
-      info: '邮箱已被使用！'
-    }
-    return
-  } else if (userNickName != null) {
-    ctx.body = {
-      success: false,
-      info: '该用户名已经存在！' 
-    }
-    return
-  } else if (userPhoneNum != null) {
-    ctx.body = {
-      success: false,
-      info: '该手机号码已被注册！' 
-    }
-    return
-  } else {
-    var salt = bcrypt.genSaltSync(10);
-    registerData.password = bcrypt.hashSync(registerData.password, salt);
-    const user_name = user.newUser(registerData);
-    const name = registerData.nickName
-    const userToken = {
-      nickName: user_name
-    }
-    const secret = 'Forum-token' // 指定密钥
-    const token = jwt.sign(userToken, secret) // 签发token
-    const userinfo = user.getUserInfoByName('name')
-    ctx.body = {
-      success: true,
-      token: token, // 返回token
-      userInfo: userinfo,
-      info: '注册成功！'
-    }
-    const userDir = `./server/public/${name}/assets`
-    mkdirs(userDir,(err) => {
-      console.log(err);
-    })    
-  }
+    fs.exists(dirname, function (exists) {  
+        if (exists) {  
+            callback();  
+        } else {  
+            // console.log(path.dirname(dirname));  
+            mkdirs(path.dirname(dirname), function () {  
+                fs.mkdir(dirname, callback);  
+                console.log('在' + path.dirname(dirname) + '目录创建好' + dirname  +'目录');
+            });  
+        }  
+    });
 }
 
-// 用户登录
-const userLogin = async function (ctx) {
-    const data = ctx.request.body // post过来的数据存在request.body里  
-    if (data.nickName == "") {
-      ctx.body = {
-        success: false,
-        info: '该用户名不存在！' // 如果用户名为空返回用户不存在
-      }
-      return
-    }
-    const userInfo = await user.getUserInfoByName(data.nickName);
-    if (userInfo != null) { // 如果查无此用户会返回null
-      if (!bcrypt.compareSync(data.password, userInfo.user_pass)) {
-        //var salt = bcrypt.genSaltSync(10);
-        //var hash = bcrypt.hashSync("123456", salt);
-        //console.log(hash)
-        ctx.body = {
-          success: false, // success标志位是方便前端判断返回是正确与否
-          info: '密码错误！'
-        }
-      } else {
-        const userToken = {
-          nickName: userInfo.user_name
-        }
-        const secret = 'Forum-token' // 指定密钥
-        const token = jwt.sign(userToken, secret) // 签发token
-        ctx.body = {
-          success: true,
-          userInfo: userInfo,
-          token: token, // 返回token
-          info: '登录成功！'
-        }
-      }
-    } else {
-      ctx.body = {
-        success: false,
-        info: '用户不存在！' // 如果用户不存在返回用户不存在
-      }
-    }
-  }
-// 用户上传文章
+// 用户文章管理
 const newArticle = async function (ctx) {
     const data = ctx.request.body
-    user.newArticle(data)
+    const newInfo = await user.newArticle(data)
     ctx.body = {
-      success: true,
-      articleData: data.htmlContent,
-      info: '新文章创建成功！'
+        success: true,
+        articleData: newInfo,
+        info: '新文章创建成功！'
     }
 }
 
-const getArticle = async function (ctx) {
+const releaseArticle = async function (ctx) {
+    const data = ctx.request.body
+    const newInfo = await user.refreshArticle(data)
+    ctx.body = {
+        success: true,
+        articleData: newInfo,
+        info: '文章发布成功！'
+    }
+}
+
+const getArticleById = async function (ctx) {
   const id = Number(ctx.params.id)
   result = await user.getArticle(id);
   ctx.body = {
-    articleData: result
+        success: true,
+        articleData: result,
+        info: '获取文章成功！'
   }
 }
 
+const removeArticleById = async function (ctx) {
+    const result = await user.removeAritcleById(ctx.request.body.aritcleId)
+    ctx.body = {
+        success: true,
+        articleData: result,
+        info: '成功删除文章'
+    }
+}
 
-  module.exports = {
-    userLogin,
-    userRegistration,
-    newArticle,
-    getArticle
+// 用户管理文集
+const addCorpus = async function (ctx) {
+    const newCorpusData = ctx.request.body;
+    user.refreshCorpus(newCorpusData.userId, newCorpusData.newCorpus);
+}
+
+const removeCorpus = async function (ctx) {
+    const corpusInfo = ctx.request.body;
+    const userId = corpusInfo.userId;
+    const corpus = corpusInfo.corpus;
+    user.removeAritcleByCorpus(userId, corpus)
+    user.refreshCorpus(userId, corpusInfo.newCorpus);
+    ctx.body = {
+        success: true,
+        info: '成功删除文集'
+    }
+}
+
+const getHotArticles = async function (ctx) {
+    const id = Number(ctx.params.id)
+    allArticles = await user.getAllArticles();
+    ctx.body = {
+        success: true,
+        hotArticles: allArticles,
+    }
   }
+
+module.exports = {
+    getHotArticles,
+    newArticle,
+    getArticleById,
+    removeArticleById,
+    addCorpus,
+    removeCorpus,
+    releaseArticle
+}

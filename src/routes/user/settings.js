@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
-import { Menu, Layout, Icon, Avatar, List} from 'antd'
+import { Menu, Layout} from 'antd'
 import './settings.css';
 import {WrappedBasic, WrappedProfile, WrappedReward} from '../../components/Settings'
+import { connect } from 'react-redux'
+
 const { Content, Sider } = Layout;
 
-export default class Settigns extends Component{
+class Settings extends Component{
       rootKeys = ['1', '2', '3'];
 
       state = {
@@ -72,13 +74,13 @@ export default class Settigns extends Component{
                         </Sider>
                         <Content style={{ padding: '0 24px', minHeight: 280, overflow: 'hidden' }}>
                         <div className="basic-content" style={{display: this.state.basicShow}}>
-                            <WrappedBasic basicShow={this.state.basicShow} userInfo={this.state.userInfo}/>
+                            <WrappedBasic basicShow={this.state.basicShow} userInfo={this.props.userInfo}/>
                         </div>
                         <div className="basic-content" style={{display: this.state.profileShow}}>
-                            <WrappedProfile profileShow={this.state.profileShow} userInfo={this.state.userInfo}/>
+                            <WrappedProfile profileShow={this.state.profileShow} userInfo={this.props.userInfo}/>
                         </div>
                         <div className="basic-content" style={{display: this.state.rewardShow}}>
-                            <WrappedReward rewardShow={this.state.rewardShow} userInfo={this.state.userInfo}/>
+                            <WrappedReward rewardShow={this.state.rewardShow} userInfo={this.props.userInfo}/>
                         </div>
                           
                         </Content>
@@ -88,3 +90,12 @@ export default class Settigns extends Component{
         )
     }
 }
+
+const mapStateToProps = state => {
+
+    return {
+        userInfo: state.user.userInfo,
+    }
+}
+
+export default connect(mapStateToProps)(Settings)

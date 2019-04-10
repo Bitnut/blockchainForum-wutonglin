@@ -14,6 +14,15 @@ const getUserInfoByName = async function (nickName) {
   })
   return userInfo
 }
+const getUserArticles = async function (userId) {
+    const userArticles = await Posts.findAll({
+        where: {
+            author_id: userId
+        }
+      })
+      return userArticles
+}
+
 // 注册时验证重复性用
 const getEmail = async function (email) { 
   const userInfo = await User.findOne({
@@ -50,76 +59,133 @@ const newUser = async function (userInfo){
       user_name: userInfo.nickName,
       user_pass: userInfo.password,                    
       user_phone: userInfo.phoneNum,
-      user_avatar: '../../../../server/public/default_avator.jpg',
+      user_avatar: '../../assets/smallBanner.jpg',
       user_gender: 'secret',
       signup_moment: time,
       user_editor: 'rich',
       email_message: 'no',
+      user_corpus: '默认文集',
       self_introduction: '这个人很懒，还没有写自我介绍',
       reward_setting: 'yes',
       reward_number: 3,
     }
   )
-  return Info.user_name
+  return Info
 }
+// 以下是用户文章的增删改查
 
-const newArticle = async function (articleInfo){  
-  const time = (new Date()).toLocaleDateString() + " " + (new Date()).toLocaleTimeString();
-  const Info = await Posts.create(
-    {
-      post_id: null,
-      author_id: articleInfo.authorId,
-      post_title: articleInfo.title,
-      post_content_raw: articleInfo.rawContent,                    
-      post_content_html: articleInfo.htmlContent,
-      post_moment: time,
-      post_views: 0,
-      post_likes: 0,
-      post_comments: 0,
-    }
-  )
-  return Info.user_name
-}
-
+// 根据文章 ID 获取文章
 const getArticle = async function (id){
   const article = await Posts.findOne(
     {
       where: {
         post_id: id
       },
-      attributes: ['post_content_html']
     }
-    
   )
-  return article.post_content_html
+  return article
 }
-
-const changeBalance = async function (id, newbalance){ 
-  const balance = await User.update(
-    {
-      balance: newbalance
-    },
-    {
-      where: {
-        card_id: id
+// 根据用户 ID 获取文章
+const getArticleByUserId = async function (userId){
+    const articles = await Posts.findAll(
+      {
+        where: {
+            author_id: userId
+        }
       }
-    }
-  )
-  return balance
+    )
+    return articles
+}
+// fix！ 返回用于首页或发现的文章
+const getAllArticles = async function () {
+    const articles = await Posts.findAll(
+        {
+            where: {
+                release_status: 'yes'
+            }
+        }
+    );
+    return articles;
 }
 
-const getBalance = async function (id){
-  const balance = await User.findOne(
-    {
-      where: {
-        card_id: id
-      },
-      attributes: ['balance']
-    }
-    
-  )
-  return balance
+// 更新作者的文集信息，用于用户写作页面的修改
+const refreshCorpus = async function ( userId, newInfo) {
+    const newCorpus = await Posts.update(
+        {
+            corpus: newInfo
+        },
+        {
+            where: {
+                user_id: userId
+            }
+        }
+    );
+    return newCorpus;
 }
+
+// 新增文章
+const newArticle = async function (articleInfo){  
+    const time = (new Date()).toLocaleDateString() + " " + (new Date()).toLocaleTimeString();
+    const Info = await Posts.create(
+      {
+        post_id: null,
+        author_id: articleInfo.authorId,
+        post_title: articleInfo.title,
+        corpus_tag: articleInfo.corpus,
+        release_status: articleInfo.release_status,
+        post_content_raw: articleInfo.rawContent,                    
+        post_content_html: articleInfo.htmlContent,
+        post_moment: time,
+        post_views: 0,
+        post_likes: 0,
+        post_comments: 0,
+      }
+    )
+    return Info
+}
+const refreshArticle = async function ( articleInfo) {
+    const newCorpus = await Posts.update(
+        {
+            post_title: articleInfo.title,
+            release_status: articleInfo.release_status,
+            post_content_raw: articleInfo.rawContent,                
+            post_content_html: articleInfo.htmlContent,
+        },
+        {
+            where: {
+                post_id: articleInfo.postId
+            }
+        }
+    );
+    return newCorpus;
+}
+
+// 删除文章
+
+// 根据id删除文章
+const removeAritcleById = async function (articleId) {
+    const articles = await Posts.destroy(
+        {
+            where:{
+                name: articleId
+            }
+        }
+    );
+}
+
+// 根据文集名称删除文章
+const removeAritcleByCorpus = async function (userId, corpus) {
+    const newCorpus = await Posts.destroy(
+        {
+            where:{
+                corpus_tag: corpus,
+                user_Id: userId
+            }
+        }
+    );
+}
+
+
 
 const newPassword = async function (id, newPwd){  // 获取某个用户的全部todolist
   const balance = await User.update(
@@ -141,10 +207,15 @@ module.exports = {
   getNickName,
   getPhoneNum,
   newUser,
-  getUserInfoByName, // 导出getUserById的方法，将会在controller里调用
+  getUserInfoByName,
+  getUserArticles,
   newArticle,
+  refreshArticle,
   getArticle,
-  getBalance,
-  changeBalance,
-  newPassword
+  getAllArticles,
+  getArticleByUserId,
+  refreshCorpus,
+  newPassword,
+  removeAritcleById,
+  removeAritcleByCorpus
 }

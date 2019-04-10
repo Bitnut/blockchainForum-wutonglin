@@ -1,26 +1,32 @@
 import React, { Component } from 'react';
 import logo from '../../assets/banner.jpg';
+import PropTypes from 'prop-types'
 import { Layout, Input, Menu, Divider, Button, 
-    Icon, Dropdown,  notification, Modal, Form, Checkbox, } from 'antd';
-import './index.css';
+    Icon, Dropdown, Modal,Row, Col } from 'antd';
 import {
     Link
   } from 'react-router-dom'
+import { userLogout, goWriting } from '../../redux/actions/userAction' 
 import Login from '../../components/login'
+import Headroom from 'react-headroom'
+import { connect } from 'react-redux'
+import './index.css'
 const  Search = Input.Search;
-const {Header} = Layout;
+const {Header} = Layout
 
-
-export default class  PageHeader extends Component{
+class  NewHeader extends Component{
+    static propTypes = {
+        isLoggedIn: PropTypes.bool.isRequired,
+        login_display: PropTypes.string.isRequired,
+        logout_display: PropTypes.string.isRequired,
+        header_display: PropTypes.string.isRequired,
+        dispatch: PropTypes.func.isRequired
+    }
     state = {
-        defaultSelectedKeys: ['1'],
-        user: {},
-        login_display: this.props.login_display,
-        logout_display: this.props.logout_display,
+        defaultSelectedKeys: '1',
         size: 'default',
         visible: false,
         confirmLoading: false,
-        header_display: this.props.header_display,
     }
     userMenu = () => (
         <Menu onClick= {this.onLogout}>
@@ -32,8 +38,9 @@ export default class  PageHeader extends Component{
             <Menu.Item key="setting:6"><Link to="/">退出登录</Link></Menu.Item>
         </Menu>
     );
+
     handleLogout = () => {
-        this.props.onLogout();
+        this.props.dispatch(userLogout());
     }
     onLogout = ({ key }) => {
         if(key === 'setting:6'){
@@ -53,6 +60,9 @@ export default class  PageHeader extends Component{
           visible: false,
         });
     }
+    handleWriting = () => {
+        this.props.dispatch(goWriting());
+    }
     componentWillMount(){
         if(this.props.location === undefined){
             this.setState({defaultSelectedKeys: ['4']});
@@ -67,78 +77,88 @@ export default class  PageHeader extends Component{
         }else{
             this.setState({defaultSelectedKeys: ['4']});
         }
-    }
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            login_display: nextProps.login_display,
-            logout_display: nextProps.logout_display
-        })
-        //console.log(this.state.login_display, this.state.logout_display)
+
     }
     render(){
         const size = this.state.size;
         return(
-            <Header className="page-header" style={{display: this.state.header_display}}>
-                <div className="header-box">
-                    <div className="header-logo">
-                    <img src={logo} alt="logo"/>
-                    <Link to="/">区块链知识分享论坛</Link>
-                    </div>
-                    <div className={"header-menu"}>
-                    <Menu
-                    theme="light"
-                    className="header-menu"
-                    mode="horizontal"
-                    defaultSelectedKeys={this.state.defaultSelectedKeys}
-                    style={{ lineHeight: '62px' }}
-                    >
-                    <Menu.Item key="1"><Link to="/">发现</Link></Menu.Item>
-                    <Menu.Item key="2"><Link to="/selection">关注</Link></Menu.Item>
-                    <Menu.Item key="3"><Link to="/pool">奖励池</Link></Menu.Item>
-                    </Menu>
-                    </div>
-                    <div className={"header-right"}>
-                        <Search
-                        className={"header-search"}
-                        placeholder="区块链发展过程"
-                        enterButton={true}
-                        onSearch={value => {
-                            if(value === undefined ||  value === null || value.replace(/(^\s*)|(\s*$)/g, "") === ""){
-                                this.props.history.push(`/Search/区块链发展过程`);
-                                return;
-                            }
-                            this.props.history.push(`/Search/${value}`); 
-                        }}
-                        />
-                        <div className={"header-rightpart"}>
-                            <div className={"header-login"} style={{display: this.state.login_display}}>
-                                <Button ghost onClick={this.showModal} size={size} className={"login-btn"}>
-                                    登录
-                                </Button>
-                                <Modal
-                                title="Title"
-                                visible={this.state.visible}
-                                footer={null}
-                                onCancel={this.handleCancel}
-                                >
-                                <Login onIsLoggedInChange={this.props.onLoggedIn} onCancel={this.handleCancel}/>
-                                </Modal>
-                                <Divider type="vertical" style={{margin: "auto 8px"}}/>
-                                <Button className={"login-btn"} shape="round" size={size}><Link to="/user/register">注册</Link></Button>
+            <Headroom>
+                <Header className="page-header" style={{display: this.props.header_display}}>
+                    <Row gutter={16} type="flex" justify="center" align="bottom">
+                        <Col xs={16} sm={12} md={9} lg={6} xl={3}>
+                        <img src={logo} alt="logo" style={{height: 64, padding: 8}}/>
+                        <Link to="/">区块链知识分享论坛</Link>
+                        </Col>
+                        <Col xs={20} sm={16} md={12} lg={8} xl={4}>
+                        <Menu
+                        theme="light"
+                        className="header-menu"
+                        mode="horizontal"
+                        defaultSelectedKeys={this.state.defaultSelectedKeys}
+                        style={{ lineHeight: '62px' }}
+                        >
+                        <Menu.Item key="1"><Link to="/">发现</Link></Menu.Item>
+                        <Menu.Item key="2"><Link to="/selection">关注</Link></Menu.Item>
+                        <Menu.Item key="3"><Link to="/pool">奖励池</Link></Menu.Item>
+                        </Menu>
+                        </Col>
+                        <Col xs={2} sm={4} md={6} lg={8} xl={8}>
+                            <Search
+                            className={"header-search"}
+                            placeholder="区块链发展过程"
+                            enterButton={true}
+                            onSearch={value => {
+                                if(value === undefined ||  value === null || value.replace(/(^\s*)|(\s*$)/g, "") === ""){
+                                    this.props.history.push(`/Search/区块链发展过程`);
+                                    return;
+                                }
+                                this.props.history.push(`/Search/${value}`); 
+                            }}
+                            />
+                        </Col>
+                        <Col xs={20} sm={16} md={12} lg={8} xl={4}>
+                            <div className={"header-rightpart"}>
+                                <div className={"header-login"} style={{display: this.props.login_display}}>
+                                    <Button onClick={this.showModal} size={size} className={"login-btn"}>
+                                        登录
+                                    </Button>
+                                    <Modal
+                                    title="Title"
+                                    visible={this.state.visible}
+                                    footer={null}
+                                    onCancel={this.handleCancel}
+                                    >
+                                    <Login onCancel={this.handleCancel}/>
+                                    </Modal>
+                                    <Divider type="vertical" style={{margin: "auto 8px"}}/>
+                                    <Button className={"login-btn"} shape="round" size={size}><Link to="/user/register">注册</Link></Button>
+                                </div>
+                                <div className={"header-logout"} style={{display: this.props.logout_display}}>
+                                    <Dropdown overlay={this.userMenu}>
+                                        <a className="ant-dropdown-link">
+                                        你好,欢迎！ <Icon type="down" />
+                                        </a>
+                                    </Dropdown>
+                                    <Divider type="vertical" style={{margin: "auto 8px"}}/>
+                                    <Button type="primary" shape="round" className={"writing-btn"} size='large' onClick={this.handleWriting}><Link to="/user/writing">写文章</Link></Button>
+                                </div>
                             </div>
-                            <div className={"header-logout"} style={{display: this.state.logout_display}}>
-                                <Dropdown overlay={this.userMenu}>
-                                    <a className="ant-dropdown-link">
-                                    你好,欢迎！ <Icon type="down" />
-                                    </a>
-                                </Dropdown>
-                                <Divider type="vertical" style={{margin: "auto 8px"}}/>
-                                <Button type="primary" shape="round" className={"writing-btn"} size='large' onClick={this.props.onWriting}><Link to="/user/writing">写文章</Link></Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-          </Header>            
+                        </Col>
+                    </Row>
+                </Header>
+          </Headroom>            
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        isLoggedIn: state.user.isLoggedIn,
+        login_display: state.user.login_display,
+        logout_display: state.user.logout_display,
+        header_display: state.user.header_display,
+        login_info: state.user.login_info,
+    }
+}
+
+export default connect(mapStateToProps)(NewHeader)

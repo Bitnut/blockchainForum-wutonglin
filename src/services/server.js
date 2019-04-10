@@ -14,7 +14,7 @@ http.post = function (api, data) {
                 console.log(err)
                 return Promise.resolve(err);
             });
-    });  
+    });
 }
 
 http.get = function (api, data) {

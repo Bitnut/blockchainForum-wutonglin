@@ -29,6 +29,7 @@
     "mysql2": "^1.6.5",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-headroom": "^2.2.8",
     "react-perf-devtool": "^3.1.8",
     "react-redux": "^6.0.1",
     "react-relay": "^1.5.0",
@@ -36,8 +37,11 @@
     "react-scripts": "1.1.1",
     "react-sparklines": "^1.7.0",
     "react-virtualized": "^9.21.0",
+    "reactotron-redux": "^3.1.0",
     "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
     "redux-persist": "^5.10.0",
+    "redux-promise": "^0.6.0",
     "redux-thunk": "^2.3.0",
     "relay-runtime": "^1.5.0",
     "reqwest": "^2.0.5",
@@ -57,10 +61,15 @@
     "graphql": "^0.13.2",
     "react-app-rewire-less": "^2.1.1",
     "react-app-rewired": "^1.5.0",
+    "reactotron-react-js": "^3.0.1",
     "relay-compiler": "^1.5.0"
   },
   "proxy": {
     "/auth": {
+      "target": "http://localhost:8889",
+      "changeOrigin": true
+    },
+    "/api": {
       "target": "http://localhost:8889",
       "changeOrigin": true
     }

@@ -36,6 +36,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(30),
       allowNull: false
     },
+    user_corpus: {
+      type: DataTypes.STRING(200),
+      allowNull: false
+    },
     user_editor: {
       type: DataTypes.STRING(10),
       allowNull: false

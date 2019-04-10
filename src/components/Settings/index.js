@@ -4,6 +4,7 @@ import {
     Radio, Button, Input, Avatar
   } from 'antd';
 
+import avatarImg from '../../assets/smallBanner.jpg';
 const {TextArea} = Input;
   
   class Basic extends React.Component {
@@ -21,10 +22,9 @@ const {TextArea} = Input;
         labelCol: { span: 6 },
         wrapperCol: { span: 14 },
       };
-      const avatar = '../../../server/public/default_avator.jpg';
       return (
         <div>
-          <Avatar size="large" icon="user" src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>
+          <Avatar size="large" icon="user" src={avatarImg}/>
         <br></br>
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item

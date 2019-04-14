@@ -1,0 +1,10 @@
+.error-page {
+    background-color: #fff;
+    min-height: 900px;
+}
+.middle-content {
+    position: relative;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}

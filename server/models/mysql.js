@@ -123,6 +123,29 @@ const refreshCorpus = async function ( userId, newInfo) {
     return newCorpus;
 }
 
+
+const refreshSettings = async function ( newInfo) {
+    const result = await Posts.update(
+        {
+            user_email: newInfo.user_email,
+            user_name: newInfo.user_name,                 
+            user_phone: newInfo.user_phone,
+            user_gender: newInfo.user_gender,
+            user_editor: newInfo.user_editor,
+            email_message: newInfo.email_message,
+            self_introduction: newInfo.self_introduction,
+            reward_setting: newInfo.reward_setting,
+            reward_number: newInfo.reward_number,
+        },
+        {
+            where: {
+                user_id: newInfo.user_id
+            }
+        }
+    );
+    return result;
+}
+
 // 新增文章
 const newArticle = async function (articleInfo){  
     const time = (new Date()).toLocaleDateString() + " " + (new Date()).toLocaleTimeString();
@@ -217,5 +240,6 @@ module.exports = {
   refreshCorpus,
   newPassword,
   removeAritcleById,
-  removeAritcleByCorpus
+  removeAritcleByCorpus,
+  refreshSettings
 }

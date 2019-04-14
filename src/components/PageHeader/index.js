@@ -146,7 +146,7 @@ class  NewHeader extends Component{
                         </Col>
                     </Row>
                 </Header>
-          </Headroom>            
+            </Headroom>                
         )
     }
 }

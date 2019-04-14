@@ -22,7 +22,6 @@ function mkdirs(dirname, callback) {
 // 用户注册
 const userRegistration = async function (ctx) {
     const registerData = ctx.request.body // post过来的数据存在request.body里
-    console.log(registerData)
     const userEmail = await user.getEmail(registerData.email)
     const userNickName = await user.getNickName(registerData.nickName)
     const userPhoneNum = await user.getPhoneNum(registerData.phoneNum)

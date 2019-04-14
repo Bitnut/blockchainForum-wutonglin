@@ -215,7 +215,7 @@ const {TextArea} = Input;
       }),
       email: Form.createFormField({
         ...props.userInfo,
-        value: props.userInfo.user_email,
+        value: props.userInfo.user_email, 
       }),
       phone: Form.createFormField({
         ...props.userInfo,

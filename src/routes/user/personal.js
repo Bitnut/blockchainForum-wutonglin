@@ -38,34 +38,37 @@ class Personal extends Component{
         });
     }
     }
-    componentWillMount(){
-        const list = [];
-        var abstract = '';
-            for (let i = 0; i < 3; i++) {
-                var temp = this.props.userArticles[i].post_content_html.substring(0,200)
-                abstract = temp.replace(/<\/?.+?>/g,"");
-                const newContent = abstract.replace(/ /g,"");
-                list.push({
-                  title: this.props.userArticles[i].post_title,
-                  avatar: avatar,
-                  content: newContent,
-                });
+    componentDidMount (){
+        const userArticles = JSON.parse(localStorage.getItem('userArticles')) 
+        if(userArticles!==null) {
+            setTimeout(() => {
+                const articleList = [];
+                const article = userArticles.map(item => {return item.post_title})
+                article.forEach((item, index) => {
+                    articleList.push(item)
+                })
+                const list = [];
+                var abstract = '';
+                for (let i = 0; i < userArticles.length; i++) {
+                    var temp = userArticles[i].post_content_html.substring(0,200)
+                    abstract = temp.replace(/<\/?.+?>/g,"");
+                    const newContent = abstract.replace(/ /g,"");
+                    list.push({
+                        title: userArticles[i].post_title,
+                        avatar: avatar,
+                        content: newContent,
+                    });
+                }
                 this.setState({
+                    list: [...articleList],
                     listData: [...list],
                 });
-            }
-    }
-    componentDidMount (){
-        setTimeout(() => {
-            const articleList = [];
-            const article = this.props.userArticles.map(item => {return item.post_title})
-            article.forEach((item, index) => {
-                articleList.push(item)
-            })
-            this.setState({
-                list: [...articleList],
-            });
-            }, 10);
+                }, 50);
+        } else {
+            return
+        }
+        
+            
     }
     render(){
         return( 
@@ -130,6 +133,8 @@ class Personal extends Component{
                     />
                     </Content>
                     <Sider width={350} collapsedWidth="0" style={{ background: '#fff', marginRight: '100'}}>
+                    
+
                         <div className='page-sider'>
                         <p>个人介绍</p>
                         <Divider />
@@ -143,6 +148,7 @@ class Personal extends Component{
                         renderItem={item => (<List.Item>{item}</List.Item>)}
                         />
                         </div>
+                    
                     </Sider>
                 </Layout>
             </div>

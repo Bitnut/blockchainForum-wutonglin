@@ -86,6 +86,50 @@ const getHotArticles = async function (ctx) {
     }
   }
 
+
+
+// 用户设置更改
+const changeSettings = async function (ctx) {
+    const data = ctx.request.body
+    const userEmail = await user.getEmail(data.user_email)
+    const userNickName = await user.getNickName(data.user_name)
+    const userPhoneNum = await user.getPhoneNum(data.user_phone)
+    if (userEmail !== null) {
+        ctx.body = {
+            success: false,
+            info: '邮箱已被使用！'
+        }
+        return
+    } else if (userNickName != null) {
+        ctx.body = {
+            success: false,
+            info: '该用户名已经存在！' 
+        }
+        return
+    } else if (userPhoneNum != null) {
+        ctx.body = {
+            success: false,
+            info: '该手机号码已被注册！'
+        }
+        return
+    } else {
+        const result = await user.refreshSettings(data.userInfo);
+        if (result) {
+            ctx.body = {
+                success: true,
+                info: '设置更改成功！'
+            }
+        } else {
+            ctx.body = {
+                success: false,
+                info: '服务器错误'
+            }
+        }
+    }
+    
+    
+}
+
 module.exports = {
     getHotArticles,
     newArticle,
@@ -93,5 +137,6 @@ module.exports = {
     removeArticleById,
     addCorpus,
     removeCorpus,
-    releaseArticle
+    releaseArticle,
+    changeSettings
 }

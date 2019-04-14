@@ -87,9 +87,10 @@ export const userLogout = () => {
 }
 
 export const skipLoginByToken = () => {
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-    const userArticles = JSON.parse(localStorage.getItem('userArticles'))
     return dispatch => {
+        dispatch(login());
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+        const userArticles = JSON.parse(localStorage.getItem('userArticles'))  
         dispatch(skipLogin(userInfo, userArticles));
     }
 }

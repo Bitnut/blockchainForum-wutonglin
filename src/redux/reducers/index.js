@@ -1,14 +1,15 @@
 import {
     combineReducers
 } from 'redux';
-import user from './user';
+import {user, changeSettings} from './user';
 import {postsBySubreddit, selectedSubreddit, posts} from './posts'
 
 const rootReducer = combineReducers({
     postsBySubreddit,
     selectedSubreddit,
     posts,
-    user
+    user,
+    changeSettings
 })
 
 export default rootReducer

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {Route} from 'react-router-dom'
-import {withRouter} from 'react-router-dom'
+import {withRouter, Route,Redirect, Switch } from 'react-router-dom'
 import { Layout, BackTop, Modal } from 'antd';
 import Header from './components/PageHeader';
+/*
 import Home  from './routes/Home';
 import Selection from './routes/Selection';
 import Pool from './routes/Pool';
@@ -12,9 +12,12 @@ import Settings from './routes/user/settings';
 import Writing from './routes/user/writing';
 import hotArticle from './routes/HotArticle';
 import raedArticle from './routes/Article';
+import Jobs from './routes/Jobs'*/
+import ErrorPage from './routes/Error'
+import {routerConfig} from './resolveRoute'
 import { connect } from 'react-redux'
 import { skipLoginByToken } from './redux/actions/userAction'
-
+import Headroom from 'react-headroom'
 const { Content} = Layout;
 //路由配置！
 class App extends Component {
@@ -36,7 +39,9 @@ class App extends Component {
         this.setState({ hasError: true });
         
     }
+    
     render() {
+        const isLogin = localStorage.getItem('Forum-token') ? true :false;
         if (this.state.hasError) {
         // You can render any custom fallback UI
         Modal.info({
@@ -54,27 +59,29 @@ class App extends Component {
         return <h1>出错啦</h1>;
         } 
         return (
-        <Layout>
-            <Route component={Header} />
-        <Content>
-            <Layout>
-            <Content style={{ minHeight: 280 }}>
-            <Route exact path="/" component={Home}/>
-            <Route exact path="/selection" component={Selection}/>
-            <Route exact path="/pool" component={Pool}/>
-            <Route exact path="/user/register" component={Register}/>
-            <Route exact path="/user/personal" component={Personal}/>
-            <Route exact path="/user/settings" component={Settings} />
-            <Route exact path="/user/writing" component={Writing} />
-            <Route path="/articles" component={hotArticle}/>
-            <Route exact path="/article/:id" component={raedArticle}/>
-            </Content>
-            </Layout>
-        </Content>
-        <BackTop />
-        </Layout>       
+            <div>
+                <Route component={Header} />
+                <Layout >
+                    <Content style={{ minHeight: 280 }}>
+                            <Switch>
+                            {routerConfig.map((item, index) => {
+                            return <Route key={index} path={item.path} exact render={props =>
+                                (!item.auth ? (<item.component {...props} />) : (isLogin ? <item.component {...props} /> : <Redirect to={{
+                                pathname: '/login',
+                                state: { from: props.location }
+                                }} />)
+                                )} />
+                            })}
+                            <Route component={ErrorPage} />
+                            </Switch>
+                    </Content>
+                </Layout> 
+            </div>   
         );
     }
 }
+
+
+
 
 export default withRouter(connect()(App));

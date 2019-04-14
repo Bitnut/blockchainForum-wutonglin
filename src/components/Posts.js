@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 //import { CellMeasurerCache, CellMeasurer } from 'react-virtualized/dist/commonjs/CellMeasurer'
 
 const Posts = ({posts}) => (
-  <div>9    {posts.map((post, i) =>
+  <div>{posts.map((post, i) =>
       <div key={i} dangerouslySetInnerHTML = {{ __html:post.post_content_html }}></div>
     )}
   </div>

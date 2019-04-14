@@ -33,7 +33,7 @@ export const readPost = (data) => ({
 
 const fetchPosts = subreddit => dispatch => {
   dispatch(requestPosts(subreddit))
-  let token = localStorage.getItem('Forum-token')
+  let token = localStorage.getItem('Forum-token') 
   fetch('/api/articles', {
     headers:{
     "Content-Type": "application/json",
@@ -72,7 +72,7 @@ export const fetchPostById = (Id,subreddit) =>  (dispatch, getState) => {
     })
 
 }
-
+/*
 const shouldGetPosts = (state, subreddit) => {
     const posts = state.posts.readingPost
     if (!posts) {
@@ -83,7 +83,7 @@ const shouldGetPosts = (state, subreddit) => {
     }
     return posts.didInvalidate
   }
-
+*/
 const shouldFetchPosts = (state, subreddit) => {
   const posts = state.postsBySubreddit[subreddit]
   if (!posts) {

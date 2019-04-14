@@ -4,11 +4,13 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchPostById} from '../../redux/actions/posts'
 //import Picker from '../../components/Picker'
-import Posts from '../../components/Posts'
+import './index.css';
+
 //import http from '../../services/server';
 const { Content} = Layout;
 
-class raedArticle extends Component{
+
+class readArticle extends Component{
     state = {
         newContent: ''
       }; 
@@ -35,7 +37,7 @@ class raedArticle extends Component{
     }
 
     render(){
-        const { posts, isFetching, lastUpdated } = this.props
+        const { isFetching, lastUpdated } = this.props
         const isEmpty = this.props.readingPost.length === 0
         return(
             <div>
@@ -56,14 +58,16 @@ class raedArticle extends Component{
                         </p>
                         {isEmpty
                         ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
-                        : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-                            <Posts posts={this.props.readingPost} />
+                        : <div >
+                                <div>
+                                    <div dangerouslySetInnerHTML = {{ __html:this.props.readingPost[0].post_content_html }}></div>
+                                </div>
                             </div>
                         }
                       </div>
                       <div className="read-text" dangerouslySetInnerHTML={{__html: this.state.newContent != null ? this.state.newContent : "本章似乎丢失了！" }}></div>
                       </Content>
-              </Layout>      
+              </Layout>       
               </div>
             </div>
         )
@@ -72,7 +76,7 @@ class raedArticle extends Component{
 
 
 const mapStateToProps = state => {
-    const { posts } = state 
+    const { posts } = state  
     return {
         readingPost: posts.readingPost,
         isFetching: true
@@ -80,4 +84,4 @@ const mapStateToProps = state => {
 }
 
 
-export default connect(mapStateToProps)(raedArticle)
+export default connect(mapStateToProps)(readArticle)

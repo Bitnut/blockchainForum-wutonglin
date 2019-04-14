@@ -1,5 +1,6 @@
 import { LOGGED_IN, LOGGED_OUT, LOGGING_IN, LOGIN_ERR ,ON_WRITING, EXIT_WRITING, SKIP_LOGIN} from '../actions/userAction';
 import { NEW_ARTICLE } from '../actions/writing';
+import {SAVE_CHANGES, CHANGES_SUCCESS, CHANGE_ERR } from '../actions/settings';
 
 const initialState = {
     isLoggedIn: false,
@@ -7,12 +8,14 @@ const initialState = {
     logout_display: 'none',
     login_info: '',
     userInfo: {},
+    changingSettings: false,
+    settings_info: '',
     userArticles: {},
     header_display: '',
     status: null,
 };
 
-export default function user(state=initialState, action) {
+export function user(state=initialState, action) {
     switch(action.type){
         case LOGGED_IN:
         return {
@@ -71,6 +74,28 @@ export default function user(state=initialState, action) {
             ...state,
             userArticles: action.articles,
         }
+        default:
+        return state;
+    }
+}
+export  function changeSettings(state=initialState, action) {
+    switch(action.type){
+        case SAVE_CHANGES:
+        return {
+            ...state,
+            changeSettings: true
+        };
+        case CHANGES_SUCCESS:
+        return {
+            ...state,
+            settings_info: '设置保存成功！',
+            userInfo: action.info
+        };
+        case CHANGE_ERR:
+        return {
+            ...state,
+            settings_info: '出现错误！'
+        };
         default:
         return state;
     }

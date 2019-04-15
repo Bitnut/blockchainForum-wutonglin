@@ -35,7 +35,7 @@ const Jobs = () => (
                     <Timeline.Item>
                         <p>16.&nbsp;&nbsp;&nbsp;网站全局路由守护</p>
                         <p>16.&nbsp;&nbsp;&nbsp;评论点赞功能</p>
-                        <p>16.&nbsp;&nbsp;&nbsp;网站全局路由守护</p>
+                        <p>16.&nbsp;&nbsp;&nbsp;404页面</p>
                         <p>16.&nbsp;&nbsp;&nbsp;网站全局路由守护</p>
                         <p>16.&nbsp;&nbsp;&nbsp;网站全局路由守护</p>
                         <p>16.&nbsp;&nbsp;&nbsp;网站全局路由守护</p>        
@@ -44,6 +44,7 @@ const Jobs = () => (
             <h1>本周完成的任务：</h1>
                 <ul>
                     <p>1.&nbsp;&nbsp;&nbsp;路由守卫功能<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;404页面<Icon type="plus-circle" /></p>
                 </ul>
             <h1>修改完成的bug如下所示：</h1>
                 <ul>
@@ -51,7 +52,7 @@ const Jobs = () => (
                     <p>2.&nbsp;&nbsp;&nbsp;新增用户的个人界面写作经历bug<Icon type="check" /></p>
                     <p>3.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="exclamation" /></p>
                     <p>4.&nbsp;&nbsp;&nbsp;通过url进入文章编辑界面，header未能隐藏<Icon type="exclamation" /></p>
-                    <p>5.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="exclamation" /></p>
+                    <p>5.&nbsp;&nbsp;&nbsp;文章编辑页面异步获取文章数据有误<Icon type="exclamation" /></p>
                     <p>6.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="exclamation" /></p>
                 </ul>
          </div>

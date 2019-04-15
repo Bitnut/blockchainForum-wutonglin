@@ -1,12 +1,12 @@
 import 'braft-editor/dist/index.css'
 import React from 'react'
 import BraftEditor from 'braft-editor'
-import { Form, Input, Button, Layout, Tree, notification } from 'antd'
+import { Form, Input, Button, Layout, Tree, notification, Row, Col, List, Card, Modal } from 'antd'
 import {
   Link
 } from 'react-router-dom'
 import { leaveWriting} from '../../redux/actions/userAction'
-import { addNewArticle, newArticle, getArticleInfo } from '../../redux/actions/writing'
+import { addNewArticle, newArticle, deleteArticle } from '../../redux/actions/writing'
 import { connect } from 'react-redux'
 import './writing.css';
 
@@ -23,26 +23,34 @@ const openNotification = (info) => {
   };
   notification.open(args);
 };
+const extendControls = [
+    'separator',
+    {
+        key: 'my-button', // 控件唯一标识，必传
+        type: 'button',
+        title: '保存文章', // 指定鼠标悬停提示文案
+        className: 'my-button', // 指定按钮的样式名
+        html: null, // 指定在按钮中渲染的html字符串
+        text: 'Hello', // 指定按钮文字，此处可传入jsx，若已指定html，则text不会显示
+        onClick: () => {
+            console.log('Hello World!');
+        },
+    }
+]
 
 class Wirting extends React.Component {
     state = {
         theme: 'dark',
         current: '1',
-        treeData: [
-            { title: '默认文集' , key: '0-0' }
-        ],
-        expandedKeys: ['0-0'],
-        selectedKeys: [],
-        editArticle: ['0'],
+        articleData: [],
+        userCorpus: [],
+        modal1Visible: false,
+        modal2Visible: false,
+        onDeleteArticle: [],
     }
-    onSelect = (selectedKeys) => {
-        this.setState({ selectedKeys });
-        if(selectedKeys[0] === '0-0' || selectedKeys.length === 0){
-            return
-        }
-        this.setState({ editArticle: selectedKeys });
-        const content = this.props.userArticles[selectedKeys].post_content_html
-        const title = this.props.userArticles[selectedKeys].post_title
+    onSelect = (index) => {
+        const content = this.props.userArticles[index].post_content_html
+        const title = this.props.userArticles[index].post_title
         setTimeout(() => {
             this.props.form.setFieldsValue({
                 content: BraftEditor.createEditorState(content),
@@ -51,24 +59,63 @@ class Wirting extends React.Component {
             }, 10)
     }
 
-    onExpand = () => {
-        console.log('Trigger Expand');
-    };
+    setModal1Visible(modal1Visible) {
+        this.setState({ modal1Visible });
+
+    }
+    
+    setModal2Visible(modal2Visible) {
+        this.setState({ modal2Visible });
+    }
+    
+    onDelete = (index) => {
+        this.setState({modal1Visible: true, onDeleteArticle: index});
+    }
+    handleDelete = () => {
+        const index = this.state.onDeleteArticle
+        const articleId = this.state.articleData[index].Id
+        this.props.dispatch(deleteArticle(articleId, index));
+        const newArticleTitle = this.state.articleData
+        newArticleTitle.splice(index,1)
+        this.setState({
+            articleData: [...newArticleTitle],
+            modal1Visible: false,
+        })
+    }
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    }
+    hideModal = () => {
+        this.setState({
+          visible: false,
+        });
+    }
     addArticle = () => {
         this.props.dispatch(addNewArticle(this.props.userId));
+        const newArticleTitle = [...this.state.articleData, {title: '新建文章'}]
+        this.setState({ articleData: newArticleTitle})
     }
-    componentDidMount () {
-        // 异步设置编辑器内容
-        this.props.dispatch(getArticleInfo())
+    componentWillMount () {
+        const articles = JSON.parse(localStorage.getItem('userArticles'))
         setTimeout(() => {
         this.props.form.setFieldsValue({
-            content: BraftEditor.createEditorState(''),
-            title: ''
+            content: BraftEditor.createEditorState(articles[0].post_content_html),
+            title: articles[0].post_title
         })
-        }, 1000)
+        const articleTitle = []
+        articles.forEach((item, index) => {
+            articleTitle.push({ title: item.post_title, Id: item.post_id })
+        })
+        this.setState({
+            articleData: [...articleTitle],
+            userCorpus: ['默认文集']
+        })
+        }, 20)
+        console.log(this.state.articleData[0])
 
     }
-
     handleSubmit = (event) => {
         event.preventDefault()
         this.props.form.validateFields((error, values) => {
@@ -118,38 +165,10 @@ class Wirting extends React.Component {
     }
     handleExit = () => {
         this.props.dispatch(leaveWriting());
-        this.renderTreeNodes(this.state.treeData);
     }
-    renderTreeNodes = data => data.map((item) => {
-        if (item.children) {
-        return (
-            <TreeNode title={item.title} key={item.key} dataRef={item}>
-            {this.renderTreeNodes(item.children)}
-            </TreeNode>
-        );
-        }
-        return <TreeNode {...item} dataRef={item} />;
-    })
-
-    onLoadData = treeNode => new Promise((resolve) => {
-        console.log(treeNode)
-        if (treeNode.props.children) {
-        resolve();
-        return;
-        }
-        setTimeout(() => {
-        treeNode.props.dataRef.children = [];
-        const article = this.props.userArticles.map(item => {return item.post_title})
-        article.forEach((item, index) => {
-            treeNode.props.dataRef.children.push({ title: [item, <Button shape="circle" icon="minus" size='small' />], key: `${index}`, isLeaf: true })
-        })
-        this.setState({
-            treeData: [...this.state.treeData],
-        });
-        resolve();
-        }, 10);
-    })
-
+    edit = () => {
+        console.log('edit')
+    }
     render () {
 
         const { getFieldDecorator } = this.props.form
@@ -163,29 +182,62 @@ class Wirting extends React.Component {
         return (
         <div className="forum-editor">
             <Layout>
+                <Modal
+                title="操作确认"
+                style={{ top: 20 }}
+                visible={this.state.modal1Visible}
+                onOk={this.handleDelete}
+                onCancel={() => this.setModal1Visible(false)}
+                >
+                <p>确定要删除文章吗？</p>
+                </Modal>
+                <Modal
+                title="20px to Top"
+                style={{ top: 20 }}
+                visible={this.state.modal2Visible}
+                onOk={() => this.setModal2Visible(false)}
+                onCancel={() => this.setModal2Visible(false)}
+                >
+                <p>some contents...</p>
+                <p>some contents...</p>
+                <p>some contents...</p>
+                </Modal>
             <Sider 
-            width= '380'
+            width= '600'
             theme= 'light'
             style={{
-                overflow: 'auto', height: '100vh', position: 'fixed', left: 0, width: 400 
+                overflow: 'auto', height: '100vh', position: 'fixed', left: 0, width: 600 
             }}
             >
-                <br />
-                <div className="exit-btn"></div>
-                <Button type="primary" shape="round" size='large' style={{ width: 300 }}  onClick={this.handleExit}><Link to="/">回首页</Link></Button>
-                <Button shape="circle" icon="plus" size='small' onClick={this.addArticle}/>
-                <br />
-                <br />
-                <Tree 
-                loadData={this.onLoadData}
-                defaultExpandedKeys={this.state.expandedKeys}
-                defaultSelectedKeys={['0']}
-                onSelect={this.onSelect}
-                >
-                    {this.renderTreeNodes(this.state.treeData)}
-                </Tree>
+            <br />
+            <Button type="primary" shape="round" size='large' style={{ width: 200, marginLeft: 50}}  onClick={this.handleExit}><Link to="/">回首页</Link></Button>
+            <Row gutter={24} justify="center" >
+                <Col span={9}>
+                    <br />
+                    <div className="exit-btn"></div>
+                    
+                    <List
+                    size="small"
+                    dataSource={this.state.userCorpus}
+                    style={{marginLeft: 20}}
+                    renderItem={
+                        item =>(<List.Item actions={[<a onClick={this.addArticle}>增加文章</a>]}>{item}</List.Item>
+                    )}
+                    />
+                    <br />
+                    <br />
+                </Col>
+                <Col span={15} className='article-list'>
+                    <List
+                    dataSource={this.state.articleData}
+                    renderItem={
+                        (item, index) =>(<List.Item actions={[<a onClick={this.onSelect.bind(this, index)}>修改</a>, <a onClick={this.onDelete.bind(this, index)}>删除</a>]}>{item.title}</List.Item>
+                    )}
+                    />
+                </Col>
+            </Row>
             </Sider>
-            <Layout style={{ marginLeft: 400, height: '100vh'  }} className="editor-container" >
+            <Layout style={{ marginLeft: 600, height: '110vh', position: 'fixed'  }} className="editor-container" >
                 <Form onSubmit={this.handleSubmit} >
                     <Form.Item  label="文章标题">
                     {getFieldDecorator('title', {
@@ -197,7 +249,7 @@ class Wirting extends React.Component {
                         <Input size="large" placeholder="请输入标题"/>
                     )}
                     </Form.Item>
-                    <Form.Item  label="文章正文" style={{height: '80vh'}}>
+                    <Form.Item  label="文章正文" style={{height: 790}}>
                     {getFieldDecorator('content', {
                         validateTrigger: 'onBlur',
                         rules: [{
@@ -214,12 +266,14 @@ class Wirting extends React.Component {
                         <BraftEditor
                         className="my-editor"
                         controls={controls}
+                        extendControls={extendControls}
                         placeholder="请输入正文内容"
+                        style={{height: 800}}
                         />
                     )}
                     </Form.Item>
                     <Form.Item >
-                    <Button size="large" type="primary" htmlType="submit">提交</Button>
+                    <Button size="large" type="primary" htmlType="submit" >发布文章</Button>
                     </Form.Item>
                 </Form>
             </Layout> 

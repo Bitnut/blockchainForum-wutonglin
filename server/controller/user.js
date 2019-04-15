@@ -51,7 +51,7 @@ const getArticleById = async function (ctx) {
 }
 
 const removeArticleById = async function (ctx) {
-    const result = await user.removeAritcleById(ctx.request.body.aritcleId)
+    const result = await user.removeAritcleById(ctx.request.body.articleId)
     ctx.body = {
         success: true,
         articleData: result,

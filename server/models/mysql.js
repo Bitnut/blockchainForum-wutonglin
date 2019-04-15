@@ -190,7 +190,7 @@ const removeAritcleById = async function (articleId) {
     const articles = await Posts.destroy(
         {
             where:{
-                name: articleId
+                post_id: articleId
             }
         }
     );

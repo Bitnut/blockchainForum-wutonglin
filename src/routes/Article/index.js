@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Layout} from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { fetchPostById} from '../../redux/actions/posts'
 //import Picker from '../../components/Picker'
 import './index.css';
@@ -35,10 +36,12 @@ class readArticle extends Component{
     componentDidMount() {
         this.props.dispatch(fetchPostById(this.props.match.params.id))
     }
-
     render(){
         const { isFetching, lastUpdated } = this.props
         const isEmpty = this.props.readingPost.length === 0
+        if(!this.props.fetchStatus){
+            return (<Redirect to="/404" />);
+        }
         return(
             <div>
               <div className="info-background">
@@ -79,7 +82,8 @@ const mapStateToProps = state => {
     const { posts } = state  
     return {
         readingPost: posts.readingPost,
-        isFetching: true
+        isFetching: true,
+        fetchStatus: posts.fetchStatus
     }
 }
 

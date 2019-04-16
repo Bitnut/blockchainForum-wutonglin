@@ -11,17 +11,20 @@ const data = [
 {
     title: '前往主页：',
     path: '/',
-    buttonContent: '跳转主页'
+    buttonContent: '跳转主页',
+    icon: <Icon type="home" />
 },
 {
     title: '开始写作：',
     path: '/user/writing',
-    buttonContent: '写文章'
+    buttonContent: '写文章',
+    icon: <Icon type="edit" />
 },
 {
     title: '浏览更多精彩：',
     path: '/selection',
-    buttonContent: '浏览更多'
+    buttonContent: '浏览更多',
+    icon: <Icon type="compass" />
 },
 ];
 
@@ -46,7 +49,7 @@ const ErrorPage = () => (
             dataSource={data}
             renderItem={item => (
             <List.Item>
-                <Card title={item.title}><Button type="primary" shape="round" size='large' ><Link to={item.path}>{item.buttonContent}</Link></Button></Card>
+                <Card title={[item.title, item.icon]} hoverable><Button type="primary" shape="round" size='large' ><Link to={item.path}>{item.buttonContent}</Link></Button></Card>
             </List.Item>
             )}
         />

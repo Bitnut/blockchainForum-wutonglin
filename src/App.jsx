@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter, Route,Redirect, Switch } from 'react-router-dom'
-import { Layout, BackTop, Modal } from 'antd';
+import { Layout, Modal } from 'antd';
 import Header from './components/PageHeader';
 /*
 import Home  from './routes/Home';
@@ -17,7 +17,6 @@ import ErrorPage from './routes/Error'
 import {routerConfig} from './resolveRoute'
 import { connect } from 'react-redux'
 import { skipLoginByToken } from './redux/actions/userAction'
-import Headroom from 'react-headroom'
 const { Content} = Layout;
 //路由配置！
 class App extends Component {

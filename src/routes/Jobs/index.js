@@ -45,15 +45,25 @@ const Jobs = () => (
                 <ul>
                     <p>1.&nbsp;&nbsp;&nbsp;路由守卫功能<Icon type="plus-circle" /></p>
                     <p>2.&nbsp;&nbsp;&nbsp;404页面<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;全局服务器交互错误处理提示<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-侧边栏树结构重构<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-新增删除文章功能<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-删除文章的警示<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-修改文章选择逻辑<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-新增保存功能<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-新增预览文章功能<Icon type="plus-circle" /></p>
+                    <p>2.&nbsp;&nbsp;&nbsp;文章编辑页面-查看'已发布'文章功能<Icon type="plus-circle" /></p>
+                    
                 </ul>
             <h1>修改完成的bug如下所示：</h1>
                 <ul>
-                    <p>1.&nbsp;&nbsp;&nbsp;编辑器用户文章列表新增文章异步操作有误<Icon type="exclamation" /></p>
+                    <p>1.&nbsp;&nbsp;&nbsp;文章编辑页面-用户文章列表新增文章异步操作有误<Icon type="exclamation" /></p>
                     <p>2.&nbsp;&nbsp;&nbsp;新增用户的个人界面写作经历bug<Icon type="check" /></p>
                     <p>3.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="exclamation" /></p>
                     <p>4.&nbsp;&nbsp;&nbsp;通过url进入文章编辑界面，header未能隐藏<Icon type="exclamation" /></p>
-                    <p>5.&nbsp;&nbsp;&nbsp;文章编辑页面异步获取文章数据有误<Icon type="exclamation" /></p>
-                    <p>6.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="exclamation" /></p>
+                    <p>5.&nbsp;&nbsp;&nbsp;文章编辑页面-异步获取文章数据有误<Icon type="exclamation" /></p>
+                    <p>6.&nbsp;&nbsp;&nbsp;文章编辑页面-发布文章bug<Icon type="exclamation" /></p>
+                    <p>6.&nbsp;&nbsp;&nbsp;可以查看到未发布的个人隐私文章<Icon type="exclamation" /></p>
                 </ul>
          </div>
     </div>

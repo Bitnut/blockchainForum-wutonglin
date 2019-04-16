@@ -33,21 +33,53 @@ const newArticle = async function (ctx) {
 const releaseArticle = async function (ctx) {
     const data = ctx.request.body
     const newInfo = await user.refreshArticle(data)
-    ctx.body = {
-        success: true,
-        articleData: newInfo,
-        info: '文章发布成功！'
+    if(newInfo[0]) {
+        const result = await user.getArticle(data.postId);
+        ctx.body = {
+            success: true,
+            articleData: result,
+            info: '文章发布成功！'
+        }
+    } else {
+        ctx.body = {
+            success: false,
+            info: '文章没有变动！'
+        }
+    }
+    
+}
+
+const saveArticle = async function (ctx) {
+    const data = ctx.request.body
+    const newInfo = await user.saveArticle(data)
+    if(newInfo[0]) {
+        const result = await user.getArticle(data.postId);
+        ctx.body = {
+            success: true,
+            articleData: result,
+            info: '文章保存成功！'
+        }
+    } else {
+        ctx.body = {
+            success: false,
+            info: '文章没有变动！'
+        }
     }
 }
 
 const getArticleById = async function (ctx) {
-  const id = Number(ctx.params.id)
-  result = await user.getArticle(id);
-  ctx.body = {
-        success: true,
-        articleData: result,
-        info: '获取文章成功！'
-  }
+    const id = Number(ctx.params.id)
+    result = await user.getReleasedArticle(id);
+    if (result) {
+        ctx.body = { 
+            success: true,
+            articleData: result,
+            info: '获取文章成功！'
+        }
+    } else {
+        ctx.throw(404)
+    }
+  
 }
 
 const removeArticleById = async function (ctx) {
@@ -133,6 +165,7 @@ const changeSettings = async function (ctx) {
 module.exports = {
     getHotArticles,
     newArticle,
+    saveArticle,
     getArticleById,
     removeArticleById,
     addCorpus,

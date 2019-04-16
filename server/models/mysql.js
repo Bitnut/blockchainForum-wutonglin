@@ -3,6 +3,9 @@ const usersModel = '../schema/users.js'
 const postsModel = '../schema/posts.js'
 const ForumDb = db.Forum // 引入数据库
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 const User = ForumDb.import(usersModel) // 用sequelize的import方法引入表结构，实例化了User。
 const Posts = ForumDb.import(postsModel) // 用sequelize的import方法引入表结构，实例化了User。
 // 登录时返回所有用户信息
@@ -85,6 +88,20 @@ const getArticle = async function (id){
   )
   return article
 }
+// 获取文章时，排除未发布的文章
+const getReleasedArticle = async function (id){
+    const article = await Posts.findOne(
+      {
+        where: {
+          post_id: id,
+          [Op.not]: [
+            { release_status: 'no' },
+          ]
+        },
+      }
+    )
+    return article
+  }
 // 根据用户 ID 获取文章
 const getArticleByUserId = async function (userId){
     const articles = await Posts.findAll(
@@ -167,7 +184,7 @@ const newArticle = async function (articleInfo){
     return Info
 }
 const refreshArticle = async function ( articleInfo) {
-    const newCorpus = await Posts.update(
+    const newArticle = await Posts.update(
         {
             post_title: articleInfo.title,
             release_status: articleInfo.release_status,
@@ -180,7 +197,23 @@ const refreshArticle = async function ( articleInfo) {
             }
         }
     );
-    return newCorpus;
+    return newArticle;
+}
+
+const saveArticle = async function ( articleInfo) {
+    const newArticle = await Posts.update(
+        {
+            post_title: articleInfo.title,
+            post_content_raw: articleInfo.rawContent,                
+            post_content_html: articleInfo.htmlContent,
+        },
+        {
+            where: {
+                post_id: articleInfo.postId
+            }
+        }
+    );
+    return newArticle;
 }
 
 // 删除文章
@@ -234,7 +267,9 @@ module.exports = {
   getUserArticles,
   newArticle,
   refreshArticle,
+  saveArticle,
   getArticle,
+  getReleasedArticle,
   getAllArticles,
   getArticleByUserId,
   refreshCorpus,

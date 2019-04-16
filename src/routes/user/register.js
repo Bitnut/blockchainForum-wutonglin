@@ -1,8 +1,7 @@
 import React from 'react';
 import {
-    Form, Input, Tooltip, Icon, Select, Checkbox, Button, AutoComplete,notification
+    Form, Input, Tooltip, Icon, Select, Checkbox, Button, AutoComplete,notification, message
   } from 'antd';
-import http from '../../services/server';
 import { skipLoginByToken  } from '../../redux/actions/userAction' 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -27,27 +26,38 @@ class RegistrationForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const result = http.post('/auth/user/signup', values)
-        result.then((res) => {
-          if (res.data.success) { // 如果成功
-            localStorage.setItem('Forum-token', res.data.token) // 用localStorage把token存下来
-            localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
-            localStorage.setItem('userArticles', JSON.stringify(res.data.articles))
-            this.props.dispatch(skipLoginByToken());
-            openNotification( // 登录成功，显示提示语
-              res.data.info
-            )
-            this.props.history.push('/') 
-          } else {
-            openNotification(res.data.info) // 登录失败，显示提示语
-            localStorage.setItem('Forum-token', null) // 将token清空
-          }
-        }, (err) => {
-          console.log(err)
-          this.$message.error('请求错误！')
-          localStorage.setItem('Forum-token', null) // 将token清空
-        })
-        return result
+        fetch('/auth/user/signup', {
+            headers:{
+            "Content-Type": "application/json",
+            },
+            method:'POST',body: JSON.stringify(values)}).then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return Promise.reject({
+                        status: response.status,
+                        statusText: response.statusText
+                    })
+                }
+            })
+            .then(data =>{
+                if (data.success) { 
+                    localStorage.setItem('Forum-token', data.token)
+                    localStorage.setItem('userInfo', JSON.stringify(data.userInfo))
+                    localStorage.setItem('userArticles', JSON.stringify(data.articles))
+                    this.props.dispatch(skipLoginByToken());
+                    openNotification( 
+                        data.info
+                    )
+                    this.props.history.push('/') 
+                } else {
+                    openNotification(data.info)
+                }
+            })
+            .catch(err => {
+                console.log('error is', err)
+                message.error('出现错误： '+err.statusText);
+            })
       }
     });
   }

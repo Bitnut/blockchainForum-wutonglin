@@ -1,6 +1,6 @@
 import { LOGGED_IN, LOGGED_OUT, LOGGING_IN, LOGIN_ERR ,
     ON_WRITING, EXIT_WRITING, SKIP_LOGIN} from '../actions/userAction';
-import { NEW_ARTICLE, DELETE_ARTICLE } from '../actions/writing';
+import { NEW_ARTICLE, DELETE_ARTICLE, RELEASE_ARTICLE, SAVE_ARTICLE } from '../actions/writing';
 import {SAVE_CHANGES, CHANGES_SUCCESS, CHANGE_ERR } from '../actions/settings';
 
 const initialState = {
@@ -32,8 +32,8 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
-            login_display: 'none',
-            logout_display: '',
+            login_display: '',
+            logout_display: 'none',
         };
         case SKIP_LOGIN:
         return {
@@ -71,6 +71,16 @@ export function user(state=initialState, action) {
             header_display: '',
         };
         case NEW_ARTICLE:
+        return {
+            ...state,
+            userArticles: action.articles,
+        }
+        case RELEASE_ARTICLE:
+        return {
+            ...state,
+            userArticles: action.articles,
+        }
+        case SAVE_ARTICLE:
         return {
             ...state,
             userArticles: action.articles,

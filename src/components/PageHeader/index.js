@@ -27,6 +27,7 @@ class  NewHeader extends Component{
         size: 'default',
         visible: false,
         confirmLoading: false,
+
     }
     userMenu = () => (
         <Menu onClick= {this.onLogout}>
@@ -77,7 +78,9 @@ class  NewHeader extends Component{
         }else{
             this.setState({defaultSelectedKeys: ['4']});
         }
-
+        if (this.props.location.pathname === '/user/writing') {
+            this.props.dispatch(goWriting())
+        }
     }
     render(){
         const size = this.state.size;
@@ -131,7 +134,7 @@ class  NewHeader extends Component{
                                     <Login onCancel={this.handleCancel}/>
                                     </Modal>
                                     <Divider type="vertical" style={{margin: "auto 8px"}}/>
-                                    <Button className={"login-btn"} shape="round" size={size}><Link to="/user/register">注册</Link></Button>
+                                    <Button className={"login-btn"} shape="round" size={size}><Link to="/register">注册</Link></Button>
                                 </div>
                                 <div className={"header-logout"} style={{display: this.props.logout_display}}>
                                     <Dropdown overlay={this.userMenu}>

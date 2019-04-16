@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { notification, message} from 'antd';
 export const LOGGED_IN = 'LOGGED_IN';
 export const LOGGING_IN = 'LOGGING_IN';
 export const LOGGED_OUT = 'LOGGED_OUT';
@@ -57,7 +57,16 @@ export const userLogin = value => {
             headers: {
             "Content-Type": "application/json" 
             },
-            method:'POST',body: JSON.stringify(value)}).then(response => response.json())
+            method:'POST',body: JSON.stringify(value)}).then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return Promise.reject({
+                        status: response.status,
+                        statusText: response.statusText
+                    })
+                }
+            })
             .then(data =>{
                 const successInfo = data.userInfo;
                 if(data.success) {
@@ -73,7 +82,8 @@ export const userLogin = value => {
                 
             })
             .catch(err => {
-                console.log(err)
+                console.log('error is', err)
+                message.error('出现错误： '+err.statusText);
             })
     }
 }

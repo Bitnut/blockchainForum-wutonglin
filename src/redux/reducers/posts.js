@@ -1,6 +1,6 @@
 import {
   SELECT_SUBREDDIT, INVALIDATE_SUBREDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS, READ_POST
+  REQUEST_POSTS, RECEIVE_POSTS, READ_POST, FETCH_ERR
 } from '../actions/posts'
 
 export const selectedSubreddit = (state = 'reactjs', action) => {
@@ -15,6 +15,7 @@ export const selectedSubreddit = (state = 'reactjs', action) => {
 export const posts = (state = {
     isFetching: false,
     didInvalidate: false,
+    fetchStatus: true,
     items: [],
     readingPost: []
     }, action) => {
@@ -44,6 +45,12 @@ export const posts = (state = {
             isFetching: false,
             readingPost: action.post,
 
+        }
+        case FETCH_ERR:
+        return {
+            ...state,
+            isFetching: false,
+            fetchStatus: false,
         }
         default:
         return state

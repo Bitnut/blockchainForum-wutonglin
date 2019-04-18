@@ -37,6 +37,7 @@ export const posts = (state = {
             isFetching: false,
             didInvalidate: false,
             items: action.posts,
+            fetchStatus: true,
             lastUpdated: action.receivedAt
         }
         case READ_POST:
@@ -44,7 +45,7 @@ export const posts = (state = {
             ...state,
             isFetching: false,
             readingPost: action.post,
-
+            fetchStatus: true,
         }
         case FETCH_ERR:
         return {

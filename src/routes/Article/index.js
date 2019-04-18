@@ -63,6 +63,10 @@ class readArticle extends Component{
                         ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
                         : <div >
                                 <div>
+                                    <h1  align="center"><div dangerouslySetInnerHTML = {{ __html:this.props.readingPost[0].post_title }}></div></h1>
+                                    <br/>
+                                    <br/>
+                                    <br/>
                                     <div dangerouslySetInnerHTML = {{ __html:this.props.readingPost[0].post_content_html }}></div>
                                 </div>
                             </div>

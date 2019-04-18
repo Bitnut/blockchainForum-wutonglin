@@ -1,0 +1,15 @@
+.reply-wrapper {
+    background-color: #fff;
+    border: 1px solid #f1f1f1;
+    margin-top: 15px;
+    padding: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap:  wrap;
+    flex-shrink: 1;
+}
+
+.reply-field-input {
+    margin-left: 20px;
+    margin-right: 20px;
+}

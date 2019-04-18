@@ -3,7 +3,7 @@
     z-index: 10;
     position: relative;
     max-width: 1200px;
-    min-height: 700px;
+    min-height: 100%;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;

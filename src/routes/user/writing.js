@@ -163,6 +163,7 @@ class Wirting extends React.Component {
         const release = this.state.articleData[index].release
         if (release==='yes') {
             const postId = this.props.userArticles[index].post_id
+            this.handleExit()
             this.props.history.push(`/article/${postId}`)
         } else {
             message.warning('亲，要先发布文章才能查看哦');
@@ -196,7 +197,7 @@ class Wirting extends React.Component {
                 }
                 .container{
                   box-sizing: border-box;
-                  width: 1000px;
+                  width: 1200px;
                   max-width: 100%;
                   min-height: 100%;
                   margin: 0 auto;

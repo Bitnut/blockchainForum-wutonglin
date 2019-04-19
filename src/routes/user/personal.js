@@ -25,7 +25,8 @@ class Personal extends Component{
     state = {
         openKeys: ['sub1'],
         list: [],
-        listData: []
+        listData: [],
+        selfIntro: '',
     };
 
     onOpenChange = (openKeys) => {
@@ -39,7 +40,8 @@ class Personal extends Component{
     }
     }
     componentDidMount (){
-        const userArticles = JSON.parse(localStorage.getItem('userArticles')) 
+        const userArticles = JSON.parse(localStorage.getItem('userArticles'))
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'))
         if(userArticles!==null) {
             setTimeout(() => {
                 const articleList = [];
@@ -62,6 +64,7 @@ class Personal extends Component{
                 this.setState({
                     list: [...articleList],
                     listData: [...list],
+                    selfIntro: userInfo.self_introduction
                 });
                 }, 50);
         } else {
@@ -138,7 +141,7 @@ class Personal extends Component{
                         <div className='page-sider'>
                         <p>个人介绍</p>
                         <Divider />
-                        <h3>{this.props.selfIntro}</h3>
+                        <h3>{this.state.selfIntro}</h3>
                         <Divider>创作经历</Divider>
                         <p>我的文章：</p>
                         <Divider dashed />

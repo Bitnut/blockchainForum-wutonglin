@@ -11,6 +11,7 @@
 # production
 /build/
 /mysql-based/
+/umlprofile/
 
 # misc
 .DS_Store

@@ -3,7 +3,7 @@ import { Menu, Layout} from 'antd'
 import './settings.css';
 import {WrappedBasic, WrappedProfile, WrappedReward} from '../../components/Settings'
 import { connect } from 'react-redux'
-
+import {changeSettings} from '../../redux/actions/settings'
 const { Content, Sider } = Layout;
 
 class Settings extends Component{
@@ -14,7 +14,6 @@ class Settings extends Component{
         nowOpen: '1',
         profileShow: 'none',
         rewardShow: 'none',
-        userInfo: this.props.userInfo,
       };
     
       onOpenChange = (openKeys) => {
@@ -52,7 +51,9 @@ class Settings extends Component{
             rewardShow: 'none',
           })         
         }
-
+      }
+      handleSubmitSettings = (settings) => {
+          this.props.dispatch(changeSettings(settings))
       }
     render(){
         return(
@@ -74,13 +75,13 @@ class Settings extends Component{
                         </Sider>
                         <Content style={{ padding: '0 24px', minHeight: 280, overflow: 'hidden' }}>
                         <div className="basic-content" style={{display: this.state.basicShow}}>
-                            <WrappedBasic basicShow={this.state.basicShow} userInfo={this.props.userInfo}/>
+                            <WrappedBasic onSubmit={this.handleSubmitSettings} basicShow={this.state.basicShow} userInfo={this.props.userInfo}/>
                         </div>
                         <div className="basic-content" style={{display: this.state.profileShow}}>
-                            <WrappedProfile profileShow={this.state.profileShow} userInfo={this.props.userInfo}/>
+                            <WrappedProfile onSubmit={this.handleSubmitSettings} profileShow={this.state.profileShow} userInfo={this.props.userInfo}/>
                         </div>
                         <div className="basic-content" style={{display: this.state.rewardShow}}>
-                            <WrappedReward rewardShow={this.state.rewardShow} userInfo={this.props.userInfo}/>
+                            <WrappedReward onSubmit={this.handleSubmitSettings} rewardShow={this.state.rewardShow} userInfo={this.props.userInfo}/>
                         </div>
                           
                         </Content>

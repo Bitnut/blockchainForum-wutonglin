@@ -104,7 +104,7 @@ export  function changeSettings(state=initialState, action) {
         case CHANGES_SUCCESS:
         return {
             ...state,
-            settings_info: '设置保存成功！',
+            settings_info: '设置保存成功！', 
             userInfo: action.info
         };
         case CHANGE_ERR:

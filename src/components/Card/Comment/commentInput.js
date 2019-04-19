@@ -9,7 +9,6 @@ class CommentInput extends Component {
     constructor () {
         super()
         this.state = {
-          username: 'hpc',
           content: ''
         }
     }
@@ -26,14 +25,14 @@ class CommentInput extends Component {
               'a': [ 'href' ]
             },
           });
+        // 主评论，没有父节点
         if (this.props.onSubmit) {
           this.props.onSubmit({
-            username: this.state.username,
+            parent_id: '',
             content: clean,
             createdTime: +new Date()
           })
         }
-        message.success('评论成功！', 1);
     }
     render() {
       return (
@@ -41,7 +40,7 @@ class CommentInput extends Component {
         <div className='comment-field'>
           <span className='comment-field-name'>用户名：</span>
           <div className='comment-field-input'>
-            <p>{this.state.username}</p>
+            <p>{this.props.user_name}</p>
           </div>
         </div>
         <div className='comment-field'>

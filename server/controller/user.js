@@ -79,7 +79,6 @@ const getArticleById = async function (ctx) {
     } else {
         ctx.throw(404)
     }
-  
 }
 
 const removeArticleById = async function (ctx) {
@@ -123,44 +122,48 @@ const getHotArticles = async function (ctx) {
 // 用户设置更改
 const changeSettings = async function (ctx) {
     const data = ctx.request.body
-    const userEmail = await user.getEmail(data.user_email)
-    const userNickName = await user.getNickName(data.user_name)
-    const userPhoneNum = await user.getPhoneNum(data.user_phone)
-    if (userEmail !== null) {
+    const result = await user.refreshSettings(data); 
+    if (result[0]) {
         ctx.body = {
-            success: false,
-            info: '邮箱已被使用！'
+            success: true,
+            info: '设置更改成功！'
         }
-        return
-    } else if (userNickName != null) {
-        ctx.body = {
-            success: false,
-            info: '该用户名已经存在！' 
-        }
-        return
-    } else if (userPhoneNum != null) {
-        ctx.body = {
-            success: false,
-            info: '该手机号码已被注册！'
-        }
-        return
     } else {
-        const result = await user.refreshSettings(data.userInfo);
-        if (result) {
-            ctx.body = {
-                success: true,
-                info: '设置更改成功！'
-            }
-        } else {
-            ctx.body = {
-                success: false,
-                info: '服务器错误'
-            }
+        ctx.body = {
+            success: true,
+            info: '设置没有变动'
         }
-    }
-    
-    
+    } 
+
 }
+// 评论的获取和添加
+const getCommentById = async function (ctx) {
+    const id = Number(ctx.params.id)
+    result = await user.getCommentList(id);
+    if (result) {
+        ctx.body = {
+            success: true,
+            commentList: result,
+            info: '获取评论成功！'
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+const addComment = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.addNewComment(data);
+    if (result) {
+        ctx.body = {
+            success: true,
+            comment: result,
+            info: '添加评论成功！'
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
 
 module.exports = {
     getHotArticles,
@@ -171,5 +174,7 @@ module.exports = {
     addCorpus,
     removeCorpus,
     releaseArticle,
-    changeSettings
+    changeSettings,
+    getCommentById,
+    addComment
 }

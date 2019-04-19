@@ -9,7 +9,6 @@ class ReplyEditor extends Component {
     constructor () {
         super()
         this.state = {
-          username: 'hpc',
           content: ''
         }
     }
@@ -28,18 +27,17 @@ class ReplyEditor extends Component {
           });
         if (this.props.onSubmit) {
           this.props.onSubmit({
-            username: this.state.username,
+            parent_id: this.props.comment_id.toString(),
             content: clean,
             createdTime: +new Date()
           })
         }
-        message.success('回复成功！', 1);
     }
     render() {
       return (
           <div className='reply-wrapper'>
             <div className='reply-username'>
-                <p>{this.state.username}</p>
+                <p>{this.props.user_name}</p>
             </div>
             <div className='reply-field-input'>
                 <TextArea 

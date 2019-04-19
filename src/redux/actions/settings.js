@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { notification, message} from 'antd';
 export const SAVE_CHANGES = 'SAVE_CHANGES'
 export const CHANGES_SUCCESS = 'CHANGES_SUCCESS'
 export const CHANGE_ERR = 'CHANGE_ERR'
@@ -31,9 +31,19 @@ export const changeSettings = userInfo => {
             "Content-Type": "application/json",
             "Authorization": 'Bearer ' + token,
             },
-            method:'POST',body: JSON.stringify(userInfo)}).then(response => response.json())
+            method:'POST',body: JSON.stringify(userInfo)}).then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return Promise.reject({
+                        status: response.status,
+                        statusText: response.statusText
+                    })
+                }
+            })
             .then(data =>{
-                if(data.success) {
+                if(data.success) { 
+
                     dispatch(changeSuccess(userInfo));
                     openNotification(data.info);
                     localStorage.setItem('userInfo', JSON.stringify(userInfo))
@@ -44,7 +54,8 @@ export const changeSettings = userInfo => {
                 
             })
             .catch(err => {
-                console.log(err)
+                console.log('error is', err)
+                message.error('出现错误： '+err.statusText);
             })
     }
 }

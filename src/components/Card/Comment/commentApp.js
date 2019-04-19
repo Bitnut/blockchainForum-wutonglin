@@ -1,48 +1,47 @@
 import React, { Component } from 'react'
 import CommentInput from './commentInput'
 import CommentList from './commentList'
+import {connect} from 'react-redux'
+import {getComment, addNewComment} from '../../../redux/actions/comment'
+import {FormatTime} from '../../utils/formatTime'
 import './index.css'
 class CommentApp extends Component {
-    constructor () {
-        super()
-        this.state = {
-          comments: []
-        }
-      }
-    componentWillMount () {
-        this._loadComments()
+    componentDidMount () {
+        this.props.dispatch(getComment('1'))
     }
-    
-    _loadComments () {
-        let comments = localStorage.getItem('comments')
-        if (comments) {
-        comments = JSON.parse(comments)
-        this.setState({ comments })
-        }
-    }
-    
-    _saveComments (comments) {
-        localStorage.setItem('comments', JSON.stringify(comments))
-    }
-    
 
-    handleSubmitComment (comment) {
+    handleSubmitComment = (comment) => {
         if (!comment) return
         if (!comment.content) return alert('请输入评论内容')
-        const comments = this.state.comments
-        comments.push(comment)
-        this.setState({ comments })
-        this._saveComments(comments)
+        const format_time = FormatTime("yyyy-MM-dd hh:mm", comment.createdTime)
+        const newComment = {
+            post_id: '1',
+            parent_id: comment.parent_id,
+            user_name: this.props.user_name,
+            content: comment.content,
+            format_time: format_time,
+            time_string: comment.createdTime,
+        }
+        this.props.dispatch(addNewComment(newComment))
     }
     
     render() {
         return (
         <div className='comment-wrapper'>
-            <CommentInput onSubmit={this.handleSubmitComment.bind(this)}/>
-            <CommentList comments={this.state.comments}/>
+            <CommentInput user_name={this.props.user_name} onSubmit={this.handleSubmitComment}/>
+            <CommentList user_name={this.props.user_name} comments={this.props.commentList} onSubmit={this.handleSubmitComment}/>
         </div>
         )
     }
 }
 
-export default CommentApp
+const mapStateToProps = state => {
+    const {comment} = state
+    return {
+        user_name: state.user.userInfo.user_name,
+        commentList: comment.commentList,
+        isFetching: comment.isFetching
+    }
+}
+
+export default connect(mapStateToProps)(CommentApp)

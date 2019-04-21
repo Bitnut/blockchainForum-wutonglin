@@ -50,7 +50,7 @@ const releaseArticle = async function (ctx) {
     
 }
 
-const saveArticle = async function (ctx) {
+const saveArticle = async function (ctx) { 
     const data = ctx.request.body
     const newInfo = await user.saveArticle(data)
     if(newInfo[0]) {

@@ -8,8 +8,9 @@ import {
 import { leaveWriting} from '../../redux/actions/userAction'
 import { addNewArticle, deleteArticle, saveEditArticle, releaseArticle } from '../../redux/actions/writing'
 import { connect } from 'react-redux'
+import sanitizeHtml from 'sanitize-html';
 import './writing.css';
-
+ 
 const {
   Sider,
 } = Layout;
@@ -93,17 +94,48 @@ class Wirting extends React.Component {
         console.log(this.state.articleData[0])
 
     }
+
+    // 发布文章！
     handleSubmit = (event) => {
         event.preventDefault()
         this.props.form.validateFields((error, values) => {
         if (!error) {
+            // 文章信息处理
+            var dirty = values.content.toHTML();
+            var rawString = sanitizeHtml(dirty, {
+                allowedTags: [],
+                allowedAttributes: {}
+              });
+
+            let imgReg = /<img.*?(?:>|\/>)/gi //匹配图片中的img标签
+            let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i // 匹配图片中的src
+            let arr = dirty.match(imgReg)
+            let srcArr = []
+            if(arr == null) {
+
+            } else {
+                for (let i = 0; i < arr.length; i++) {
+                    let src = arr[i].match(srcReg)
+                    // 获取图片地址
+                    srcArr.push(src[1])
+                }
+            }
+
+            var clean = sanitizeHtml(dirty, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ])
+              });
+
+            var cleanTitle = sanitizeHtml(values.title)
+        
             const index = this.state.editArticle
             const postId = this.props.userArticles[index].post_id
             const submitData = {
                 corpus: '默认文集',
-                title: values.title,
+                title: cleanTitle,
                 rawContent: values.content.toRAW(), // or values.content.toHTML()
-                htmlContent: values.content.toHTML(),
+                htmlContent: clean,
+                article_intro: rawString.substring(0,200)+'...',
+                article_img: srcArr,
                 postId : postId,
                 release_status: 'yes'
             }
@@ -121,15 +153,46 @@ class Wirting extends React.Component {
         }
         })
     }
+    // 保存文章修改！
     handleSave = () => {
         const index = this.state.editArticle
         const postId = this.props.userArticles[index].post_id
         const saveData = this.props.form.getFieldsValue()
+        // 文章信息处理
+        var dirty = saveData.content.toHTML();
+            var rawString = sanitizeHtml(dirty, {
+                allowedTags: [],
+                allowedAttributes: {}
+              });
+
+            let imgReg = /<img.*?(?:>|\/>)/gi //匹配图片中的img标签
+            let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i // 匹配图片中的src
+            let arr = dirty.match(imgReg)
+            let srcArr = []
+            if(arr == null) {
+
+            } else {
+                for (let i = 0; i < arr.length; i++) {
+                    let src = arr[i].match(srcReg)
+                    // 获取图片地址
+                    srcArr.push(src[1])
+                }
+            }
+            
+
+            var clean = sanitizeHtml(dirty, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ])
+              });
+
+            var cleanTitle = sanitizeHtml(saveData.title)
+
         const submitData = {
             corpus: '默认文集',
-            title: saveData.title,
+            title: cleanTitle,
             rawContent: saveData.content.toRAW(), // or values.content.toHTML()
-            htmlContent: saveData.content.toHTML(),
+            htmlContent:clean,
+            article_intro: rawString.substring(0,200)+'...',
+            article_img: srcArr,
             postId : postId,
         }
         this.props.dispatch(saveEditArticle(submitData, index))

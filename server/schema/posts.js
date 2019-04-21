@@ -47,6 +47,14 @@ module.exports = function(sequelize, DataTypes) {
     post_comments: {
       type: DataTypes.INTEGER(11),
       allowNull: false
+    },
+    intro_img: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    article_intro: {
+      type: DataTypes.STRING(300),
+      allowNull: true
     }
   }, {
     tableName: 'posts'

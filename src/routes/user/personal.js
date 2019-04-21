@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import { Menu, Layout, Icon, Avatar, List, Divider} from 'antd'
 import './personal.css';
-import avatar from '../../assets/smallBanner.jpg'
 import { connect } from 'react-redux'
 const  SubMenu  = Menu.SubMenu;
 const { Content, Sider } = Layout;
@@ -40,31 +39,28 @@ class Personal extends Component{
     }
     }
     componentDidMount (){
-        const userArticles = JSON.parse(localStorage.getItem('userArticles'))
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-        if(userArticles!==null) {
+        //const userArticles = JSON.parse(localStorage.getItem('userArticles'))
+        //const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+        if(this.props.userArticles!==null) {
             setTimeout(() => {
                 const articleList = [];
-                const article = userArticles.map(item => {return item.post_title})
+                const article = this.props.userArticles.map(item => {return item.post_title})
                 article.forEach((item, index) => {
                     articleList.push(item)
                 })
                 const list = [];
-                var abstract = '';
-                for (let i = 0; i < userArticles.length; i++) {
-                    var temp = userArticles[i].post_content_html.substring(0,200)
-                    abstract = temp.replace(/<\/?.+?>/g,"");
-                    const newContent = abstract.replace(/ /g,"");
+                for (let i = 0; i < this.props.userArticles.length; i++) {
                     list.push({
-                        title: userArticles[i].post_title,
-                        avatar: avatar,
-                        content: newContent,
+                        title: this.props.userArticles[i].post_title,
+                        avatar: this.props.user_avatar,
+                        content: this.props.userArticles[i].article_intro,
+                        img: this.props.userArticles[i].intro_img
                     });
                 }
                 this.setState({
                     list: [...articleList],
                     listData: [...list],
-                    selfIntro: userInfo.self_introduction
+                    selfIntro: this.props.selfIntro
                 });
                 }, 50);
         } else {
@@ -123,7 +119,7 @@ class Personal extends Component{
                         <List.Item
                             key={item.title}
                             actions={[<IconText type="star-o" text="156" />, <IconText type="like-o" text="156" />, <IconText type="message" text="2" />]}
-                            extra={<img width={272} alt="logo" src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" />}
+                            extra={<img width={272} height={200} alt="logo" src={item.img} />}
                         >
                             <List.Item.Meta
                             avatar={<Avatar src={item.avatar} />}
@@ -164,6 +160,7 @@ const mapStateToProps = state => {
     return {
         selfIntro: state.user.userInfo.self_introduction,
         userArticles: state.user.userArticles,
+        user_avatar: state.user.userInfo.user_avatar,
     }
 }
 

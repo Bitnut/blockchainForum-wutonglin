@@ -2,17 +2,6 @@ import React, { Component } from 'react';
 import {withRouter, Route,Redirect, Switch } from 'react-router-dom'
 import { Layout, Modal } from 'antd';
 import Header from './components/PageHeader';
-/*
-import Home  from './routes/Home';
-import Selection from './routes/Selection';
-import Pool from './routes/Pool';
-import Register from './routes/user/register';
-import Personal from './routes/user/personal';
-import Settings from './routes/user/settings';
-import Writing from './routes/user/writing';
-import hotArticle from './routes/HotArticle';
-import raedArticle from './routes/Article';
-import Jobs from './routes/Jobs'*/
 import ErrorPage from './routes/Error'
 import {routerConfig} from './resolveRoute'
 import { connect } from 'react-redux'

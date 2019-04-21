@@ -183,12 +183,20 @@ const newArticle = async function (articleInfo){
     return Info
 }
 const refreshArticle = async function ( articleInfo) {
+    var intro_img_url = ''
+    if (articleInfo.article_img.length === 0) {
+        intro_img_url = ''
+    } else {
+        intro_img_url = articleInfo.article_img[0]
+    }
     const newArticle = await Posts.update(
         {
             post_title: articleInfo.title,
             release_status: articleInfo.release_status,
             post_content_raw: articleInfo.rawContent,                
             post_content_html: articleInfo.htmlContent,
+            article_intro: articleInfo.article_intro,
+            intro_img: intro_img_url,
         },
         {
             where: {
@@ -200,11 +208,19 @@ const refreshArticle = async function ( articleInfo) {
 }
 
 const saveArticle = async function ( articleInfo) {
+    var intro_img_url = ''
+    if (articleInfo.article_img.length === 0) {
+        intro_img_url = ''
+    } else {
+        intro_img_url = articleInfo.article_img[0]
+    }
     const newArticle = await Posts.update(
         {
             post_title: articleInfo.title,
             post_content_raw: articleInfo.rawContent,                
             post_content_html: articleInfo.htmlContent,
+            article_intro: articleInfo.article_intro,
+            intro_img: intro_img_url,
         },
         {
             where: {

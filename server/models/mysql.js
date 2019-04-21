@@ -64,7 +64,7 @@ const newUser = async function (userInfo){
       user_name: userInfo.nickName,
       user_pass: userInfo.password,                    
       user_phone: userInfo.phoneNum,
-      user_avatar: '../../assets/smallBanner.jpg',
+      user_avatar: 'http://localhost:8889/default_avatar.jpg',
       user_gender: 'secret',
       signup_moment: time,
       user_editor: 'rich',
@@ -288,6 +288,7 @@ const addNewComment = async function (newComment) {
             post_id: '1',
             parent_id: newComment.parent_id,
             user_name: newComment.user_name,
+            user_avatar: newComment.user_avatar,
             content: newComment.content,
             format_time: newComment.format_time,
             time_string: newComment.time_string,
@@ -320,6 +321,7 @@ const getCommentList = async function (Id) {
                     post_id: result[i].post_id,
                     parent_id: '',
                     user_name: result[i].user_name,
+                    user_avatar: result[i].user_avatar,
                     content: result[i].content,
                     format_time: result[i].format_time,
                     time_string: result[i].time_string,
@@ -337,6 +339,7 @@ const getCommentList = async function (Id) {
                         post_id: result[i].post_id,
                         parent_id: result[i].parent_id,
                         user_name: result[i].user_name,
+                        user_avatar: result[i].user_avatar,
                         content: result[i].content,
                         format_time: result[i].format_time,
                         time_string: result[i].time_string,
@@ -358,7 +361,31 @@ const getCommentList = async function (Id) {
     return commentList;
 }
 
+// 修改头像
 
+const changeAvatar = async function ( newUrl, userName ) {
+    const result1 = await User.update(
+        {
+            user_avatar: newUrl
+        },
+        {
+            where: {
+                user_name: userName
+            }
+        }
+    )
+    const result2 = await Comment.update(
+        {
+            user_avatar: newUrl
+        },
+        {
+            where: {
+                user_name: userName
+            }
+        }
+    )
+    return result1[0] && result2[0]
+}
 
 
 
@@ -386,5 +413,6 @@ module.exports = {
   removeAritcleByCorpus,
   refreshSettings,
   addNewComment,
-  getCommentList
+  getCommentList,
+  changeAvatar
 }

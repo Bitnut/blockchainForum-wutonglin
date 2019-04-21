@@ -1,7 +1,8 @@
-import { notification, message} from 'antd';
+import { notification, message, Avatar} from 'antd';
 export const SAVE_CHANGES = 'SAVE_CHANGES'
 export const CHANGES_SUCCESS = 'CHANGES_SUCCESS'
 export const CHANGE_ERR = 'CHANGE_ERR'
+export const CHANGE_AVATAR = 'CHANGE_AVATAR'
 
 export const onChange = () => ({
     type: 'SAVE_CHANGES',
@@ -58,4 +59,21 @@ export const changeSettings = userInfo => {
                 message.error('出现错误： '+err.statusText);
             })
     }
+}
+
+
+export const changeAvatar = (data) => ({
+    type: 'CHANGE_AVATAR',
+    Info: data
+})
+
+export const onChangeAvatar = avatar => {
+    return dispatch => {
+        var userInfo = JSON.parse(localStorage.getItem('userInfo'))
+        userInfo.user_avatar = avatar
+        localStorage.setItem('userInfo', JSON.stringify(userInfo))
+        dispatch(changeAvatar(userInfo))
+    }
+    
+    
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Icon} from 'antd'
+import {Icon, Avatar} from 'antd'
 import './comment.css'
 import avator from '../../../assets/smallBanner.jpg'
 class ReplyList extends Component {
@@ -17,7 +17,7 @@ class Comment extends Component {
       return (
         <div className='comment'>
             <div className='comment-user'>
-                <img src={avator} height="60"></img>
+                <Avatar size={64} src={this.props.comment.user_avatar}></Avatar>
             </div>
             <div className='right'>
                 <span><p>{this.props.comment.user_name}：</p> </span>

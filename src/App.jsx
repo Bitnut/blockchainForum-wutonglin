@@ -24,13 +24,18 @@ class App extends Component {
         super(props);
         this.state = { 
         hasError: false,
+        loggingin: false,
         };
     }
     componentDidMount(){
-        console.log(localStorage.getItem('userInfo'))
-        console.log(localStorage.getItem('Forum-token'))
         if(localStorage.getItem('userInfo')!==null){
-            this.props.dispatch(skipLoginByToken());
+            this.props.dispatch(skipLoginByToken()); 
+            this.setState({loggingin: false})
+        }
+    }
+    componentWillMount() {
+        if(localStorage.getItem('userInfo')!==null){
+            this.setState({isLoggingin: true})
         }
     }
     componentDidCatch(error, info) {
@@ -62,6 +67,8 @@ class App extends Component {
                 <Route component={Header} />
                 <Layout >
                     <Content style={{ minHeight: 280 }}>
+                        {this.state.isLogingin
+                        ? <h2>Loading...</h2> :
                             <Switch>
                             {routerConfig.map((item, index) => {
                             return <Route key={index} path={item.path} exact render={props =>
@@ -73,6 +80,8 @@ class App extends Component {
                             })}
                             <Route component={ErrorPage} />
                             </Switch>
+                        }
+                            
                     </Content>
                 </Layout> 
             </div>   
@@ -80,7 +89,12 @@ class App extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    const { user } = state  
+    return {
+        isLoggingin: user.isLoggingin,
+    }
+}
 
 
-
-export default withRouter(connect()(App));
+export default withRouter(connect(mapStateToProps)(App));

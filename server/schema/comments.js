@@ -20,6 +20,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(40),
       allowNull: false
     },
+    user_avatar: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     content: {
       type: DataTypes.STRING(200),
       allowNull: false

@@ -57,13 +57,13 @@ const Jobs = () => (
                 </ul>
             <h1>修改完成的bug如下所示：</h1>
                 <ul>
-                    <p>1.&nbsp;&nbsp;&nbsp;文章编辑页面-用户文章列表新增文章异步操作有误<Icon type="exclamation" /></p>
+                    <p>1.&nbsp;&nbsp;&nbsp;文章编辑页面-用户文章列表新增文章异步操作有误<Icon type="check" /></p>
                     <p>2.&nbsp;&nbsp;&nbsp;新增用户的个人界面写作经历bug<Icon type="check" /></p>
-                    <p>3.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="exclamation" /></p>
-                    <p>4.&nbsp;&nbsp;&nbsp;通过url进入文章编辑界面，header未能隐藏<Icon type="exclamation" /></p>
-                    <p>5.&nbsp;&nbsp;&nbsp;文章编辑页面-异步获取文章数据有误<Icon type="exclamation" /></p>
-                    <p>6.&nbsp;&nbsp;&nbsp;文章编辑页面-发布文章bug<Icon type="exclamation" /></p>
-                    <p>6.&nbsp;&nbsp;&nbsp;可以查看到未发布的个人隐私文章<Icon type="exclamation" /></p>
+                    <p>3.&nbsp;&nbsp;&nbsp;action：skipLogin 未能在刷新页面先执行<Icon type="check" /></p>
+                    <p>4.&nbsp;&nbsp;&nbsp;通过url进入文章编辑界面，header未能隐藏<Icon type="check" /></p>
+                    <p>5.&nbsp;&nbsp;&nbsp;文章编辑页面-异步获取文章数据有误<Icon type="check" /></p>
+                    <p>6.&nbsp;&nbsp;&nbsp;文章编辑页面-发布文章bug<Icon type="check" /></p>
+                    <p>6.&nbsp;&nbsp;&nbsp;可以查看到未发布的个人隐私文章<Icon type="check" /></p>
                 </ul>
             <h1>项目目前为止使用到的一些开源项目</h1>
                 <ul>

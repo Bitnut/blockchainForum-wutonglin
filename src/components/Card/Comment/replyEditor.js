@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Input, message } from 'antd';
+import { Input, Avatar } from 'antd';
 import sanitizeHtml from 'sanitize-html';
 import './replyEditor.css'
 
@@ -37,7 +37,7 @@ class ReplyEditor extends Component {
       return (
           <div className='reply-wrapper'>
             <div className='reply-username'>
-                <p>{this.props.user_name}</p>
+                <Avatar size={64} src={this.props.userInfo.user_avatar}></Avatar>
             </div>
             <div className='reply-field-input'>
                 <TextArea 

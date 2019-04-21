@@ -3,11 +3,13 @@ import {
     Form, InputNumber, 
     Radio, Button, Input, Avatar
   } from 'antd';
+import PicturesWall from '../upLoadAvator'
+import './index.css'
 
-import avatarImg from '../../assets/smallBanner.jpg';
 const {TextArea} = Input;
   
 class Basic extends React.Component {
+    
     handleSubmit = (e) => {
       e.preventDefault();
       this.props.form.validateFields((err, values) => {
@@ -33,6 +35,7 @@ class Basic extends React.Component {
       });
     }
     render() {
+        
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -40,13 +43,20 @@ class Basic extends React.Component {
         };
         return (
             <div>
-            <Avatar size="large" icon="user" src={avatarImg}/>
+                <div className='avatar-wrapper'>
+                    <PicturesWall 
+                    onSubmitAvatar={this.props.onSubmitAvatar}
+                    user_name={this.props.userInfo.user_name}
+                    user_avatar={this.props.userInfo.user_avatar}
+                    /> 
+                    
+                </div>
             <br></br>
             <Form {...formItemLayout} onSubmit={this.handleSubmit}>
             <Form.Item
                 label="Plain Text"
             >
-                <span className="ant-form-text">你好！ {this.props.user_name}</span>
+                <span className="ant-form-text">你好！ {this.props.userInfo.user_name}</span>
             </Form.Item>
 
             <Form.Item

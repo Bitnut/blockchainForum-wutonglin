@@ -4,7 +4,6 @@ import './comment.css'
 import {Icon} from 'antd'
 import ReplyEditor from './replyEditor'
 import ReplyList from './replyList'
-import avator from '../../../assets/smallBanner.jpg'
 
 class Comment extends Component {
     static propTypes = {
@@ -61,7 +60,7 @@ class Comment extends Component {
             <div className='comment-reply-wrapper'>
                 <div className='comment'>
                     <div className='comment-user'>
-                        <img src={avator} height="60"></img>
+                        <img src={this.props.comment.user_avatar} height="60"></img>
                     </div>
                     <div className='right'>
                         <span><h2>{this.props.comment.user_name}：</h2> </span>
@@ -82,7 +81,7 @@ class Comment extends Component {
                     <ReplyList replyList={this.props.comment.replyList}/>
                 </div>
                 <div  className='replyEditor-wrapper' style={{display: this.state.replyEditorDisplay}}>
-                    <ReplyEditor onSubmit={this.props.onSubmit}  comment_id={this.props.comment.id} user_name={this.props.user_name}/>
+                    <ReplyEditor onSubmit={this.props.onSubmit}  comment_id={this.props.comment.id} userInfo={this.props.userInfo}/>
                 </div>
             </div>
         )

@@ -55,6 +55,7 @@ export const addNewComment = (comment) => {
                             post_id: data.comment.post_id,
                             parent_id: '',
                             user_name: data.comment.user_name,
+                            user_avatar: data.comment.user_avatar,
                             content: data.comment.content,
                             format_time: data.comment.format_time,
                             time_string: data.comment.time_string,

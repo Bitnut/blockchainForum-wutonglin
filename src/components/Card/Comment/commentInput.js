@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Input, message } from 'antd';
+import { Input, Avatar } from 'antd';
 import sanitizeHtml from 'sanitize-html';
 import './index.css'
 
@@ -38,9 +38,9 @@ class CommentInput extends Component {
       return (
         <div className='comment-input'>
         <div className='comment-field'>
-          <span className='comment-field-name'>用户名：</span>
+            <Avatar size={64} src={this.props.userInfo.user_avatar}></Avatar>
           <div className='comment-field-input'>
-            <p>{this.props.user_name}</p>
+            <p>{this.props.userInfo.user_name}</p>
           </div>
         </div>
         <div className='comment-field'>

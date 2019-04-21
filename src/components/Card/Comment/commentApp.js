@@ -17,7 +17,8 @@ class CommentApp extends Component {
         const newComment = {
             post_id: '1',
             parent_id: comment.parent_id,
-            user_name: this.props.user_name,
+            user_name: this.props.userInfo.user_name,
+            user_avatar: this.props.userInfo.user_avatar,
             content: comment.content,
             format_time: format_time,
             time_string: comment.createdTime,
@@ -28,8 +29,8 @@ class CommentApp extends Component {
     render() {
         return (
         <div className='comment-wrapper'>
-            <CommentInput user_name={this.props.user_name} onSubmit={this.handleSubmitComment}/>
-            <CommentList user_name={this.props.user_name} comments={this.props.commentList} onSubmit={this.handleSubmitComment}/>
+            <CommentInput userInfo={this.props.userInfo} onSubmit={this.handleSubmitComment}/>
+            <CommentList userInfo={this.props.userInfo} comments={this.props.commentList} onSubmit={this.handleSubmitComment}/>
         </div>
         )
     }
@@ -38,7 +39,7 @@ class CommentApp extends Component {
 const mapStateToProps = state => {
     const {comment} = state
     return {
-        user_name: state.user.userInfo.user_name,
+        userInfo: state.user.userInfo,
         commentList: comment.commentList,
         isFetching: comment.isFetching
     }

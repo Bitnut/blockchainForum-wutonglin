@@ -6,7 +6,7 @@ class CommentList extends Component {
         return (
             <div>
                 {this.props.comments.map((comment, i) => 
-                <Comment user_name={this.props.user_name} onSubmit={this.props.onSubmit} comment={comment} key={i} />
+                <Comment userInfo={this.props.userInfo} onSubmit={this.props.onSubmit} comment={comment} key={i} />
                 )}
             </div>
         )

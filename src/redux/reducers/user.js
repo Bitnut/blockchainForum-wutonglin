@@ -1,10 +1,11 @@
 import { LOGGED_IN, LOGGED_OUT, LOGGING_IN, LOGIN_ERR ,
     ON_WRITING, EXIT_WRITING, SKIP_LOGIN} from '../actions/userAction';
 import { NEW_ARTICLE, DELETE_ARTICLE, RELEASE_ARTICLE, SAVE_ARTICLE } from '../actions/writing';
-import {SAVE_CHANGES, CHANGES_SUCCESS, CHANGE_ERR } from '../actions/settings';
+import {SAVE_CHANGES, CHANGES_SUCCESS, CHANGE_ERR, CHANGE_AVATAR } from '../actions/settings';
 
 const initialState = {
     isLoggedIn: false,
+    isLoggingin: false,
     login_display: '',
     logout_display: 'none',
     login_info: '',
@@ -22,6 +23,7 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: true,
+            isLoggingin: false,
             login_display: 'none',
             logout_display: '',
             login_info: '登录成功',
@@ -32,6 +34,7 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
+            isLoggingin: true,
             login_display: '',
             logout_display: 'none',
         };
@@ -39,6 +42,7 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
+            isLoggingin: true,
             login_display: 'none',
             logout_display: '',
             userInfo: action.success,
@@ -48,6 +52,7 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
+            isLoggingin: false,
             login_display: '',
             login_info: '退出登录',
             logout_display: 'none',
@@ -56,6 +61,7 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
+            isLogging: false,
             login_display: '',
             logout_display: 'none',
             login_info: action.info,
@@ -111,6 +117,11 @@ export  function changeSettings(state=initialState, action) {
         return {
             ...state,
             settings_info: '出现错误！'
+        };
+        case CHANGE_AVATAR:
+        return {
+            ...state,
+            userInfo: action.info
         };
         default:
         return state;

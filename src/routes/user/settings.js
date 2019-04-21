@@ -3,59 +3,66 @@ import { Menu, Layout} from 'antd'
 import './settings.css';
 import {WrappedBasic, WrappedProfile, WrappedReward} from '../../components/Settings'
 import { connect } from 'react-redux'
-import {changeSettings} from '../../redux/actions/settings'
+import {changeSettings, onChangeAvatar} from '../../redux/actions/settings'
 const { Content, Sider } = Layout;
 
 class Settings extends Component{
-      rootKeys = ['1', '2', '3'];
+    rootKeys = ['1', '2', '3'];
 
-      state = {
+    state = {
         basicShow: '',
         nowOpen: '1',
         profileShow: 'none',
         rewardShow: 'none',
-      };
+    };
     
-      onOpenChange = (openKeys) => {
+    onOpenChange = (openKeys) => {
         switch (openKeys.key)
         {
-          case '1':
-          this.setState({
+        case '1':
+        this.setState({
             nowOpen: '1',
             basicShow: '',
             profileShow: 'none',
             rewardShow: 'none',
-          }) 
-          break;
-          case '2':
-          this.setState({
+        }) 
+        break;
+        case '2':
+        this.setState({
             nowOpen: '2',
             basicShow: 'none',
             profileShow: '',
             rewardShow: 'none',
-          })
-          break;
-          case '3':
-          this.setState({
+        })
+        break;
+        case '3':
+        this.setState({
             nowOpen: '3',
             basicShow: 'none',
             profileShow: 'none',
             rewardShow: '',
-          })
-          break;
-          default:
-          this.setState({
+        })
+        break;
+        default:
+        this.setState({
             nowOpen: '1',
             basicShow: '',
             profileShow: 'none',
             rewardShow: 'none',
-          })         
+        })         
         }
-      }
-      handleSubmitSettings = (settings) => {
-          this.props.dispatch(changeSettings(settings))
-      }
+    }
+    handleSubmitSettings = (settings) => {
+        this.props.dispatch(changeSettings(settings))
+    }
+
+    handleSubmitAvatar = (avatar) => {
+        this.props.dispatch(onChangeAvatar(avatar))
+    }
+
+
     render(){
+        const {userInfo} = this.props;
         return(
             <div>
                 <div className="selection-content">
@@ -75,7 +82,8 @@ class Settings extends Component{
                         </Sider>
                         <Content style={{ padding: '0 24px', minHeight: 280, overflow: 'hidden' }}>
                         <div className="basic-content" style={{display: this.state.basicShow}}>
-                            <WrappedBasic onSubmit={this.handleSubmitSettings} basicShow={this.state.basicShow} userInfo={this.props.userInfo}/>
+                            <WrappedBasic onSubmit={this.handleSubmitSettings} onSubmitAvatar={this.handleSubmitAvatar }
+                            basicShow={this.state.basicShow} userInfo={this.props.userInfo}/>
                         </div>
                         <div className="basic-content" style={{display: this.state.profileShow}}>
                             <WrappedProfile onSubmit={this.handleSubmitSettings} profileShow={this.state.profileShow} userInfo={this.props.userInfo}/>

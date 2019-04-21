@@ -1,0 +1,20 @@
+.avatar-wrapper {
+    margin-top: 60px;
+    margin-left: 150px;
+    width: 900px;
+    height: 130px;
+}
+.avatar-uploader {
+    margin-left: 120px;
+}
+
+/* you can make up upload button and sample style by using stylesheets */
+.ant-upload-select-picture-card i {
+    font-size: 32px;
+    color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+    margin-top: 8px;
+    color: #666;
+}

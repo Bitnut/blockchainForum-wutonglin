@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 var fs = require("fs");  
 var path = require("path");
 
+
 // 递归创建目录
 function mkdirs(dirname, callback) {  
     fs.exists(dirname, function (exists) {  
@@ -164,6 +165,37 @@ const addComment = async function (ctx) {
     }
 }
 
+const changeAvatar = async function (ctx) {
+    const file = ctx.request.files.originFileObj
+    const reader = fs.createReadStream(file.path);
+    const userName = ctx.params.username
+    try {
+        // 创建可读流
+        let targetPath = path.join(__dirname, '../public/'+userName) + `/${file.name}`;
+        // 创建可写流
+        const upStream = fs.createWriteStream(targetPath);
+        // 可读流通过管道写入可写流
+        reader.pipe(upStream);
+    } catch (error) {
+        console.log(error)
+    }
+    const newUrl = 'http://localhost:8889/'+userName +`/${file.name}`
+    const result = await user.changeAvatar(newUrl, userName);
+    if (result) {
+        ctx.body = {
+            success: true,
+            user_avatar: newUrl,
+            info: '成功修改头像！'
+        }
+    } else {
+        ctx.body = {
+            success: false,
+            info: '发生错误！'
+        }
+    }
+}
+
+
 
 module.exports = {
     getHotArticles,
@@ -176,5 +208,6 @@ module.exports = {
     releaseArticle,
     changeSettings,
     getCommentById,
-    addComment
+    addComment,
+    changeAvatar
 }

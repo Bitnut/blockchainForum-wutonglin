@@ -49,12 +49,20 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     intro_img: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(200),
       allowNull: true
     },
     article_intro: {
-      type: DataTypes.STRING(300),
+      type: DataTypes.STRING(210),
       allowNull: true
+    },
+    release_moment: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    author_name: {
+      type: DataTypes.STRING(60),
+      allowNull: false
     }
   }, {
     tableName: 'posts'

@@ -11,5 +11,6 @@ router.post('/user/savearticle', api.saveArticle);
 router.get('/getcomment/:id',api.getCommentById);
 router.post('/newcomment',api.addComment);
 router.post('/uploadpicture/:username',api.changeAvatar);
+router.get('/visit/:id',api.getUserInfoById);
 
 module.exports = router; // 把router规则暴露出去

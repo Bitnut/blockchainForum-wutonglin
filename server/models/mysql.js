@@ -117,11 +117,17 @@ const getArticleByUserId = async function (userId){
 }
 // fix！ 返回用于首页或发现的文章
 const getAllArticles = async function () {
+    const time = +new Date()
     const articles = await Posts.findAll(
         {
             where: {
-                release_status: 'yes'
-            }
+                release_status: 'yes',
+                release_moment: {
+                    // 过去12小时发布的文章信息进入到主页的文章池中
+                    [Op.gt] : time - 1000*60*60*12
+                },
+            },
+            attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title']
         }
     );
     return articles;
@@ -156,7 +162,7 @@ const refreshSettings = async function ( newInfo) {
         {
             where: {
                 user_id: newInfo.user_id
-            }
+            } 
         }
     );
     return result;
@@ -178,32 +184,66 @@ const newArticle = async function (articleInfo){
         post_views: 0,
         post_likes: 0,
         post_comments: 0,
+        author_name: articleInfo.author_name
       }
     )
     return Info
 }
-const refreshArticle = async function ( articleInfo) {
+const getReleaseData = async function (id) {
+    const result = await Posts.findOne(
+        {
+            where: {post_id: id},
+            attributes: ['release_status']
+        }
+    )
+    return result.release_status
+}
+
+const refreshArticle = async function ( articleInfo, isReleased) {
     var intro_img_url = ''
     if (articleInfo.article_img.length === 0) {
         intro_img_url = ''
     } else {
         intro_img_url = articleInfo.article_img[0]
     }
-    const newArticle = await Posts.update(
-        {
-            post_title: articleInfo.title,
-            release_status: articleInfo.release_status,
-            post_content_raw: articleInfo.rawContent,                
-            post_content_html: articleInfo.htmlContent,
-            article_intro: articleInfo.article_intro,
-            intro_img: intro_img_url,
-        },
-        {
-            where: {
-                post_id: articleInfo.postId
+    var newArticle = []
+    if (isReleased==='no') { 
+        const time = +new Date()
+        newArticle = await Posts.update(
+            {   
+    
+                post_title: articleInfo.title,
+                release_status: articleInfo.release_status,
+                post_content_raw: articleInfo.rawContent,                
+                post_content_html: articleInfo.htmlContent,
+                article_intro: articleInfo.article_intro,
+                intro_img: intro_img_url,
+                release_moment: time,
+            },
+            {
+                where: {
+                    post_id: articleInfo.postId
+                }
             }
-        }
-    );
+        );
+    } else {
+        newArticle = await Posts.update(
+            {   
+    
+                post_title: articleInfo.title,
+                release_status: articleInfo.release_status,
+                post_content_raw: articleInfo.rawContent,                
+                post_content_html: articleInfo.htmlContent,
+                article_intro: articleInfo.article_intro,
+                intro_img: intro_img_url,
+            },
+            {
+                where: {
+                    post_id: articleInfo.postId
+                }
+            }
+        );
+    }
     return newArticle;
 }
 
@@ -301,7 +341,7 @@ const addNewComment = async function (newComment) {
     const comment = await Comment.create(
         {
             id: null,
-            post_id: '1',
+            post_id: newComment.post_id,
             parent_id: newComment.parent_id,
             user_name: newComment.user_name,
             user_avatar: newComment.user_avatar,
@@ -403,9 +443,41 @@ const changeAvatar = async function ( newUrl, userName ) {
     return result1[0] && result2[0]
 }
 
+const getVisitInfo = async function (id) {
+    const userInfo = await User.findOne(
+        {
+            where: {
+                user_id: id
+            },
+            attributes: ['user_name', 'user_avatar', 'user_corpus', 'self_introduction']
+        }
+    )
+    const userArticles = await Posts.findAll(
+        {
+            where: {
+                author_id: id
+            },
+            attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title', 'release_status']
+        }
+    )
+    return result = {
+        userInfo: userInfo,
+        userArticles: userArticles
+    }
+}
 
-
-
+const getHotUsers = async function () {
+    const userInfo = await User.findAll(
+        {
+            limit: 6,
+            where: {
+                user_Id: {[Op.gte]: 100000000}
+            },
+            attributes: ['user_name', 'user_avatar', 'user_id']
+        }
+    )
+    return userInfo
+}
 
 
 
@@ -430,5 +502,8 @@ module.exports = {
   refreshSettings,
   addNewComment,
   getCommentList,
-  changeAvatar
+  changeAvatar,
+  getReleaseData,
+  getVisitInfo,
+  getHotUsers
 }

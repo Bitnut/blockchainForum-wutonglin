@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { fetchPostById} from '../../redux/actions/posts'
+import CommentApp from '../../components/Card/Comment/commentApp'
 //import Picker from '../../components/Picker'
 import './index.css';
 
@@ -69,11 +70,13 @@ class readArticle extends Component{
                                     <br/>
                                     <div dangerouslySetInnerHTML = {{ __html:this.props.readingPost[0].post_content_html }}></div>
                                 </div>
+                                <CommentApp post_id={this.props.readingPost[0].post_id}/>
                             </div>
                         }
                       </div>
                       <div className="read-text" dangerouslySetInnerHTML={{__html: this.state.newContent != null ? this.state.newContent : "本章似乎丢失了！" }}></div>
                       </Content>
+                      
               </Layout>       
               </div>
             </div>

@@ -41,14 +41,15 @@ export const getArticleInfo = () => {
     }
 }
 
-export const addNewArticle = (userId) => {
+export const addNewArticle = (userId, userName) => {
     const newArticleData = {
         corpus: '默认文集',
         release_status: 'no',
         title: '新建文章',
         rawContent: '',
         htmlContent: '',
-        authorId : userId,
+        authorId : userId, 
+        author_name: userName
     }
     return (dispatch) => {
         let token = localStorage.getItem('Forum-token')

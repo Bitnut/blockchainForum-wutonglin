@@ -24,7 +24,7 @@ class Wirting extends React.Component {
         modal1Visible: false,
         modal2Visible: false,
         onDeleteArticle: [],
-        editArticle: 1,
+        editArticle: 0,
         editorState: BraftEditor.createEditorState(null)
 
     }
@@ -71,7 +71,7 @@ class Wirting extends React.Component {
         });
     }
     addArticle = () => {
-        this.props.dispatch(addNewArticle(this.props.userId));
+        this.props.dispatch(addNewArticle(this.props.userId, this.props.user_name));
         const newArticleTitle = [...this.state.articleData, {title: '新建文章'}]
         this.setState({ articleData: newArticleTitle})
     }
@@ -127,8 +127,8 @@ class Wirting extends React.Component {
 
             var cleanTitle = sanitizeHtml(values.title)
         
-            const index = this.state.editArticle
-            const postId = this.props.userArticles[index].post_id
+            const index1 = this.state.editArticle
+            const postId = this.props.userArticles[index1].post_id
             const submitData = {
                 corpus: '默认文集',
                 title: cleanTitle,
@@ -139,12 +139,16 @@ class Wirting extends React.Component {
                 postId : postId,
                 release_status: 'yes'
             }
-            this.props.dispatch(releaseArticle(submitData, index))
+            this.props.dispatch(releaseArticle(submitData, index1))
             const articles = this.props.userArticles
             setTimeout(() => {
             const articleTitle = []
-            articles.forEach((item) => {
-                articleTitle.push({ title: item.post_title, Id: item.post_id, release: item.release_status })
+            articles.map((item, index) => {
+                if(index === index1 ) {
+                    articleTitle.push({ title: cleanTitle, Id: item.post_id, release: item.release_status })
+                } else {
+                    articleTitle.push({ title: item.post_title, Id: item.post_id, release: item.release_status })
+                }
             })
             this.setState({
                 articleData: [...articleTitle],
@@ -155,8 +159,8 @@ class Wirting extends React.Component {
     }
     // 保存文章修改！
     handleSave = () => {
-        const index = this.state.editArticle
-        const postId = this.props.userArticles[index].post_id
+        const index1 = this.state.editArticle
+        const postId = this.props.userArticles[index1].post_id
         const saveData = this.props.form.getFieldsValue()
         // 文章信息处理
         var dirty = saveData.content.toHTML();
@@ -195,12 +199,16 @@ class Wirting extends React.Component {
             article_img: srcArr,
             postId : postId,
         }
-        this.props.dispatch(saveEditArticle(submitData, index))
+        this.props.dispatch(saveEditArticle(submitData, index1))
         const articles = this.props.userArticles
         setTimeout(() => {
         const articleTitle = []
-        articles.forEach((item) => {
-            articleTitle.push({ title: item.post_title, Id: item.post_id, release: item.release_status })
+        articles.map((item, index) => {
+            if(index === index1 ) {
+                articleTitle.push({ title: cleanTitle, Id: item.post_id, release: item.release_status })
+            } else {
+                articleTitle.push({ title: item.post_title, Id: item.post_id, release: item.release_status })
+            }
         })
         this.setState({
             articleData: [...articleTitle],
@@ -436,7 +444,8 @@ const mapStateToProps = state => {
     return {
         corpus:user.userInfo.user_corpus,
         userArticles: user.userArticles,
-        userId: user.userInfo.user_id
+        userId: user.userInfo.user_id,
+        user_name: user.userInfo.user_name
     }
 }
 

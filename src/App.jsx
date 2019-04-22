@@ -35,6 +35,7 @@ class App extends Component {
     
     render() {
         const isLogin = localStorage.getItem('Forum-token') ? true :false;
+        console.log(localStorage.getItem('Forum-token'))
         if (this.state.hasError) {
         // You can render any custom fallback UI
         Modal.info({

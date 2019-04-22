@@ -33,7 +33,8 @@ const newArticle = async function (ctx) {
 
 const releaseArticle = async function (ctx) {
     const data = ctx.request.body
-    const newInfo = await user.refreshArticle(data)
+    const isReleased = await user.getReleaseData(data.postId)
+    const newInfo = await user.refreshArticle(data, isReleased)
     if(newInfo[0]) {
         const result = await user.getArticle(data.postId);
         ctx.body = {
@@ -109,8 +110,7 @@ const removeCorpus = async function (ctx) {
     }
 }
 
-const getHotArticles = async function (ctx) {
-    const id = Number(ctx.params.id)
+const getHotArticles = async function (ctx) { 
     allArticles = await user.getAllArticles();
     ctx.body = {
         success: true,
@@ -118,6 +118,20 @@ const getHotArticles = async function (ctx) {
     }
   }
 
+const getHomeData = async function (ctx) {
+    hotArticles = await user.getAllArticles();
+    hotUsers = await user.getHotUsers();
+    if (hotArticles && hotUsers) {
+        ctx.body = {
+            success: true,
+            hotArticles: hotArticles,
+            hotUsers: hotUsers
+        }
+    } else {
+        ctx.throw(404)
+    }
+    
+}
 
 
 // 用户设置更改
@@ -196,6 +210,21 @@ const changeAvatar = async function (ctx) {
 }
 
 
+const getUserInfoById = async function (ctx) {
+    const id = Number(ctx.params.id)
+    const userInfo = await user.getVisitInfo(id);
+    if (userInfo.userInfo) {
+        ctx.body = {
+            success: true,
+            visitData: userInfo,
+            info: '成功访问！'
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
+
 
 module.exports = {
     getHotArticles,
@@ -209,5 +238,7 @@ module.exports = {
     changeSettings,
     getCommentById,
     addComment,
-    changeAvatar
+    changeAvatar,
+    getUserInfoById,
+    getHomeData
 }

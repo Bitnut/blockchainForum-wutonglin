@@ -90,9 +90,6 @@ const userLogin = async function (ctx) {
     const userInfo = await user.getUserInfoByName(data.nickName);
     if (userInfo != null) { // 如果查无此用户会返回null
     if (!bcrypt.compareSync(data.password, userInfo.user_pass)) {
-        //var salt = bcrypt.genSaltSync(10);
-        //var hash = bcrypt.hashSync("123456", salt);
-        //console.log(hash)
         ctx.body = {
         success: false, // success标志位是方便前端判断返回是正确与否
         info: '密码错误！'

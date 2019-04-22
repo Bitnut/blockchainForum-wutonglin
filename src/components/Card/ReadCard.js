@@ -3,72 +3,75 @@ import {List, Card, Icon,  Avatar,   Button, Skeleton, } from 'antd';  // 加载
 import './CoverCard.css'
 import avatar from '../../assets/smallBanner.jpg'
 
-const count = 6;
+const IconText = ({ type, text }) => (
+    <span>
+        <Icon type={type} style={{ marginRight: 8 }} />
+        {text}
+    </span>
+    );
+
 export default class CoverCard extends PureComponent{
 
   state = {
     initLoading: true,
     loading: false,
-    data: [],
-    list: [],
-    avatar: avatar,
+    listData: [],
   }
 
-  onLoadMore = () => {
-    this.setState({
-      loading: true,
-      list: this.state.data.concat([...new Array(count)].map(() => ({ loading: true, name: {} }))),
-    });
-    this.getData((res) => {
-      const data = this.state.data.concat(res.results);
-      this.setState({
-        data,
-        list: data,
-        loading: false,
-      }, () => {
-        // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-        // In real scene, you can using public method of react-virtualized:
-        // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-        window.dispatchEvent(new Event('resize'));
-      });
-    });
-  }
+    componentDidMount () {
+        if(this.props.data!==null) {
+            setTimeout(() => {
+                const list = [];
+                for (let i = 0; i < this.props.data.length; i++) {
+                    list.push({
+                        title: this.props.data[i].post_title,
+                        content: this.props.data[i].article_intro,
+                        img: this.props.data[i].intro_img,
+                        link: 'http://localhost:3000/article/'+this.props.data[i].post_id
+                    });
+                }
+                this.setState({
+                    listData: [...list],
+                });
+                }, 50);
+        }
+    }
   
 
     render(){
-      const { initLoading, loading, list } = this.state;
-      const loadMore = !initLoading && !loading ? (
-        <div style={{
-          textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
-        }}
-        >
-          <Button onClick={this.onLoadMore}>loading more</Button>
-        </div>
-      ) : null;
-  
+        
         return (
             <Card  title={<div style={{fontSize: 16, fontWeight: 400}}>
             <Icon type="deployment-unit" style={{ fontSize: 20,  marginRight: 10, color: '#FFA500' }} />
-            {this.props.rankTypeData.typeName}</div>}>
-            <List
-              className="demo-loadmore-list"
-              loading={initLoading}
-              itemLayout="horizontal"
-              loadMore={loadMore}
-              dataSource={list}
-              renderItem={item => (
-                <List.Item actions={[<a>edit</a>, <a>more</a>]}>
-                  <Skeleton avatar title={false} loading={item.loading} active>
-                    <List.Item.Meta
-                      avatar={<Avatar src={this.state.avatar} />}
-                      title={<a href="https://ant.design">{item.name.last}</a>}
-                      description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                    />
-                    <div>content</div>
-                  </Skeleton>
-                </List.Item>
-              )}
-            />
+            最新文章</div>}>
+                <List
+                    itemLayout="vertical"
+                    size="large"
+                    style={{ width: 1200 }}
+                    pagination={{
+                    onChange: (page) => {
+                        console.log(page);
+                    },
+                    pageSize: 10,
+                    }}
+                    dataSource={this.state.listData}
+                    footer={<div><b>区块链知识</b> 分享论坛</div>}
+                    renderItem={item => (
+                    <List.Item
+                        key={item.title}
+                        actions={[<IconText type="star-o" text="156" />, <IconText type="like-o" text="156" />, <IconText type="message" text="2" />]}
+                        extra={item.img === ''
+                        ? <div></div>:<img width={272} height={200} alt="logo" src={item.img} />
+                        }
+                    >
+                        <List.Item.Meta
+                        title={<a href={item.link}>{item.title}</a>}
+                        description={item.description}
+                        />
+                        {item.content}
+                    </List.Item>
+                    )}
+                />
             </Card>
         )
     }

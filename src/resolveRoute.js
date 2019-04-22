@@ -7,20 +7,17 @@ import Register from './routes/user/register';
 import Personal from './routes/user/personal';
 import Settings from './routes/user/settings';
 import Writing from './routes/user/writing';
-import hotArticle from './routes/HotArticle';
+//import hotArticle from './routes/HotArticle';
 import readArticle from './routes/Article';
 import Jobs from './routes/Jobs'
 import ErrorPage from './routes/Error'
-import CommentApp from './components/Card/Comment/commentApp'
+import userPage from './routes/userPage'
+//import CommentApp from './components/Card/Comment/commentApp'
 
 export const routerConfig = [
     {
         path:'/about',
         component: About,
-        exact: true,
-    },{
-        path:'/comment',
-        component: CommentApp,
         exact: true,
     },{
         path:'/login',
@@ -61,13 +58,12 @@ export const routerConfig = [
         exact: true,
         auth:true,
     },{
-        path:'/articles',
-        component:hotArticle,
-        exact: true,
-        auth:true,
-    },{
         path:'/article/:id',
         component:readArticle,
+        auth:true,
+    },{
+        path:'/u/:id',
+        component:userPage,
         auth:true,
     },{
         path:'/jobsdone',

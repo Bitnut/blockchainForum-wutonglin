@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import {  Col, Row   } from 'antd';
+import {connect} from 'react-redux'
+import { fetchHomeData } from '../../redux/actions/homeData'
 //import Banner from '../../components/Banner';
 //import GridCard from '../../components/Card/GridCard';
 //import RankCard from '../../components/Card/RankCard';
@@ -10,75 +12,59 @@ import coverDefault from '../../assets/default.jpg'
 import bannerDefault from '../../assets/timg.jpeg'
 
 
-const mock = (count) =>{
-  const datas = [];
-  for(let i = 0; i < count; i++){
-    const tempBook = {
-      rankId: "0",
-      book: {
-        index: i,
-        bookId: i,
-        banner: bannerDefault,
-        bookName: "区块链",
-        summary: "区块链分享论坛， 欢迎开发者加入～～～",
-        cover: coverDefault,
-        clickTimes: 0,
-        author: "hpc"
-      }
-    };
-    datas.push(tempBook)
-  }
-  const rank = {
-    typeName: "区块链",
-    rankList: datas
-  }
-  return rank;
-}
-
-const mockData = [];
-mockData.push(mock(4));
-mockData.push(mock(4));
-mockData.push(mock(6));
-mockData.push(mock(3));
-mockData.push(mock(3));
-mockData.push(mock(4));
-mockData.push(mock(4));
-mockData.push(mock(4));
-mockData.push(mock(4));
-mockData.push(mock(3));
-mockData.push(mock(10));
-
-
-export default class Home extends PureComponent{
+class Home extends PureComponent{
   state = {
-    data: mockData,
     loading: "true",
   };
+
+  componentDidMount () {
+      this.props.dispatch(fetchHomeData())
+  }
   render(){
-      return (
-          <div className="App-content">
-                {/* 头条*/}
-                <Row style={{marginBottom: 15}} type="flex" justify="center">  
-                  <Col span={16}>
-                    <IntroCard grid ={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2}}
-                      loading={this.state.loading} rankTypeData={this.state.data[1]}/> 
-                  </Col>
-                </Row>
-                 {/*精选*/}           
-                <Row style={{marginBottom: 15}} type="flex" justify="center">          
-                  <Col span={16}>
-                  <CoverCard grid ={{ gutter: 16, xs: 3, sm: 3, md: 6, lg: 6, xl: 6, xxl: 6}}
-                      loading={this.state.loading} rankTypeData={this.state.data[2]}/> 
-                  </Col>
-                </Row>
-                 {/* 浏览帖子*/}
-                 <Row style={{marginBottom: 15}} type="flex" justify="center">          
-                  <Col span={16}>
-                  <ReadCard grid ={{ gutter: 16, xs: 3, sm: 3, md: 6, lg: 6, xl: 6, xxl: 6}}
-                      loading={this.state.loading} rankTypeData={this.state.data[2]}/> 
-                  </Col>
-                </Row>                                                                                
-          </div>                     
+        const { isFetching } = this.props
+        const isEmpty = this.props.hotArticles.length === 0
+        return (
+            <div className="App-content">
+            {isEmpty
+            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>):
+                <div>
+                    {/* 头条*/}
+                    <Row style={{marginBottom: 15}} type="flex" justify="center">  
+                    <Col span={16}>
+                        <IntroCard grid ={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2}}
+                        loading={this.state.loading} data={this.props.hotArticles}/> 
+                    </Col>
+                    </Row>
+                    {/*活跃用户推荐*/}           
+                    <Row style={{marginBottom: 15}} type="flex" justify="center">          
+                    <Col span={16}>
+                    <CoverCard grid ={{ gutter: 16, xs: 3, sm: 3, md: 6, lg: 6, xl: 6, xxl: 6}}
+                        loading={this.state.loading} data={this.props.hotUsers}/> 
+                    </Col>
+                    </Row>
+                    {/* 浏览帖子*/}  
+                    <Row style={{marginBottom: 15}} type="flex" justify="center">          
+                    <Col span={16}>
+                    <ReadCard grid ={{ gutter: 16, xs: 3, sm: 3, md: 6, lg: 6, xl: 6, xxl: 6}}
+                        loading={this.state.loading}  data={this.props.hotArticles}/> 
+                    </Col>
+                    </Row>    
+                </div>
+            }                                                                                 
+            </div>                      
         )
     }
 }
+
+const mapStateToProps = state => {
+    const {homeData} = state
+    return {
+        isFetching: homeData.isFetching,
+        hotArticles: homeData.hotArticles,
+        hotUsers: homeData.hotUsers,
+        lastUpdated: homeData.lastUpdated
+    }
+}
+
+
+export default connect(mapStateToProps)(Home)

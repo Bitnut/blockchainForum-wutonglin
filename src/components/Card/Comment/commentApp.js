@@ -7,7 +7,7 @@ import {FormatTime} from '../../utils/formatTime'
 import './index.css'
 class CommentApp extends Component {
     componentDidMount () {
-        this.props.dispatch(getComment('1'))
+        this.props.dispatch(getComment(this.props.post_id))
     }
 
     handleSubmitComment = (comment) => {
@@ -15,7 +15,7 @@ class CommentApp extends Component {
         if (!comment.content) return alert('请输入评论内容')
         const format_time = FormatTime("yyyy-MM-dd hh:mm", comment.createdTime)
         const newComment = {
-            post_id: '1',
+            post_id: this.props.post_id,
             parent_id: comment.parent_id,
             user_name: this.props.userInfo.user_name,
             user_avatar: this.props.userInfo.user_avatar,

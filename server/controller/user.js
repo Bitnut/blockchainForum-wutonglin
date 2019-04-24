@@ -120,7 +120,7 @@ const getHotArticles = async function (ctx) {
 
 const getHomeData = async function (ctx) {
     hotArticles = await user.getAllArticles();
-    hotUsers = await user.getHotUsers();
+    hotUsers = await user.getHotUsers(); 
     if (hotArticles && hotUsers) {
         ctx.body = {
             success: true,

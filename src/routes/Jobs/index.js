@@ -3,6 +3,7 @@ import './index.css'
 import {Icon, Timeline} from 'antd'
 
 const Jobs = () => (
+    <div className='page-holder'>
         <div className='All-Jobs'>
             <h1>工作进度如下所示：</h1>
                 <Timeline>
@@ -32,13 +33,22 @@ const Jobs = () => (
                         <p>15.&nbsp;&nbsp;&nbsp;后端api接口维护</p>
                     </Timeline.Item>
                     <Timeline.Item>
+                        <p>过去两周</p>
                         <p>16.&nbsp;&nbsp;&nbsp;网站全局路由守护</p>
-                        <p>17.&nbsp;&nbsp;&nbsp;评论功能</p>
+                        <p>17.&nbsp;&nbsp;&nbsp;评论功能上线</p>
                         <p>18.&nbsp;&nbsp;&nbsp;404页面</p>
                         <p>19.&nbsp;&nbsp;&nbsp;个人头像上传</p>
                         <p>20.&nbsp;&nbsp;&nbsp;网站静态资源服务</p>
                         <p>21.&nbsp;&nbsp;&nbsp;文章编辑器功能改进</p>
                         <p>22.&nbsp;&nbsp;&nbsp;项目css布局抖动排查，优化网站首屏加载性能</p>
+                        <p>23.&nbsp;&nbsp;&nbsp;网站主页优化</p>
+                    </Timeline.Item>
+                    <Timeline.Item color="grey">
+                        <p>接下来两周的任务</p>
+                        <p>&nbsp;&nbsp;&nbsp;建设网站点赞、收藏、打赏+奖励池体系</p>
+                        <p>&nbsp;&nbsp;&nbsp;使用 Hyperledger Fabric 存储文章信息、奖励池信息，版权纠纷信息</p>
+                        <p>&nbsp;&nbsp;&nbsp;引入redis做为首页、奖励池和公示页面的缓存服务器</p>
+                        <p>&nbsp;&nbsp;&nbsp;着手写毕业论文</p>
                     </Timeline.Item>
                 </Timeline>
             <h1>本周完成的任务：</h1>
@@ -66,6 +76,8 @@ const Jobs = () => (
                     <p>21.&nbsp;&nbsp;&nbsp;个人设置-添加上传修改头像功能<Icon type="plus-circle" /></p>
                     <p>22.&nbsp;&nbsp;&nbsp;koa-后端添加静态资源服务<Icon type="plus-circle" /></p>
                     <p>23.&nbsp;&nbsp;&nbsp;【安全】koa-后端静态资源服务错误处理<Icon type="plus-circle" /></p>
+                    <p>23.&nbsp;&nbsp;&nbsp;主页页面优化<Icon type="plus-circle" /></p>
+                    <p>23.&nbsp;&nbsp;&nbsp;添加访问个人界面接口和页面<Icon type="plus-circle" /></p>
                     <p>24.&nbsp;&nbsp;&nbsp;互联网+报名准备工作<Icon type="plus-circle" /></p>
                 </ul>
             <h1>修改完成的bug如下所示：</h1>
@@ -95,8 +107,9 @@ const Jobs = () => (
                     <p>11.&nbsp;&nbsp;&nbsp;sequelize</p>
                     <p>12.&nbsp;&nbsp;&nbsp;sanitize-html</p>
                 </ul>
-
          </div>
+    </div>
+        
 )
 
 export default Jobs;

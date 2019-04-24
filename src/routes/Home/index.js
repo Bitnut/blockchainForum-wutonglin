@@ -23,6 +23,7 @@ class Home extends PureComponent{
   render(){
         const { isFetching } = this.props
         const isEmpty = this.props.hotArticles.length === 0
+        const noUsers = this.props.hotUsers.length ===0
         return (
             <div className="App-content">
             {isEmpty
@@ -35,6 +36,11 @@ class Home extends PureComponent{
                         loading={this.state.loading} data={this.props.hotArticles}/> 
                     </Col>
                     </Row>
+                </div>
+            }
+            {noUsers
+            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>):
+                <div>
                     {/*活跃用户推荐*/}           
                     <Row style={{marginBottom: 15}} type="flex" justify="center">          
                     <Col span={16}>
@@ -42,14 +48,21 @@ class Home extends PureComponent{
                         loading={this.state.loading} data={this.props.hotUsers}/> 
                     </Col>
                     </Row>
+                </div> 
+            }
+            {isEmpty
+            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>):
+                <div>
                     {/* 浏览帖子*/}  
                     <Row style={{marginBottom: 15}} type="flex" justify="center">          
                     <Col span={16}>
                     <ReadCard grid ={{ gutter: 16, xs: 3, sm: 3, md: 6, lg: 6, xl: 6, xxl: 6}}
                         loading={this.state.loading}  data={this.props.hotArticles}/> 
                     </Col>
-                    </Row>    
-                </div>
+                    </Row> 
+
+                </div>     
+            }
             }                                                                                 
             </div>                      
         )

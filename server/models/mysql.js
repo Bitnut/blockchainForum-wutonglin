@@ -124,7 +124,7 @@ const getAllArticles = async function () {
                 release_status: 'yes',
                 release_moment: {
                     // 过去12小时发布的文章信息进入到主页的文章池中
-                    [Op.gt] : time - 1000*60*60*12
+                    [Op.gt] : time - 1000*60*60*48
                 },
             },
             attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title']

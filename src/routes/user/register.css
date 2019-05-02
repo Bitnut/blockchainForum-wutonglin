@@ -1,3 +1,10 @@
+.main-wrapper {
+    background: #f0f2f5;
+    min-height: 840px;
+    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
+}
+
+
 .register-form {
     max-width: 700px;
     margin-top: 50px;
@@ -8,4 +15,4 @@
 
 .register-form-button {
     width: 100%;
-  }
+}

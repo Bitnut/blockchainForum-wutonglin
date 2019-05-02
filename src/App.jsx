@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter, Route,Redirect, Switch } from 'react-router-dom'
-import { Layout, Modal } from 'antd';
+import { Layout, Modal, BackTop } from 'antd';
 import Header from './components/PageHeader';
 import ErrorPage from './routes/Error'
 import {routerConfig} from './resolveRoute'
@@ -71,7 +71,7 @@ class App extends Component {
                             <Route component={ErrorPage} />
                             </Switch>
                         }
-                            
+                        <BackTop />
                     </Content>
                 </Layout> 
             </div>   

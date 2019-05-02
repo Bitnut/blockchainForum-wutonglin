@@ -16,7 +16,7 @@ function mkdirs(dirname, callback) {
                 fs.mkdir(dirname, callback);  
                 console.log('在' + path.dirname(dirname) + '目录创建好' + dirname  +'目录');
             });  
-        }  
+        }
     });
 }
 
@@ -70,12 +70,16 @@ const saveArticle = async function (ctx) {
 }
 
 const getArticleById = async function (ctx) {
-    const id = Number(ctx.params.id)
-    result = await user.getReleasedArticle(id);
+    const data = ctx.request.body
+    var result = await user.getReleasedArticle(data.post_id);
+    result.post_views = ++result.post_views
+    // 点赞收藏信息获取
+    const article_status = await user.getArticleStatus(data)
     if (result) {
         ctx.body = { 
             success: true,
             articleData: result,
+            article_status: article_status,
             info: '获取文章成功！'
         }
     } else {
@@ -226,6 +230,125 @@ const getUserInfoById = async function (ctx) {
 
 
 
+// 点赞、收藏、关注  逻辑不严谨，有bug，不做细究了。
+const addlike = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.addlike(data);
+    if (result) {
+        if(result.info){
+            ctx.body = {
+                success: false,
+                info: result.info
+            }
+        } else {
+            ctx.body = {
+                success: 'true',
+                info: '点赞成功！'
+            }
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
+const addcollect = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.addcollect(data);
+    if (result) {
+        if(result.info){
+            ctx.body = {
+                success: false,
+                info: result.info
+            }
+        } else {
+            ctx.body = {
+                success: 'true',
+                info: '收藏成功！'
+            }
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
+const addfollow = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.addfollow(data);
+    if (result) {
+        if(result.info){
+            ctx.body = {
+                success: false,
+                info: result.info
+            }
+        } else {
+            ctx.body = {
+                success: 'true',
+                info: '关注成功！'
+            }
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+// 取消点赞、收藏、关注
+const cancellike = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.cancellike(data);
+    if (result[0]) {
+        ctx.body = {
+            success: true,
+            info: '取消点赞成功'
+        }
+        
+    } else if(result.info) {
+        ctx.body = {
+            success: false,
+            info: result.info
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
+const cancelcollect = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.cancelcollect(data);
+    if (result[0]) {
+        ctx.body = {
+            success: true,
+            info: '取消收藏成功'
+        }
+        
+    } else if(result.info) {
+        ctx.body = {
+            success: false,
+            info: result.info
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
+const cancelfollow = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.cancelfollow(data);
+    if (result[0]) {
+        ctx.body = {
+            success: true,
+            info: '取消关注成功'
+        }
+        
+    } else if(result.info) {
+        ctx.body = {
+            success: false,
+            info: result.info
+        }
+    } else {
+        ctx.throw(404)
+    }
+}
+
+
 module.exports = {
     getHotArticles,
     newArticle,
@@ -240,5 +363,11 @@ module.exports = {
     addComment,
     changeAvatar,
     getUserInfoById,
-    getHomeData
+    getHomeData,
+    addfollow,
+    addlike,
+    addcollect,
+    cancelfollow,
+    cancellike,
+    cancelcollect,
 }

@@ -1,17 +1,11 @@
-.login-content{
-    z-index: 10;
-    position: relative;
-    max-width: 400px;
-    min-height: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #fff;
-    margin-top: 20PX;
+.main-wrapper {
+    max-height: 750px;
+    background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');
 }
 
 .login-form {
     max-width: 300px;
-    margin-top: auto;
+    margin-top: 80px;
     position: relative;
     margin-left: auto;
     margin-right: auto;

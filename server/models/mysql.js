@@ -2,6 +2,9 @@ const db = require('../config/default') // 引入user的表结构
 const usersModel = '../schema/users.js'
 const postsModel = '../schema/posts.js'
 const commentsModel = '../schema/comments.js'
+const followModel = '../schema/follow.js'
+const likesModel = '../schema/likes.js'
+const collectModel = '../schema/collect.js'
 const ForumDb = db.Forum // 引入数据库
 
 const Sequelize = require('sequelize');
@@ -10,6 +13,9 @@ const Op = Sequelize.Op;
 const User = ForumDb.import(usersModel)
 const Posts = ForumDb.import(postsModel)
 const Comment = ForumDb.import(commentsModel)
+const Follow = ForumDb.import(followModel)
+const Likes = ForumDb.import(likesModel)
+const Collect = ForumDb.import(collectModel)
 // 登录时返回所有用户信息
 const getUserInfoByName = async function (nickName) { 
   const userInfo = await User.findOne({
@@ -73,6 +79,7 @@ const newUser = async function (userInfo){
       self_introduction: '这个人很懒，还没有写自我介绍',
       reward_setting: 'yes',
       reward_number: 3,
+      followers: 0,
     }
   )
   return Info
@@ -102,8 +109,35 @@ const getReleasedArticle = async function (id){
         },
       }
     )
+    Posts.increment( 'post_views' ,{ where:{post_id: id}})
     return article
   }
+// 获取文章点赞收藏信息
+const getArticleStatus = async function (data) {
+    const like_status = await Likes.findOne(
+        {
+            where:{
+                user_id: data.user_id,
+                post_id: data.post_id
+            },
+            attributes: ['like_status']
+        }
+    )
+    const collect_status = await Collect.findOne(
+        {
+            where:{
+                user_id: data.user_id,
+                post_id: data.post_id
+            },
+            attributes: ['collect_status']
+        }
+    )
+    return {
+        like_status,
+        collect_status
+    }
+}
+
 // 根据用户 ID 获取文章
 const getArticleByUserId = async function (userId){
     const articles = await Posts.findAll(
@@ -122,10 +156,10 @@ const getAllArticles = async function () {
         {
             where: {
                 release_status: 'yes',
-                release_moment: {
+                //release_moment: {
                     // 过去12小时发布的文章信息进入到主页的文章池中
-                    [Op.gt] : time - 1000*60*60*48
-                },
+                //    [Op.gt] : time - 1000*60*60*48
+                //},
             },
             attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title']
         }
@@ -219,6 +253,7 @@ const refreshArticle = async function ( articleInfo, isReleased) {
                 article_intro: articleInfo.article_intro,
                 intro_img: intro_img_url,
                 release_moment: time,
+                blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
             },
             {
                 where: {
@@ -236,6 +271,7 @@ const refreshArticle = async function ( articleInfo, isReleased) {
                 post_content_html: articleInfo.htmlContent,
                 article_intro: articleInfo.article_intro,
                 intro_img: intro_img_url,
+                blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
             },
             {
                 where: {
@@ -352,10 +388,16 @@ const addNewComment = async function (newComment) {
             likes: 0
         }
     )
-    return comment
-
-    
-    
+    const newCommentNum = await post.findOne(
+        {
+            where: {
+                post_id: id
+            }
+        }
+        ).then(function(post){
+            post.increment('post_comments')
+        })
+    return comment  
 }
 
 const getCommentList = async function (Id) {
@@ -478,7 +520,192 @@ const getHotUsers = async function () {
     )
     return userInfo
 }
+// 暂时不做存在性检查
+const addlike = async function (data) {
+    const like = await Likes.findOrCreate(
+        {
+            where: {
+                user_id: data.user_id,
+                post_id: data.post_id
+            },
+            defaults: {
+                id: null,
+                like_status: 'yes',
+                created_at: data.created_at
+            }
+        }
+    )
+    if(like[0].like_status==='no') {
+        const newInfo = await Likes.update(
+            {
+                like_status: 'yes'
+            },
+            {
+                where: {
+                    user_id: data.user_id,
+                    post_id: data.post_id
+                }
+            }
+        )
+        Posts.increment( 'post_likes' ,{ where:{post_id: data.post_id}})
+        return newInfo
+    }
+    if(like[1]) {
+        Posts.increment( 'post_likes' ,{ where:{post_id: data.post_id}})
+        return like
+    } else {
+        return {
+            info: '亲，你已经点赞过了！'
+        }
+    }
+}
+const addcollect = async function (data) {
+    const result = await Collect.findOrCreate(
+        {
+            where: {
+                user_id: data.user_id,
+                post_id: data.post_id
+            },
+            defaults: {
+                id: null,
+                post_title: data.post_title,
+                post_img: data.post_img,
+                collect_status: 'yes',
+                created_at: data.created_at
+            }
+        }
+    )
+    if(result[0].collect_status==='no') {
+        const newInfo = await Collect.update(
+            {
+                collect_status: 'yes'
+            },
+            {
+                where: {
+                    user_id: data.user_id,
+                    post_id: data.post_id
+                }
+            }
+        )
+        Posts.increment( 'post_collects' ,{ where:{post_id: data.post_id}})
+        return newInfo
+    }
+    if(result[1]) {
+        Posts.increment( 'post_collects' ,{ where:{post_id: data.post_id}})
+        return result
+    } else {
+        return {
+            info: '亲，你已经收藏过了！'
+        }
+    }
+}
 
+const addfollow = async function (data) {
+    const result = await Follow.findOrCreate(
+        {
+            where: {
+                user_id: data.user_id,
+                followed_user_id: data.followed_user_id
+            },
+            defaults: {
+                id: null,
+                follow_status: 'yes',
+                created_at: data.created_at,
+                user_name: data.user_name,
+            }
+        }
+    )
+
+    if(result[0].follow_status==='no') {
+        const newInfo = await Follow.update(
+            {
+                follow_status: 'yes'
+            },
+            {
+                where: {
+                    user_id: data.user_id,
+                followed_user_id: data.followed_user_id
+                }
+            }
+        )
+        User.increment( 'followers' ,{ where:{user_id: data.user_id}})
+        return newInfo
+    }
+    if(result[1]) {
+        User.increment( 'followers' ,{ where:{user_id: data.user_id}})
+        return result
+    } else {
+        return {
+            info: '亲，你已经关注过了！'
+        }
+    }
+}
+
+const cancellike = async function (data) {
+    const result = await Likes.update(
+        {
+            like_status: 'no',
+        },
+        {
+            where: {
+                user_id: data.user_id,
+                post_id: data.post_id
+            }
+        }
+    )
+    if(result[0]) {
+        Posts.decrement( 'post_likes' ,{ where:{post_id: data.post_id}})
+        return result
+    } else {
+        return {
+            info: '亲，你已经取消点赞了！'
+        }
+    }
+}
+const cancelcollect = async function (data) {
+    const result = await Collect.update(
+        {
+            collect_status: 'no',
+        },
+        {
+            where: {
+                user_id: data.user_id,
+                post_id: data.post_id
+            }
+        }
+    )
+    if(result[0]) {
+        Posts.decrement( 'post_collect' ,{ where:{post_id: data.post_id}})
+        return result
+    } else {
+        return {
+            info: '亲，你已经取消收藏了！'
+        }
+    }
+}
+
+const cancelfollow = async function (data) {
+    const result = await Follow.update(
+        {
+            follow_status: 'no',
+        },
+        {
+            where: {
+                user_id: data.user_id,
+                followed_user_id: data.followed_user_id
+            }
+            
+        },
+    )
+    if(result[0]) {
+        User.decrement( 'followers' ,{ where:{user_id: data.followed_user_id}})
+        return result
+    } else {
+        return {
+            info: '亲，你已经取消关注了！'
+        }
+    } 
+}
 
 
 module.exports = {
@@ -505,5 +732,12 @@ module.exports = {
   changeAvatar,
   getReleaseData,
   getVisitInfo,
-  getHotUsers
+  getHotUsers,
+  addfollow,
+  addlike,
+  addcollect,
+  cancelfollow,
+  cancellike,
+  cancelcollect,
+  getArticleStatus
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from '../../assets/banner.jpg';
 import PropTypes from 'prop-types'
 import { Layout, Input, Menu, Divider, Button, 
-    Icon, Dropdown, Modal,Row, Col } from 'antd';
+    Icon, Dropdown, Modal,Row, Col, Badge } from 'antd';
 import {
     Link
   } from 'react-router-dom'
@@ -27,16 +27,17 @@ class  NewHeader extends Component{
         size: 'default',
         visible: false,
         confirmLoading: false,
+        show: true,
 
     }
     userMenu = () => (
-        <Menu onClick= {this.onLogout}>
-            <Menu.Item key="setting:1"><Link to="/user/personal">个人主页</Link></Menu.Item>
-            <Menu.Item key="setting:2">喜欢的文章</Menu.Item>
-            <Menu.Item key="setting:3">香囊</Menu.Item>
-            <Menu.Item key="setting:4"><Link to="/user/settings">设置</Link></Menu.Item>
-            <Menu.Item key="setting:5">帮助与反馈</Menu.Item>
-            <Menu.Item key="setting:6"><Link to="/">退出登录</Link></Menu.Item>
+        <Menu onClick= {this.onLogout} style={{ width: 150, marginTop: 20}}>
+            <Menu.Item key="setting:1" style={{height: 40}}><Link to="/user/personal">个人主页<Badge  count={99} style={{marginLeft:24}}></Badge></Link></Menu.Item>
+            <Menu.Item key="setting:2" style={{height: 40}}>喜欢的文章<Badge  count={99} style={{marginLeft:10}}></Badge></Menu.Item>
+            <Menu.Item key="setting:3" style={{height: 40}}>香囊</Menu.Item>
+            <Menu.Item key="setting:4" style={{height: 40}}><Link to="/user/settings">设置</Link></Menu.Item>
+            <Menu.Item key="setting:5" style={{height: 40}}>帮助与反馈</Menu.Item>
+            <Menu.Item key="setting:6" style={{height: 40}}><Link to="/">退出登录</Link></Menu.Item>
         </Menu>
     );
 
@@ -139,10 +140,11 @@ class  NewHeader extends Component{
                                 <div className={"header-logout"} style={{display: this.props.logout_display}}>
                                     <Dropdown overlay={this.userMenu}>
                                         <a className="ant-dropdown-link">
-                                        你好,欢迎！ <Icon type="down" />
+                                        <Badge dot={this.state.show}>你好,欢迎！</Badge><Divider type="vertical" style={{margin: "auto 8px"}}/><Icon type="down" />
+                                        
                                         </a>
                                     </Dropdown>
-                                    <Divider type="vertical" style={{margin: "auto 8px"}}/>
+                                    <Divider type="vertical" style={{margin: "auto 16px"}}/>
                                     <Button type="primary" shape="round" className={"writing-btn"} size='large' onClick={this.handleWriting}><Link to="/user/writing">写文章</Link></Button>
                                 </div>
                             </div>
@@ -161,6 +163,7 @@ const mapStateToProps = state => {
         logout_display: state.user.logout_display,
         header_display: state.user.header_display,
         login_info: state.user.login_info,
+        avatar: state.user.userInfo.user_avatar,
     }
 }
 

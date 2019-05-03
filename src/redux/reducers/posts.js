@@ -1,7 +1,7 @@
 import {
   SELECT_SUBREDDIT, INVALIDATE_SUBREDDIT,
   REQUEST_POSTS, RECEIVE_POSTS, READ_POST, FETCH_ERR, ADD_LIKE, CANCEL_LIKE, 
-  ADD_COLLECT, CANCEL_COLLECT
+  ADD_COLLECT, CANCEL_COLLECT, ADD_FOLLOW, CANCEL_FOLLOW
 } from '../actions/posts'
 
 export const selectedSubreddit = (state = 'reactjs', action) => {
@@ -20,7 +20,8 @@ export const posts = (state = {
     items: [],
     readingPost: [],
     like_status: false,
-    collect_status: false
+    collect_status: false,
+    follow_status: false,
     }, action) => {
     switch (action.type) {
         case INVALIDATE_SUBREDDIT:
@@ -50,6 +51,7 @@ export const posts = (state = {
             readingPost: action.post,
             like_status: action.status.like_status,
             collect_status: action.status.collect_status,
+            follow_status: action.status.follow_status,
             fetchStatus: true,
         }
         case FETCH_ERR:
@@ -77,6 +79,16 @@ export const posts = (state = {
         return {
             ...state,
             collect_status: action.collect_status
+        }
+        case ADD_FOLLOW:
+        return {
+            ...state,
+            follow_status: action.follow_status
+        }
+        case CANCEL_FOLLOW:
+        return {
+            ...state,
+            follow_status: action.follow_status
         }
         default:
         return state

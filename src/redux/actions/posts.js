@@ -11,7 +11,8 @@ export const ADD_LIKE = 'ADD_LIKE'
 export const ADD_COLLECT = 'ADD_COLLECT'
 export const CANCEL_LIKE = 'CANCEL_LIKE'
 export const CANCEL_COLLECT = 'CANCEL_COLLECT'
-
+export const ADD_FOLLOW = 'ADD_FOLLOW'
+export const CANCEL_FOLLOW = 'CANCEL_FOLLOW'
 
 export const selectSubreddit = subreddit => ({
   type: SELECT_SUBREDDIT,
@@ -65,6 +66,15 @@ export const cancelCollect = (data) => ({
     collect_status : false,
 })
 
+export const addFollow = (data) => ({
+    type : ADD_FOLLOW,
+    follow_status : true,
+})
+
+export const cancelFollow = (data) => ({
+    type : CANCEL_FOLLOW,
+    follow_status : false,
+})
 
 const fetchPosts = subreddit => dispatch => {
   dispatch(requestPosts(subreddit))
@@ -120,11 +130,21 @@ export const fetchPostById = (data) =>  (dispatch) => {
                 like_status: false,
                 collect_status: false
             }
-            if(data.article_status.like_status.like_status === "yes") {
-                articleStatus.like_status = true
+            if(data.article_status.like_status!==null) {
+                if(data.article_status.like_status.like_status === "yes") {
+                    articleStatus.like_status = true
+                }
             }
-            if(data.article_status.collect_status.collect_status === "yes") {
-                articleStatus.collect_status = true
+            
+            if(data.article_status.collect_status!==null) {
+                if(data.article_status.collect_status.collect_status === "yes") {
+                    articleStatus.collect_status = true
+                }
+            }
+            if(data.article_status.follow_status!==null) {
+                if(data.article_status.follow_status.follow_status === "yes") {
+                    articleStatus.follow_status = true
+                }
             }
             const newPost = [data.articleData]
             dispatch(readPost(newPost, articleStatus))
@@ -270,6 +290,71 @@ export const solveCollect= (data) => {
                 .then(data =>{
                     if(data.success) {
                         dispatch(cancelCollect())
+                        message.success(data.info)
+                    } else {
+                        message.warning(data.info);
+                    } 
+                })
+                .catch(err => {
+                    message.error('出现错误： '+err.statusText);
+                    
+                })
+        }
+        
+    }
+}
+
+
+export const solveFollow = (data) => {
+    return (dispatch) => {
+        let token = localStorage.getItem('Forum-token')
+        if (data.action==='add') {
+            fetch('/api/newfollow', {
+                headers:{
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer ' + token,
+                },
+                method:'POST',body: JSON.stringify(data)}).then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        return Promise.reject({
+                            status: response.status,
+                            statusText: response.statusText
+                        })
+                    }
+                })
+                .then(data =>{
+                    if(data.success) {
+                        dispatch(addFollow())
+                        message.success(data.info)
+                    } else {
+                        message.warning(data.info);
+                    } 
+                })
+                .catch(err => {
+                    message.error('出现错误： '+err.statusText);
+                    
+                })
+        } else {
+            fetch('/api/cancelfollow', {
+                headers:{
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer ' + token,
+                },
+                method:'POST',body: JSON.stringify(data)}).then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        return Promise.reject({
+                            status: response.status,
+                            statusText: response.statusText
+                        })
+                    }
+                })
+                .then(data =>{
+                    if(data.success) {
+                        dispatch(cancelFollow())
                         message.success(data.info)
                     } else {
                         message.warning(data.info);

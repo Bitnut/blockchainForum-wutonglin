@@ -137,6 +137,7 @@ class Wirting extends React.Component {
                 article_intro: rawString.substring(0,200)+'...',
                 article_img: srcArr,
                 postId : postId,
+                author_name: this.props.user_name,
                 release_status: 'yes'
             }
             this.props.dispatch(releaseArticle(submitData, index1))

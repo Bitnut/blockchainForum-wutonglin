@@ -132,9 +132,27 @@ const getArticleStatus = async function (data) {
             attributes: ['collect_status']
         }
     )
+    const author_id = await Posts.findOne(
+        {
+            where: {
+                post_id: data.post_id
+            },
+            attributes: ['author_id']
+        }
+    )
+    const follow_status = await Follow.findOne(
+        {
+            where: {
+                user_id: data.user_id,
+                followed_user_id: author_id.author_id
+            },
+            attributes: ['follow_status']
+        }
+    )
     return {
         like_status,
-        collect_status
+        collect_status,
+        follow_status
     }
 }
 
@@ -251,6 +269,7 @@ const refreshArticle = async function ( articleInfo, isReleased) {
                 post_content_raw: articleInfo.rawContent,                
                 post_content_html: articleInfo.htmlContent,
                 article_intro: articleInfo.article_intro,
+                author_name: articleInfo.author_name,
                 intro_img: intro_img_url,
                 release_moment: time,
                 blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
@@ -270,6 +289,7 @@ const refreshArticle = async function ( articleInfo, isReleased) {
                 post_content_raw: articleInfo.rawContent,                
                 post_content_html: articleInfo.htmlContent,
                 article_intro: articleInfo.article_intro,
+                author_name: articleInfo.author_name,
                 intro_img: intro_img_url,
                 blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
             },
@@ -388,15 +408,8 @@ const addNewComment = async function (newComment) {
             likes: 0
         }
     )
-    const newCommentNum = await post.findOne(
-        {
-            where: {
-                post_id: id
-            }
-        }
-        ).then(function(post){
-            post.increment('post_comments')
-        })
+
+    Posts.increment( 'post_comments' ,{ where:{post_id: newComment.post_id}})
     return comment  
 }
 
@@ -624,15 +637,15 @@ const addfollow = async function (data) {
             {
                 where: {
                     user_id: data.user_id,
-                followed_user_id: data.followed_user_id
+                    followed_user_id: data.followed_user_id
                 }
             }
         )
-        User.increment( 'followers' ,{ where:{user_id: data.user_id}})
+        User.increment( 'followers' ,{ where:{user_id: data.followed_user_id}})
         return newInfo
     }
     if(result[1]) {
-        User.increment( 'followers' ,{ where:{user_id: data.user_id}})
+        User.increment( 'followers' ,{ where:{user_id: data.followed_user_id}})
         return result
     } else {
         return {

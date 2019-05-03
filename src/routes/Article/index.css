@@ -27,3 +27,25 @@
     margin: 25% auto;
     width: 100%
 }
+
+
+.article-info {
+    position: relative;
+    display: flex;
+}
+
+.article-info .message-wrapper{
+    margin-left: 20px;
+}
+
+.follow-button  .inner-button .second-display{
+    display: none;
+}
+
+.follow-button:hover  .inner-button  .first-display{
+    display: none;
+}
+
+.follow-button:hover  .inner-button  .second-display{
+    display: block;
+}

@@ -63,6 +63,14 @@ module.exports = function(sequelize, DataTypes) {
     author_name: {
       type: DataTypes.STRING(60),
       allowNull: false
+    },
+    blockchain_id: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    post_collects: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
     }
   }, {
     tableName: 'posts'

@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { Layout, Affix, Button, Icon, 
-    Tooltip, Col, Row,Drawer, Divider, Collapse, Avatar} from 'antd'
+    Tooltip, Col, Row,Drawer, Divider, 
+    Collapse, Skeleton} from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
@@ -16,6 +17,7 @@ import nullLike from '../../assets/nullLike.png'
 import share from '../../assets/share.png'
 import energy from '../../assets/energy.png'
 import {FormatTime} from '../../components/utils/formatTime'
+import { relative } from 'path';
 //import http from '../../services/server';
 const { Content} = Layout;
 const Panel = Collapse.Panel;
@@ -154,7 +156,7 @@ class readArticle extends Component{
                 
                 <Layout style={{ padding: '24px 0', background: '#fff' }}>
                     {isEmpty
-                        ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>) :
+                        ? (isFetching ?  <div style={{width: 1000, marginLeft: 300}}><Skeleton active /><Skeleton active /><Skeleton active avatar/></div> : <h2>Empty.</h2>) :
                         <Affix offsetTop={500} onChange={affixed => console.log(affixed)} className='button-wrapper'>
                             <Tooltip placement="right" title='收藏'>
                                 <Button 
@@ -187,7 +189,7 @@ class readArticle extends Component{
                         <Content style={{ padding: '0 24px',minHeight: 300, overflow: 'hidden' }} className="article-content">
                         <div>
                             {isEmpty
-                            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
+                            ? (isFetching ? <div></div> : <h2>Empty.</h2>)
                             : <div >
                                     <div>
                                         <h1  align="center"><div dangerouslySetInnerHTML = {{ __html:this.props.readingPost[0].post_title }}></div></h1>
@@ -360,7 +362,7 @@ class readArticle extends Component{
                                         <br/>
                                     </div>
                                     <div >
-                                        <CommentApp post_id={this.props.readingPost[0].post_id}/>
+                                            <CommentApp post_id={this.props.readingPost[0].post_id}/>
                                     </div>
                                 </div>
                             }

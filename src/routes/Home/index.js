@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {  Col, Row   } from 'antd';
+import {  Col, Row ,Skeleton  } from 'antd';
 import {connect} from 'react-redux'
 import { fetchHomeData } from '../../redux/actions/homeData'
 //import Banner from '../../components/Banner';
@@ -25,9 +25,9 @@ class Home extends PureComponent{
         const isEmpty = this.props.hotArticles.length === 0
         const noUsers = this.props.hotUsers.length ===0
         return (
-            <div className="App-content">
+            <div className="App-content" style={{minHeight: 900}}>
             {isEmpty
-            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>):
+            ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
                 <div>
                     {/* 头条*/}
                     <Row style={{marginBottom: 15}} type="flex" justify="center">  
@@ -39,7 +39,7 @@ class Home extends PureComponent{
                 </div>
             }
             {noUsers
-            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>):
+            ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
                 <div>
                     {/*活跃用户推荐*/}           
                     <Row style={{marginBottom: 15}} type="flex" justify="center">          
@@ -51,7 +51,7 @@ class Home extends PureComponent{
                 </div> 
             }
             {isEmpty
-            ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>):
+            ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
                 <div>
                     {/* 浏览帖子*/}  
                     <Row style={{marginBottom: 15}} type="flex" justify="center">          

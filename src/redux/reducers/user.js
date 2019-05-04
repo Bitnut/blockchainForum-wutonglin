@@ -2,6 +2,7 @@ import { LOGGED_IN, LOGGED_OUT, LOGGING_IN, LOGIN_ERR ,
     ON_WRITING, EXIT_WRITING, SKIP_LOGIN} from '../actions/userAction';
 import { NEW_ARTICLE, DELETE_ARTICLE, RELEASE_ARTICLE, SAVE_ARTICLE } from '../actions/writing';
 import {SAVE_CHANGES, CHANGES_SUCCESS, CHANGE_ERR, CHANGE_AVATAR } from '../actions/settings';
+import {NEW_REWARD} from '../actions/posts'
 
 const initialState = {
     isLoggedIn: false,
@@ -122,6 +123,18 @@ export  function changeSettings(state=initialState, action) {
         return {
             ...state,
             userInfo: action.info
+        };
+        default:
+        return state;
+    }
+}
+
+export  function reward(state=initialState, action) {
+    switch(action.type){
+        case NEW_REWARD:
+        return {
+            ...state,
+            userInfo: action.data
         };
         default:
         return state;

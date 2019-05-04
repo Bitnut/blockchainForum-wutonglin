@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import { Layout, Affix, Button, Icon, 
     Tooltip, Col, Row,Drawer, Divider, 
-    Collapse, Skeleton} from 'antd'
+    Collapse, Skeleton, Modal} from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { fetchPostById, solveLike, solveCollect, solveFollow} from '../../redux/actions/posts'
+import { fetchPostById, solveLike, solveCollect, solveFollow, solveReward} from '../../redux/actions/posts'
 import CommentApp from '../../components/Card/Comment/commentApp'
 //import Picker from '../../components/Picker'
 import './index.css';
@@ -21,6 +21,8 @@ import { relative } from 'path';
 //import http from '../../services/server';
 const { Content} = Layout;
 const Panel = Collapse.Panel;
+const confirm = Modal.confirm;
+
 const pStyle = {
     fontSize: 16,
     color: 'rgba(0,0,0,0.85)',
@@ -130,7 +132,43 @@ class readArticle extends Component{
             this.props.dispatch(solveFollow(data))
         }
     }
-
+    handleReward = () => {
+        const owned = this.props.energy_owned
+        const rewardNumber = this.props.reward_number
+        var newInfo = this.props.userInfo
+        const post = this.props.readingPost[0]
+        let dispatch = this.props.dispatch
+        if(owned < rewardNumber) {
+            Modal.error({
+                title: '错误',
+                content: '您的能量余额已不足，请充值',
+              });
+        } else {
+            confirm({
+                title: '确认操作',
+                content: '确定打赏 '+ rewardNumber +' 点能量给作者吗？',
+                onOk() {
+                    // 新的，更改过个人能量数目的用户信息传给 redux
+                    newInfo.energy_owned = newInfo.energy_owned - rewardNumber
+                    const rewardInfo = {
+                        reward_number: rewardNumber,
+                        post_id: post.post_id,
+                        user_id: newInfo.user_id,
+                        user_name: newInfo.user_name,
+                        user_avatar: newInfo.user_avatar,
+                        rewarded_user_id: post.author_id,
+                        created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
+                    }
+                    dispatch(solveReward(rewardInfo, newInfo))
+                    console.log('OK');
+                },
+                onCancel() {
+                console.log('Cancel');
+                },
+            });
+        }
+        
+    }
 
     showDrawer = () => {
         this.setState({
@@ -145,7 +183,7 @@ class readArticle extends Component{
     };
 
     render(){
-        const { isFetching, lastUpdated } = this.props
+        const { isFetching } = this.props
         const isEmpty = this.props.readingPost.length === 0
         if(!this.props.fetchStatus){
             return (<Redirect to="/404" />);
@@ -236,12 +274,23 @@ class readArticle extends Component{
                                         <br/>
                                         <br/>
                                         <div style={{marginLeft: 400}}>
+                                        
                                             <Button type="primary" onClick={this.showDrawer}>
                                             文章信息
                                             </Button>
-                                            <Button shape="circle" style={{width:120, height: 120, marginLeft: 70}} ref='commentarea'>
-                                            <img style={{width: 100}} src={energy}></img>
-                                            </Button>
+                                            <Tooltip placement="right" title={this.props.user_id.toString() === this.props.readingPost[0].author_id
+                                                    ?'您不能打赏自己的文章！':'欢迎打赏能量！'}>
+                                                <Button 
+                                                shape="circle" 
+                                                style={{width:120, height: 120, marginLeft: 70}} 
+                                                onClick={this.handleReward}
+                                                disabled={this.props.user_id.toString() === this.props.readingPost[0].author_id
+                                                    ?true:false}
+                                                ref='commentarea'
+                                                >
+                                                <img style={{width: 100}} src={energy}></img>
+                                                </Button>
+                                            </Tooltip>
                                             <br/>
                                             <Drawer
                                             width={640}
@@ -384,6 +433,9 @@ const mapStateToProps = state => {
     return {
         user_id: state.user.userInfo.user_id,
         user_name: state.user.userInfo.user_name,
+        userInfo: state.user.userInfo,
+        reward_number: state.user.userInfo.reward_number,
+        energy_owned: state.user.userInfo.energy_owned,
         readingPost: posts.readingPost,
         isFetching: posts.isFetching,
         fetchStatus: posts.fetchStatus,

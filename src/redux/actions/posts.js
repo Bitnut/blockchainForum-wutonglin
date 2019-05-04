@@ -13,6 +13,9 @@ export const CANCEL_LIKE = 'CANCEL_LIKE'
 export const CANCEL_COLLECT = 'CANCEL_COLLECT'
 export const ADD_FOLLOW = 'ADD_FOLLOW'
 export const CANCEL_FOLLOW = 'CANCEL_FOLLOW'
+// 打赏能量
+export const NEW_REWARD = 'NEW_REWARD'
+
 
 export const selectSubreddit = subreddit => ({
   type: SELECT_SUBREDDIT,
@@ -75,6 +78,12 @@ export const cancelFollow = (data) => ({
     type : CANCEL_FOLLOW,
     follow_status : false,
 })
+
+export const newReward = (data) => ({
+    type : NEW_REWARD,
+    data: data
+})
+
 
 const fetchPosts = subreddit => dispatch => {
   dispatch(requestPosts(subreddit))
@@ -368,3 +377,37 @@ export const solveFollow = (data) => {
         
     }
 }
+
+export const solveReward = (rewardInfo, newInfo) => {
+    return (dispatch) => {
+        let token = localStorage.getItem('Forum-token')
+        fetch('/api/newreward', {
+            headers:{
+            "Content-Type": "application/json",
+            "Authorization": 'Bearer ' + token,
+            },
+            method:'POST',body: JSON.stringify(rewardInfo)}).then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    return Promise.reject({
+                        status: response.status,
+                        statusText: response.statusText
+                    })
+                }
+            })
+            .then(data =>{
+                if(data.success) {
+                    dispatch(newReward(newInfo))
+                    message.success(data.info)
+                } else {
+                    message.warning(data.info);
+                } 
+            })
+            .catch(err => {
+                message.error('出现错误： '+err.statusText);
+                
+            })
+    }
+}
+

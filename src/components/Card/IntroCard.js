@@ -77,7 +77,7 @@ export default class IntroCard extends PureComponent{
                         <div>
                           <br/>
                           <br/>
-                          <div className="intro-card-info"><span>作者： {item.author_name}</span><span className="split">|</span><span style={{color: 'red'}}>0</span>&nbsp;点击</div>
+                          <div className="intro-card-info"><span>作者： {item.author_name}</span><span className="split">|</span><span style={{color: 'red'}}>{item.post_views}</span>&nbsp;点击</div>
                         </div>
                       }
                     />     

@@ -59,6 +59,18 @@ module.exports = function(sequelize, DataTypes) {
     reward_number: {
       type: DataTypes.INTEGER(11),
       allowNull: false
+    },
+    followers: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    energy_rewarded: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    energy_owned: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
     }
   }, {
     tableName: 'users'

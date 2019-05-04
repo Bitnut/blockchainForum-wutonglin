@@ -27,7 +27,11 @@ export default class CoverCard extends PureComponent{
                         title: this.props.data[i].post_title,
                         content: this.props.data[i].article_intro,
                         img: this.props.data[i].intro_img,
-                        link: 'http://localhost:3000/article/'+this.props.data[i].post_id
+                        link: 'http://localhost:3000/article/'+this.props.data[i].post_id,
+                        collect: this.props.data[i].post_collects,
+                        like: this.props.data[i].post_likes,
+                        comments: this.props.data[i].post_comments,
+                        views: this.props.data[i].post_views,
                     });
                 }
                 this.setState({
@@ -59,7 +63,7 @@ export default class CoverCard extends PureComponent{
                     renderItem={item => (
                     <List.Item
                         key={item.title}
-                        actions={[<IconText type="star-o" text="156" />, <IconText type="like-o" text="156" />, <IconText type="message" text="2" />]}
+                        actions={[<IconText type="star-o" text={item.collect} />, <IconText type="like-o" text={item.like} />, <IconText type="message" text={item.comments} />, <IconText type="eye" text={item.views} />]}
                         extra={item.img === ''
                         ? <div></div>:<img width={272} height={200} alt="logo" src={item.img} />
                         }

@@ -348,6 +348,20 @@ const cancelfollow = async function (ctx) {
     }
 }
 
+const newReward = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.newReward(data);
+    if (result) {
+        ctx.body = {
+            success: 'true',
+            info: '打赏成功！'
+        }
+        
+    } else {
+        ctx.throw(404)
+    }
+}
+
 
 module.exports = {
     getHotArticles,
@@ -370,4 +384,5 @@ module.exports = {
     cancelfollow,
     cancellike,
     cancelcollect,
+    newReward
 }

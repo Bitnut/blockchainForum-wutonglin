@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Menu, Layout, Icon, Avatar, List, Divider} from 'antd'
+import { Menu, Layout, Icon, Avatar, List, Divider, Skeleton} from 'antd'
 import './index.css';
 import { connect } from 'react-redux'
 import {fetchVisitData} from '../../redux/actions/visit'
@@ -88,7 +88,7 @@ class userPage extends Component{
         return( 
             <div className="home-content">
                 {isEmpty
-                ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
+                ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>)
                 : <div>
                     <Layout style={{ padding: '24px 0', background: '#fff' }}>
                         <Sider width={200} collapsedWidth="0" style={{ background: '#fff' }}>

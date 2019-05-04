@@ -5,6 +5,7 @@ const commentsModel = '../schema/comments.js'
 const followModel = '../schema/follow.js'
 const likesModel = '../schema/likes.js'
 const collectModel = '../schema/collect.js'
+const rewardModel = '../schema/reward.js'
 const ForumDb = db.Forum // 引入数据库
 
 const Sequelize = require('sequelize');
@@ -16,6 +17,7 @@ const Comment = ForumDb.import(commentsModel)
 const Follow = ForumDb.import(followModel)
 const Likes = ForumDb.import(likesModel)
 const Collect = ForumDb.import(collectModel)
+const Reward = ForumDb.import(rewardModel)
 // 登录时返回所有用户信息
 const getUserInfoByName = async function (nickName) { 
   const userInfo = await User.findOne({
@@ -80,6 +82,8 @@ const newUser = async function (userInfo){
       reward_setting: 'yes',
       reward_number: 3,
       followers: 0,
+      energy_rewarded: 0,
+      energy_owned: 10,
     }
   )
   return Info
@@ -179,7 +183,7 @@ const getAllArticles = async function () {
                 //    [Op.gt] : time - 1000*60*60*48
                 //},
             },
-            attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title']
+            attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title', 'post_views', 'post_likes', 'post_collects','post_comments']
         }
     );
     return articles;
@@ -721,6 +725,25 @@ const cancelfollow = async function (data) {
 }
 
 
+const newReward = async function (data) {
+    const result = Reward.create(
+        {
+            id: null,
+            reward_number: data.reward_number,
+            post_id: data.post_id,
+            user_id: data.user_id,
+            user_name: data.user_name,
+            user_avatar: data.user_avatar,
+            rewarded_user_id: data.rewarded_user_id,
+            created_at: data.created_at
+        }
+    )
+    User.increment( 'energy_rewarded' ,{by: data.reward_number, where:{user_id: data.rewarded_user_id}})
+    User.decrement( 'energy_owned' ,{by: data.reward_number, where:{user_id: data.user_id}})
+    return result
+}
+
+
 module.exports = {
   getEmail,
   getNickName,
@@ -752,5 +775,6 @@ module.exports = {
   cancelfollow,
   cancellike,
   cancelcollect,
-  getArticleStatus
+  getArticleStatus,
+  newReward
 }

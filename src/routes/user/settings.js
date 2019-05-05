@@ -62,7 +62,6 @@ class Settings extends Component{
 
 
     render(){
-        const {userInfo} = this.props;
         return(
             <div>
                 <div className="selection-content">

@@ -16,6 +16,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(10),
       allowNull: false
     },
+    author_id: {
+      type: DataTypes.STRING(10),
+      allowNull: false
+    },
+    post_title: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     like_status: {
       type: DataTypes.STRING(10),
       allowNull: false

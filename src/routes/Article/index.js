@@ -9,7 +9,6 @@ import { fetchPostById, solveLike, solveCollect, solveFollow, solveReward} from 
 import CommentApp from '../../components/Card/Comment/commentApp'
 //import Picker from '../../components/Picker'
 import './index.css';
-import { redBright } from 'ansi-colors';
 import collect from '../../assets/collect.png'
 import nullCollect from '../../assets/nullCollect.png'
 import like from '../../assets/like.png'
@@ -17,11 +16,9 @@ import nullLike from '../../assets/nullLike.png'
 import share from '../../assets/share.png'
 import energy from '../../assets/energy.png'
 import {FormatTime} from '../../components/utils/formatTime'
-import { relative } from 'path';
 //import http from '../../services/server';
 const { Content} = Layout;
 const Panel = Collapse.Panel;
-const confirm = Modal.confirm;
 
 const pStyle = {
     fontSize: 16,
@@ -64,7 +61,9 @@ const introStyle = {
 class readArticle extends Component{
     state = {
         newContent: '',
-        visible: false
+        visible: false,
+        energyRewardTimes: 0,
+        modalVisible: false,
     }; 
     static propTypes = {
     selectedSubreddit: PropTypes.string.isRequired,
@@ -87,8 +86,8 @@ class readArticle extends Component{
             action: '',
             post_id: post.post_id,
             user_id: this.props.user_id,
+            author_id: post.author_id,
             post_title: post.post_title,
-            post_img: post.intro_img,
             created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
         }
         if(this.props.collect_status) {
@@ -100,10 +99,13 @@ class readArticle extends Component{
         }
     }
     handleLike = () => {
+        const post = this.props.readingPost[0]
         var data = {
             action: '',
-            post_id: this.props.readingPost[0].post_id,
+            post_id: post.post_id,
             user_id: this.props.user_id,
+            author_id: post.author_id,
+            post_title: post.post_title,
             created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
         }
         if(this.props.like_status) {
@@ -133,41 +135,40 @@ class readArticle extends Component{
         }
     }
     handleReward = () => {
-        const owned = this.props.energy_owned
         const rewardNumber = this.props.reward_number
-        var newInfo = this.props.userInfo
-        const post = this.props.readingPost[0]
-        let dispatch = this.props.dispatch
+        let rewardTimes = this.state.energyRewardTimes
+        const owned = this.props.energy_owned - rewardTimes*rewardNumber
         if(owned < rewardNumber) {
             Modal.error({
                 title: '错误',
                 content: '您的能量余额已不足，请充值',
               });
         } else {
-            confirm({
-                title: '确认操作',
-                content: '确定打赏 '+ rewardNumber +' 点能量给作者吗？',
-                onOk() {
-                    // 新的，更改过个人能量数目的用户信息传给 redux
-                    newInfo.energy_owned = newInfo.energy_owned - rewardNumber
-                    const rewardInfo = {
-                        reward_number: rewardNumber,
-                        post_id: post.post_id,
-                        user_id: newInfo.user_id,
-                        user_name: newInfo.user_name,
-                        user_avatar: newInfo.user_avatar,
-                        rewarded_user_id: post.author_id,
-                        created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
-                    }
-                    dispatch(solveReward(rewardInfo, newInfo))
-                    console.log('OK');
-                },
-                onCancel() {
-                console.log('Cancel');
-                },
-            });
+            const modalContent= '确定打赏 '+ rewardNumber +' 点能量给作者吗？';
+            this.setState({modalText: modalContent, modalVisible: true})
         }
-        
+    }
+    handleOK = () => {
+        const rewardNumber = this.props.reward_number
+        let rewardTimes = this.state.energyRewardTimes
+        var newInfo = this.props.userInfo
+        const post = this.props.readingPost[0]
+        newInfo.energy_owned = newInfo.energy_owned - rewardNumber
+        const rewardInfo = {
+            reward_number: rewardNumber,
+            post_id: post.post_id,
+            user_id: newInfo.user_id,                       
+            post_title: post.post_title,
+            user_name: newInfo.user_name,
+            user_avatar: newInfo.user_avatar,
+            rewarded_user_id: post.author_id,
+            created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
+        }
+        this.props.dispatch(solveReward(rewardInfo, newInfo))
+        this.setState({energyRewardTimes: ++rewardTimes, modalVisible: false})
+    }
+    handleCancel = () => {
+        this.setState({modalVisible: false})
     }
 
     showDrawer = () => {
@@ -203,8 +204,8 @@ class readArticle extends Component{
                                 onClick={this.handleCollect}
                                 >
                                 {this.props.collect_status
-                                    ?<img style={{width: 40}} src={collect}></img>
-                                    :<img style={{width: 40}} src={nullCollect}></img>}
+                                    ?<img style={{width: 40}} src={collect} alt=""></img>
+                                    :<img style={{width: 40}} src={nullCollect} alt=""></img>}
                                 </Button>
                             </Tooltip>
                             <Tooltip placement="right" title='喜欢'>
@@ -214,12 +215,12 @@ class readArticle extends Component{
                                 onClick={this.handleLike}
                                 >
                                 {this.props.like_status
-                                    ?<img style={{width: 40}} src={like}></img>
-                                    :<img style={{width: 40}} src={nullLike}></img>}
+                                    ?<img style={{width: 40}} src={like} alt=""></img>
+                                    :<img style={{width: 40}} src={nullLike} alt=""></img>}
                                 </Button>
                             </Tooltip>
                             <Tooltip placement="right" title='分享'>
-                                <Button ghost style={{width:80, height: 80, border:false}}><img style={{width: 40}} src={share}></img></Button>
+                                <Button ghost style={{width:80, height: 80, border:false}}><img style={{width: 40}} src={share} alt></img></Button>
                             </Tooltip>   
                         </Affix>
                     }  
@@ -258,8 +259,7 @@ class readArticle extends Component{
                                                 <Icon type="eye"/>浏览量:{this.props.readingPost[0].post_views}
                                                 <Icon type="message" style={{marginLeft: 20}}/>评论数:{this.props.readingPost[0].post_comments}
                                                 <Icon type="star" style={{marginLeft: 20}}/>收藏数:{this.props.readingPost[0].post_collects}
-                                                <Icon type="like" style={{marginLeft: 20}}/>点赞数:{this.props.readingPost[0].post_likes}
-                                                <Icon type="rocket" style={{marginLeft: 20}}/>能量点:                          
+                                                <Icon type="like" style={{marginLeft: 20}}/>点赞数:{this.props.readingPost[0].post_likes}                          
                                                 </p>
                                             </div>
                                             </Panel>
@@ -288,9 +288,18 @@ class readArticle extends Component{
                                                     ?true:false}
                                                 ref='commentarea'
                                                 >
-                                                <img style={{width: 100}} src={energy}></img>
+                                                <img style={{width: 100}} src={energy} alt=""></img>
                                                 </Button>
+                                                
                                             </Tooltip>
+                                            <Modal
+                                                title="操作确认"
+                                                visible={this.state.modalVisible}
+                                                onOk={this.handleOK}
+                                                onCancel={this.handleCancel}
+                                                >
+                                                <p>{this.state.modalText}</p>
+                                            </Modal>
                                             <br/>
                                             <Drawer
                                             width={640}
@@ -299,7 +308,8 @@ class readArticle extends Component{
                                             onClose={this.onClose}
                                             visible={this.state.visible}
                                             >
-                                            <p style={{ ...pStyle, marginBottom: 24 }}>文章信息</p>
+                                            <p style={{ ...pStyle, marginBottom: 24 }}>文章信息<Icon type="insurance" style={{fontSize: 30, color: '#0000FF', marginLeft: 230}}/>&nbsp;&nbsp;版权保护</p>
+                                            <Divider />
                                             <p style={pStyle}>作者信息</p>
                                             <Row>
                                                 <Col span={12}>
@@ -307,15 +317,10 @@ class readArticle extends Component{
                                                 
                                                 </Col>
                                                 <Col span={12}>
-                                                <Icon type="insurance" style={{fontSize: 30, color: '#0000FF'}}/>&nbsp;&nbsp;版权保护
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col span={12}>
                                                 <Button 
                                                 type={this.props.follow_status?"":"primary"}
                                                 shape="round"
-                                                style={{marginLeft: 20}}
+                                                style={{marginBottom: 16, marginTop: 0}}
                                                 onClick={this.handleFollow}
                                                 className="follow-button"
                                                 >
@@ -327,8 +332,10 @@ class readArticle extends Component{
                                                     :<div>关注<Icon type="plus"></Icon></div>
                                                     }
                                                 </Button>
+                                                
                                                 </Col>
                                             </Row>
+                                            
                                             <Row>
                                                 <Col span={12}>
                                                 <DescriptionItem title="城市" content="广州" />

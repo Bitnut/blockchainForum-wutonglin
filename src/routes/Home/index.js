@@ -8,8 +8,6 @@ import { fetchHomeData } from '../../redux/actions/homeData'
 import CoverCard from '../../components/Card/CoverCard';
 import IntroCard from '../../components/Card/IntroCard';
 import ReadCard from '../../components/Card/ReadCard';
-import coverDefault from '../../assets/default.jpg'
-import bannerDefault from '../../assets/timg.jpeg'
 
 
 class Home extends PureComponent{

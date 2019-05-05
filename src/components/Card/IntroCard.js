@@ -46,7 +46,6 @@ export default class IntroCard extends PureComponent{
 
     render(){
         const { initLoading, loading } = this.state;
-        const dataList = this.props.data.slice(0,8)
         const loadMore = !initLoading && !loading ? (
             <div style={{
             textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',

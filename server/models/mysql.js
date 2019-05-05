@@ -27,6 +27,41 @@ const getUserInfoByName = async function (nickName) {
   })
   return userInfo
 }
+
+const getUserNews = async function (userId) {
+    const user_likes = await Likes.findAll({
+        where: {
+            [Op.or]: {
+                user_id: userId,
+                author_id: userId
+            }
+            
+        }
+    })
+    const user_collects = await Collect.findAll({
+        where: {
+            [Op.or]: {
+                user_id: userId,
+                author_id: userId
+            }
+            
+        }
+    })
+    const user_follows = await Follow.findAll({
+        where: {
+            [Op.or]: {
+                user_id: userId,
+                followed_user_id: userId
+            }
+            
+        }
+    })
+    return {
+        user_likes,
+        user_collects,
+        user_follows
+    }
+}
 const getUserArticles = async function (userId) {
     const userArticles = await Posts.findAll({
         where: {
@@ -548,6 +583,8 @@ const addlike = async function (data) {
             defaults: {
                 id: null,
                 like_status: 'yes',
+                author_id: data.author_id,
+                post_title: data.post_title,
                 created_at: data.created_at
             }
         }
@@ -585,8 +622,8 @@ const addcollect = async function (data) {
             },
             defaults: {
                 id: null,
+                author_id: data.author_id,
                 post_title: data.post_title,
-                post_img: data.post_img,
                 collect_status: 'yes',
                 created_at: data.created_at
             }
@@ -734,7 +771,8 @@ const newReward = async function (data) {
             user_id: data.user_id,
             user_name: data.user_name,
             user_avatar: data.user_avatar,
-            rewarded_user_id: data.rewarded_user_id,
+            rewarded_user_id: data.rewarded_user_id,            
+            post_title: data.post_title,
             created_at: data.created_at
         }
     )
@@ -750,6 +788,7 @@ module.exports = {
   getPhoneNum,
   newUser,
   getUserInfoByName,
+  getUserNews,
   getUserArticles,
   newArticle,
   refreshArticle,

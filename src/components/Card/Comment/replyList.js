@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {Icon, Avatar} from 'antd'
 import './comment.css'
-import avator from '../../../assets/smallBanner.jpg'
 class ReplyList extends Component {
     render() {
         return (

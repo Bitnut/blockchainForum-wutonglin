@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
-import { Menu, Layout, Icon, Avatar, List, Divider, Skeleton} from 'antd'
+import { Layout, Icon, Avatar, List, Divider, Skeleton} from 'antd'
 import './index.css';
 import { connect } from 'react-redux'
 import {fetchVisitData} from '../../redux/actions/visit'
 import { Redirect } from 'react-router-dom'
-const  SubMenu  = Menu.SubMenu;
 const { Content, Sider } = Layout;
 
 
@@ -86,40 +85,11 @@ class userPage extends Component{
             return (<Redirect to="/404" />);
         }
         return( 
-            <div className="home-content">
+            <div className="visit-home-content">
                 {isEmpty
                 ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>)
                 : <div>
                     <Layout style={{ padding: '24px 0', background: '#fff' }}>
-                        <Sider width={200} collapsedWidth="0" style={{ background: '#fff' }}>
-                        <Menu
-                            mode="inline"
-                            openKeys={this.state.openKeys}
-                            onOpenChange={this.onOpenChange}
-                            style={{ width: 200 }}
-                        >
-                            <SubMenu key="sub1" title={<span><Icon type="mail" /><span>动态</span></span>}>
-                            <Menu.Item key="1">优化理论</Menu.Item>
-                            <Menu.Item key="2">复变函数</Menu.Item>
-                            <Menu.Item key="3">数学分析</Menu.Item>
-                            <Menu.Item key="4">线性代数</Menu.Item>
-                            </SubMenu>
-                            <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>热门</span></span>}>
-                            <Menu.Item key="5">复杂难题</Menu.Item>
-                            <Menu.Item key="6">量子力学</Menu.Item>
-                            <SubMenu key="sub3" title="Submenu">
-                                <Menu.Item key="7">量子纠缠</Menu.Item>
-                                <Menu.Item key="8">全反射</Menu.Item>
-                            </SubMenu>
-                            </SubMenu>
-                            <SubMenu key="sub4" title={<span><Icon type="setting" /><span>最新评论</span></span>}>
-                            <Menu.Item key="9">区块链</Menu.Item>
-                            <Menu.Item key="10">区块链</Menu.Item>
-                            <Menu.Item key="11">区块链</Menu.Item>
-                            <Menu.Item key="12">区块链</Menu.Item>
-                            </SubMenu>
-                        </Menu>
-                        </Sider>
                         <Content style={{ padding: '0 24px', minHeight: 280, overflow: 'hidden' }}>
                         <List
                             itemLayout="vertical"

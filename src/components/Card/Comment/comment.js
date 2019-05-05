@@ -60,7 +60,7 @@ class Comment extends Component {
             <div className='comment-reply-wrapper'>
                 <div className='comment'>
                     <div className='comment-user'>
-                        <img src={this.props.comment.user_avatar} height="60"></img>
+                        <img src={this.props.comment.user_avatar} height="60" alt=""></img>
                     </div>
                     <div className='right'>
                         <span><h2>{this.props.comment.user_name}：</h2> </span>

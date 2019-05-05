@@ -1,4 +1,4 @@
-import { notification, message, Avatar} from 'antd';
+import { notification, message} from 'antd';
 export const SAVE_CHANGES = 'SAVE_CHANGES'
 export const CHANGES_SUCCESS = 'CHANGES_SUCCESS'
 export const CHANGE_ERR = 'CHANGE_ERR'

@@ -398,6 +398,7 @@ export const solveReward = (rewardInfo, newInfo) => {
             })
             .then(data =>{
                 if(data.success) {
+                    localStorage.setItem('userInfo', JSON.stringify(newInfo))
                     dispatch(newReward(newInfo))
                     message.success(data.info)
                 } else {

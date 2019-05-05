@@ -1,19 +1,22 @@
 import { LOGGED_IN, LOGGED_OUT, LOGGING_IN, LOGIN_ERR ,
-    ON_WRITING, EXIT_WRITING, SKIP_LOGIN} from '../actions/userAction';
+    ON_WRITING, EXIT_WRITING, SKIP_LOGIN, FETCH_USER} from '../actions/userAction';
 import { NEW_ARTICLE, DELETE_ARTICLE, RELEASE_ARTICLE, SAVE_ARTICLE } from '../actions/writing';
 import {SAVE_CHANGES, CHANGES_SUCCESS, CHANGE_ERR, CHANGE_AVATAR } from '../actions/settings';
 import {NEW_REWARD} from '../actions/posts'
 
 const initialState = {
     isLoggedIn: false,
-    isLoggingin: false,
+    isLoggingin: true,
     login_display: '',
     logout_display: 'none',
     login_info: '',
     userInfo: {},
+    user_collects: [],
+    user_follows: [],
+    user_likes: [],
     changingSettings: false,
     settings_info: '',
-    userArticles: {},
+    userArticles: [],
     header_display: '',
     status: null,
 };
@@ -29,7 +32,10 @@ export function user(state=initialState, action) {
             logout_display: '',
             login_info: '登录成功',
             userInfo: action.success,
-            userArticles: action.userArticles
+            userArticles: action.userArticles,
+            user_collects: action.news.user_collects,
+            user_follows: action.news.user_follows,
+            user_likes: action.news.user_likes,
         };
         case LOGGING_IN:
         return {
@@ -43,11 +49,24 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
-            isLoggingin: true,
+            isLoggingin: false,
             login_display: 'none',
             logout_display: '',
             userInfo: action.success,
-            userArticles: action.userArticles
+            userArticles: action.userArticles,
+            user_collects: action.news.user_collects,
+            user_follows: action.news.user_follows,
+            user_likes: action.news.user_likes,
+        };
+        case FETCH_USER:
+        return {
+            ...state,
+            userInfo: action.success,
+            isLoggingin: false,
+            userArticles: action.userArticles,
+            user_collects: action.news.user_collects,
+            user_follows: action.news.user_follows,
+            user_likes: action.news.user_likes,
         };
         case LOGGED_OUT:
         return {
@@ -62,7 +81,7 @@ export function user(state=initialState, action) {
         return {
             ...state,
             isLoggedIn: false,
-            isLogging: false,
+            isLoggingin: false,
             login_display: '',
             logout_display: 'none',
             login_info: action.info,

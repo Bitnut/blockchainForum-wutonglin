@@ -1,4 +1,4 @@
-import About  from './routes/About';
+// import About  from './routes/About';
 import Home  from './routes/Home';
 import Selection from './routes/Selection';
 import Pool from './routes/Pool';
@@ -16,10 +16,6 @@ import userPage from './routes/userPage'
 
 export const routerConfig = [
     {
-        path:'/about',
-        component: About,
-        exact: true,
-    },{
         path:'/login',
         component:LoginPage,
         exact: true

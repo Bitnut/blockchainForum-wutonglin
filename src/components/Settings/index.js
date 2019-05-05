@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Form, InputNumber, 
-    Radio, Button, Input, Avatar
+    Radio, Button, Input
   } from 'antd';
 import PicturesWall from '../upLoadAvator'
 import './index.css'

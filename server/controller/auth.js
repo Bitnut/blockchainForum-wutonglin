@@ -99,12 +99,14 @@ const userLogin = async function (ctx) {
         nickName: userInfo.user_name
         }
         const userArticles = await user.getUserArticles(userInfo.user_id);
+        const userNews = await user.getUserNews(userInfo.user_id)
         const secret = 'Forum-token' // 指定密钥
         const token = jwt.sign(userToken, secret) // 签发token
         ctx.body = {
         success: true,
         userInfo: userInfo,
         userArticles: userArticles,
+        userNews: userNews,
         token: token, // 返回token
         info: '登录成功！'
         }

@@ -1,9 +1,9 @@
 
-.home-content{
+.visit-home-content{
     z-index: 10;
     position: relative;
-    max-width: 1600px;
-    min-height: 700px;
+    max-width: 1400px;
+    min-height: 890px;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;

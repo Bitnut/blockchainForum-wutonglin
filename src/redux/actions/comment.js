@@ -1,4 +1,4 @@
-import { notification, message } from 'antd';
+import { message } from 'antd';
 
 export const ADD_COMMENT = 'ADD_COMMENT'
 export const INIT_COMMENT = 'INIT_COMMENT'
@@ -20,14 +20,6 @@ export const initComment = (data) => ({
 export const fetchComment = () => ({
     type: 'FETCH_COMMENT',
 })
-
-const openNotification = (info) => {
-    const args = {
-      message: info,
-      duration: 2,
-    };
-    notification.open(args);
-};
 
 export const addNewComment = (comment) => {
     return (dispatch) => {

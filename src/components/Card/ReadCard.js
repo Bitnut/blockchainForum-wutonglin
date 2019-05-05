@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import {List, Card, Icon,  Avatar,   Button, Skeleton, } from 'antd';  // 加载 JS
+import {List, Card, Icon } from 'antd';  // 加载 JS
 import './CoverCard.css'
-import avatar from '../../assets/smallBanner.jpg'
 
 const IconText = ({ type, text }) => (
     <span>

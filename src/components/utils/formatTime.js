@@ -1,5 +1,5 @@
-export function FormatTime(t,date){
-        var date=new Date(date);
+export function FormatTime(t,d){
+        var date=new Date(d);
         var o = {   
             "M+" : date.getMonth()+1,                 //月份   
             "d+" : date.getDate(),                    //日   

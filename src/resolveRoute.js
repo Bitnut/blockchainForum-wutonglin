@@ -1,56 +1,56 @@
 // import About  from './routes/About';
-import Home  from './routes/Home';
-import Selection from './routes/Selection';
-import Pool from './routes/Pool';
-import LoginPage from './routes/user/login'
-import Register from './routes/user/register';
-import Personal from './routes/user/personal';
-import Settings from './routes/user/settings';
-import Writing from './routes/user/writing';
+import home  from './routes/Home';
+import selection from './routes/Selection';
+import pool from './routes/Pool';
+import loginPage from './routes/User/Login'
+import register from './routes/User/Register';
+import personal from './routes/User/Personal';
+import settings from './routes/User/Settings';
+import writing from './routes/User/Writing';
 //import hotArticle from './routes/HotArticle';
 import readArticle from './routes/Article';
-import Jobs from './routes/Jobs'
-import ErrorPage from './routes/Error'
-import userPage from './routes/userPage'
+import jobs from './routes/Jobs'
+import errorPage from './routes/Error'
+import userPage from './routes/UserPage'
 //import CommentApp from './components/Card/Comment/commentApp'
 
 export const routerConfig = [
     {
         path:'/login',
-        component:LoginPage,
+        component:loginPage,
         exact: true
     },{
 
         path:'/register',
-        component:Register,
+        component:register,
         exact: true
     },{
         path:'/',
-        component:Home,
+        component:home,
         exact: true
     },{
         path:'/selection',
-        component:Selection,
+        component:selection,
         exact: true,
         auth:true,
     },{
         path:'/pool',
-        component:Pool,
+        component:pool,
         exact: true,
         auth:true,
     },{
         path:'/user/personal',
-        component:Personal,
+        component:personal,
         exact: true,
         auth:true,
     },{
         path:'/user/settings',
-        component:Settings,
+        component:settings,
         exact: true,
         auth:true,
     },{
         path:'/user/writing',
-        component:Writing,
+        component:writing,
         exact: true,
         auth:true,
     },{
@@ -63,11 +63,11 @@ export const routerConfig = [
         auth:true,
     },{
         path:'/jobsdone',
-        component:Jobs,
+        component:jobs,
         exact: true,
         auth:true,
     },{
         path:'/404',
-        component:ErrorPage
+        component:errorPage
     }
 ];

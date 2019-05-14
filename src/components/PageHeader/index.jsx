@@ -7,7 +7,7 @@ import {
     Link
   } from 'react-router-dom'
 import { userLogout, goWriting } from '../../redux/actions/userAction' 
-import Login from '../../components/login'
+import Login from '../../components/Login'
 import Headroom from 'react-headroom'
 import { connect } from 'react-redux'
 import './index.css'

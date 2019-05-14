@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { fetchPostById, solveLike, solveCollect, solveFollow, solveReward} from '../../redux/actions/posts'
-import CommentApp from '../../components/Card/Comment/commentApp'
+import CommentApp from '../../components/Card/Comment/CommentApp'
 //import Picker from '../../components/Picker'
 import './index.css';
 import collect from '../../assets/collect.png'
@@ -66,8 +66,7 @@ class readArticle extends Component{
         modalVisible: false,
     }; 
     static propTypes = {
-    selectedSubreddit: PropTypes.string.isRequired,
-    posts: PropTypes.array.isRequired,
+    readingPost: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,
     lastUpdated: PropTypes.number,
     dispatch: PropTypes.func.isRequired
@@ -79,14 +78,22 @@ class readArticle extends Component{
             user_id: userInfo.user_id,
         }
         this.props.dispatch(fetchPostById(data))
+
+        setTimeout(function timer() {
+        // TODO: 待添加一个10秒后自增的阅读数
+        console.log('10086')
+        },10 * 1000)
+            
     }
     handleCollect = () => {
         const post = this.props.readingPost[0]
         var data = {
             action: '',
-            post_id: post.post_id,
             user_id: this.props.user_id,
+            user_name: this.props.user_name,
             author_id: post.author_id,
+            author_name: post.author_name,
+            post_id: post.post_id,   
             post_title: post.post_title,
             created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
         }
@@ -102,9 +109,11 @@ class readArticle extends Component{
         const post = this.props.readingPost[0]
         var data = {
             action: '',
-            post_id: post.post_id,
             user_id: this.props.user_id,
+            user_name: this.props.user_name,
             author_id: post.author_id,
+            author_name: post.author_name,
+            post_id: post.post_id,
             post_title: post.post_title,
             created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
         }
@@ -124,6 +133,7 @@ class readArticle extends Component{
             user_id: this.props.user_id,
             user_name: this.props.user_name,
             followed_user_id: post.author_id,
+            followed_user_name: post.author_name,
             created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
         }
         if(this.props.follow_status) {
@@ -156,12 +166,12 @@ class readArticle extends Component{
         newInfo.energy_owned = newInfo.energy_owned - rewardNumber
         const rewardInfo = {
             reward_number: rewardNumber,
-            post_id: post.post_id,
-            user_id: newInfo.user_id,                       
-            post_title: post.post_title,
+            user_id: newInfo.user_id,
             user_name: newInfo.user_name,
-            user_avatar: newInfo.user_avatar,
             rewarded_user_id: post.author_id,
+            rewarded_user_name: post.author_name,
+            post_id: post.post_id, 
+            post_title: post.post_title,
             created_at: FormatTime("yyyy-MM-dd hh:mm", +new Date())
         }
         this.props.dispatch(solveReward(rewardInfo, newInfo))
@@ -220,7 +230,7 @@ class readArticle extends Component{
                                 </Button>
                             </Tooltip>
                             <Tooltip placement="right" title='分享'>
-                                <Button ghost style={{width:80, height: 80, border:false}}><img style={{width: 40}} src={share} alt></img></Button>
+                                <Button ghost style={{width:80, height: 80, border:false}}><img style={{width: 40}} src={share} alt=""></img></Button>
                             </Tooltip>   
                         </Affix>
                     }  
@@ -260,6 +270,7 @@ class readArticle extends Component{
                                                 <Icon type="message" style={{marginLeft: 20}}/>评论数:{this.props.readingPost[0].post_comments}
                                                 <Icon type="star" style={{marginLeft: 20}}/>收藏数:{this.props.readingPost[0].post_collects}
                                                 <Icon type="like" style={{marginLeft: 20}}/>点赞数:{this.props.readingPost[0].post_likes}                          
+                                                <Icon type="gift" style={{marginLeft: 20}}/>能量值:{this.props.readingPost[0].post_reward}  
                                                 </p>
                                             </div>
                                             </Panel>

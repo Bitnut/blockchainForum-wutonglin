@@ -43,12 +43,12 @@ export const getArticleInfo = () => {
 
 export const addNewArticle = (userId, userName) => {
     const newArticleData = {
-        corpus: '默认文集',
+        corpus_tag: '默认文集',
         release_status: 'no',
-        title: '新建文章',
-        rawContent: '',
-        htmlContent: '',
-        authorId : userId, 
+        post_title: '新建文章',
+        post_content_raw: '',
+        post_content_html: '',
+        author_id : userId, 
         author_name: userName
     }
     return (dispatch) => {

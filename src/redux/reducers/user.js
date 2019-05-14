@@ -48,7 +48,7 @@ export function user(state=initialState, action) {
         case SKIP_LOGIN:
         return {
             ...state,
-            isLoggedIn: false,
+            isLoggedIn: false, 
             isLoggingin: false,
             login_display: 'none',
             logout_display: '',

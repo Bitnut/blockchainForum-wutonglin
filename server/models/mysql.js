@@ -1,11 +1,11 @@
 const db = require('../config/default') // 引入user的表结构
-const usersModel = '../schema/users.js'
-const postsModel = '../schema/posts.js'
-const commentsModel = '../schema/comments.js'
-const followModel = '../schema/follow.js'
-const likesModel = '../schema/likes.js'
-const collectModel = '../schema/collect.js'
-const rewardModel = '../schema/reward.js'
+const usersModel = '../schema/forum_user.js'
+const postsModel = '../schema/user_post.js'
+const commentsModel = '../schema/user_comment.js'
+const followModel = '../schema/user_follow.js'
+const likesModel = '../schema/user_like.js'
+const collectModel = '../schema/user_collect.js'
+const rewardModel = '../schema/user_reward.js'
 const ForumDb = db.Forum // 引入数据库
 
 const Sequelize = require('sequelize');
@@ -265,17 +265,19 @@ const newArticle = async function (articleInfo){
     const Info = await Posts.create(
       {
         post_id: null,
-        author_id: articleInfo.authorId,
-        post_title: articleInfo.title,
-        corpus_tag: articleInfo.corpus,
+        author_id: articleInfo.author_id,
+        author_name: articleInfo.author_name,
+        corpus_tag: articleInfo.corpus_tag,
         release_status: articleInfo.release_status,
-        post_content_raw: articleInfo.rawContent,                    
-        post_content_html: articleInfo.htmlContent,
+        post_title: articleInfo.post_title,
+        post_content_raw: articleInfo.post_content_raw,                    
+        post_content_html: articleInfo.post_content_html,
         post_moment: time,
         post_views: 0,
         post_likes: 0,
         post_comments: 0,
-        author_name: articleInfo.author_name
+        post_collects: 0,
+        post_reward: 0,
       }
     )
     return Info
@@ -298,43 +300,45 @@ const refreshArticle = async function ( articleInfo, isReleased) {
         intro_img_url = articleInfo.article_img[0]
     }
     var newArticle = []
+    const time = (new Date()).toLocaleDateString() + " " + (new Date()).toLocaleTimeString();
     if (isReleased==='no') { 
-        const time = +new Date()
         newArticle = await Posts.update(
             {   
     
-                post_title: articleInfo.title,
+                post_title: articleInfo.post_title,
                 release_status: articleInfo.release_status,
-                post_content_raw: articleInfo.rawContent,                
-                post_content_html: articleInfo.htmlContent,
+                post_content_raw: articleInfo.post_content_raw,                
+                post_content_html: articleInfo.post_content_html,
                 article_intro: articleInfo.article_intro,
                 author_name: articleInfo.author_name,
                 intro_img: intro_img_url,
                 release_moment: time,
+                post_moment: time,
                 blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
             },
             {
                 where: {
-                    post_id: articleInfo.postId
+                    post_id: articleInfo.post_id
                 }
             }
         );
     } else {
         newArticle = await Posts.update(
-            {   
+            {
     
-                post_title: articleInfo.title,
+                post_title: articleInfo.post_title,
                 release_status: articleInfo.release_status,
-                post_content_raw: articleInfo.rawContent,                
-                post_content_html: articleInfo.htmlContent,
+                post_content_raw: articleInfo.post_content_raw,                
+                post_content_html: articleInfo.post_content_html,
                 article_intro: articleInfo.article_intro,
                 author_name: articleInfo.author_name,
                 intro_img: intro_img_url,
+                post_moment: time,
                 blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
             },
             {
                 where: {
-                    post_id: articleInfo.postId
+                    post_id: articleInfo.post_id
                 }
             }
         );
@@ -359,7 +363,7 @@ const saveArticle = async function ( articleInfo) {
         },
         {
             where: {
-                post_id: articleInfo.postId
+                post_id: articleInfo.post_id
             }
         }
     );
@@ -583,7 +587,9 @@ const addlike = async function (data) {
             defaults: {
                 id: null,
                 like_status: 'yes',
+                user_name: data.user_name,
                 author_id: data.author_id,
+                author_name: data.author_name,
                 post_title: data.post_title,
                 created_at: data.created_at
             }
@@ -622,7 +628,9 @@ const addcollect = async function (data) {
             },
             defaults: {
                 id: null,
+                user_name: data.user_name,
                 author_id: data.author_id,
+                author_name: data.author_name,
                 post_title: data.post_title,
                 collect_status: 'yes',
                 created_at: data.created_at
@@ -664,8 +672,9 @@ const addfollow = async function (data) {
             defaults: {
                 id: null,
                 follow_status: 'yes',
-                created_at: data.created_at,
                 user_name: data.user_name,
+                followed_user_name: data.followed_user_name,
+                created_at: data.created_at,
             }
         }
     )
@@ -778,6 +787,7 @@ const newReward = async function (data) {
     )
     User.increment( 'energy_rewarded' ,{by: data.reward_number, where:{user_id: data.rewarded_user_id}})
     User.decrement( 'energy_owned' ,{by: data.reward_number, where:{user_id: data.user_id}})
+    Posts.increment( 'post_reward' ,{by: data.reward_number, where:{post_id: data.post_id}})
     return result
 }
 

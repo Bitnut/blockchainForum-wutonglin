@@ -47,6 +47,8 @@ class userPage extends Component{
                 const article = this.props.userArticles.map(item => {
                     if(item.release_status === 'yes'){
                         return item.post_title
+                    } else {
+                        return console.log('')
                     }
                 })
                 article.forEach((item) => {

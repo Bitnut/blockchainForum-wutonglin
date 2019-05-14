@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import './comment.css'
 import {Icon} from 'antd'
-import ReplyEditor from './replyEditor'
-import ReplyList from './replyList'
+import ReplyEditor from './ReplyEditor'
+import ReplyList from './ReplyList'
 
 class Comment extends Component {
     static propTypes = {

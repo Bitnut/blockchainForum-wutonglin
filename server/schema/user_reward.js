@@ -1,18 +1,18 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('comments', {
+  return sequelize.define('user_reward', {
     id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },
-    post_id: {
-      type: DataTypes.STRING(10),
+    reward_number: {
+      type: DataTypes.INTEGER(11),
       allowNull: false
     },
-    parent_id: {
+    user_id: {
       type: DataTypes.STRING(10),
       allowNull: false
     },
@@ -20,31 +20,27 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(40),
       allowNull: false
     },
-    user_avatar: {
-      type: DataTypes.STRING(100),
+    rewarded_user_id: {
+      type: DataTypes.STRING(10),
       allowNull: false
     },
-    content: {
-      type: DataTypes.STRING(200),
-      allowNull: false
-    },
-    format_time: {
-      type: DataTypes.STRING(16),
-      allowNull: false
-    },
-    time_string: {
+    rewarded_user_name: {
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    floor: {
-      type: DataTypes.INTEGER(11),
+    post_id: {
+      type: DataTypes.STRING(10),
       allowNull: false
     },
-    likes: {
-      type: DataTypes.INTEGER(11),
+    post_title: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    created_at: {
+      type: DataTypes.STRING(16),
       allowNull: false
     }
   }, {
-    tableName: 'comments'
+    tableName: 'user_reward'
   });
 };

@@ -9,7 +9,7 @@ import { leaveWriting} from '../../redux/actions/userAction'
 import { addNewArticle, deleteArticle, saveEditArticle, releaseArticle } from '../../redux/actions/writing'
 import { connect } from 'react-redux'
 import sanitizeHtml from 'sanitize-html';
-import './writing.css';
+import './Writing.css';
  
 const {
   Sider,
@@ -106,9 +106,9 @@ class Wirting extends React.Component {
                 allowedTags: [],
                 allowedAttributes: {}
               });
-
-            let imgReg = /<img.*?(?:>|\/>)/gi //匹配图片中的img标签
-            let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i // 匹配图片中的src
+            let imgReg = /<img.*?(?:>|\/>)/gi; //匹配图片中的img标签
+            // eslint-disable-next-line
+            let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i; // 匹配图片中的src
             let arr = dirty.match(imgReg)
             let srcArr = []
             if(arr == null) {
@@ -130,13 +130,13 @@ class Wirting extends React.Component {
             const index1 = this.state.editArticle
             const postId = this.props.userArticles[index1].post_id
             const submitData = {
-                corpus: '默认文集',
-                title: cleanTitle,
-                rawContent: values.content.toRAW(), // or values.content.toHTML()
-                htmlContent: clean,
+                corpus_tag: '默认文集',
+                post_title: cleanTitle,
+                post_content_raw: values.content.toRAW(), // or values.content.toHTML()
+                post_content_html: clean,
                 article_intro: rawString.substring(0,200)+'...',
                 article_img: srcArr,
-                postId : postId,
+                post_id : postId,
                 author_name: this.props.user_name,
                 release_status: 'yes'
             }
@@ -150,6 +150,7 @@ class Wirting extends React.Component {
                 } else {
                     articleTitle.push({ title: item.post_title, Id: item.post_id, release: item.release_status })
                 }
+                return console.log(index)
             })
             this.setState({
                 articleData: [...articleTitle],
@@ -169,8 +170,8 @@ class Wirting extends React.Component {
                 allowedTags: [],
                 allowedAttributes: {}
               });
-
             let imgReg = /<img.*?(?:>|\/>)/gi //匹配图片中的img标签
+            // eslint-disable-next-line
             let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i // 匹配图片中的src
             let arr = dirty.match(imgReg)
             let srcArr = []
@@ -192,13 +193,13 @@ class Wirting extends React.Component {
             var cleanTitle = sanitizeHtml(saveData.title)
 
         const submitData = {
-            corpus: '默认文集',
-            title: cleanTitle,
-            rawContent: saveData.content.toRAW(), // or values.content.toHTML()
-            htmlContent:clean,
+            corpus_tag: '默认文集',
+            post_title: cleanTitle,
+            post_content_raw: saveData.content.toRAW(), // or values.content.toHTML()
+            post_content_html:clean,
             article_intro: rawString.substring(0,200)+'...',
             article_img: srcArr,
-            postId : postId,
+            post_id : postId,
         }
         this.props.dispatch(saveEditArticle(submitData, index1))
         const articles = this.props.userArticles
@@ -210,6 +211,7 @@ class Wirting extends React.Component {
             } else {
                 articleTitle.push({ title: item.post_title, Id: item.post_id, release: item.release_status })
             }
+            return console.log(index)
         })
         this.setState({
             articleData: [...articleTitle],

@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('likes', {
+  return sequelize.define('user_collect', {
     id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -12,11 +12,19 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(10),
       allowNull: false
     },
-    post_id: {
-      type: DataTypes.STRING(10),
+    user_name: {
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     author_id: {
+      type: DataTypes.STRING(10),
+      allowNull: false
+    },
+    author_name: {
+      type: DataTypes.STRING(20),
+      allowNull: false
+    },
+    post_id: {
       type: DataTypes.STRING(10),
       allowNull: false
     },
@@ -24,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    like_status: {
+    collect_status: {
       type: DataTypes.STRING(10),
       allowNull: false
     },
@@ -33,6 +41,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     }
   }, {
-    tableName: 'likes'
+    tableName: 'user_collect'
   });
 };

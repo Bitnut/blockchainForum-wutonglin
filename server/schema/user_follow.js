@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('follow', {
+  return sequelize.define('user_follow', {
     id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -12,12 +12,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(10),
       allowNull: false
     },
+    user_name: {
+      type: DataTypes.STRING(20),
+      allowNull: false
+    },
     followed_user_id: {
       type: DataTypes.STRING(10),
       allowNull: false
     },
-    user_name: {
-      type: DataTypes.STRING(40),
+    followed_user_name: {
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     follow_status: {
@@ -29,6 +33,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     }
   }, {
-    tableName: 'follow'
+    tableName: 'user_follow'
   });
 };

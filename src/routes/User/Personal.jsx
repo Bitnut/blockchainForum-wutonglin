@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Menu, Layout, Icon, Avatar, List, 
     Divider, Skeleton, Steps, Button, message } from 'antd'
-import './personal.css';
+import './Personal.css';
 import { connect } from 'react-redux'
 import {fetchUserData} from '../../redux/actions/userAction'
 const { Content, Sider } = Layout;
@@ -142,6 +142,7 @@ class Personal extends Component{
                 if(item.release_status === 'yes'){
                     return item.post_title
                 }
+                return console.log('success')
             })
             article.forEach((item) => {
                 if(typeof(item) !== "undefined") {
@@ -177,14 +178,14 @@ class Personal extends Component{
                 if (item.user_id === user_id) {
                     tempAction.push({
                         title: '点赞操作',
-                        description: '你点赞了用户 '+ item.author_id+' 的文章： '+ item.post_title,
+                        description: '你点赞了用户 '+ item.author_name+' 的文章： '+ item.post_title,
                         created_at: item.created_at,
                         link: 'http://localhost:3000/article/'+item.post_id,
                     })
                 } else {
                     tempNews.push({
                         title: '点赞操作',
-                        description: '用户 '+item.user_id+' 点赞了你的文章： '+ item.post_title,
+                        description: '用户 '+item.user_name+' 点赞了你的文章： '+ item.post_title,
                         created_at: item.created_at,
                         link: 'http://localhost:3000/article/'+item.post_id,
                     })
@@ -194,14 +195,14 @@ class Personal extends Component{
                 if (item.user_id === user_id) {
                     tempAction.push({
                         title: '收藏操作',
-                        description: '你收藏了用户 '+ item.author_id+' 的文章： '+ item.post_title,
+                        description: '你收藏了用户 '+ item.author_name+' 的文章： '+ item.post_title,
                         created_at: item.created_at,
                         link: 'http://localhost:3000/article/'+item.post_id,
                     })
                 } else {
                     tempNews.push({
                         title: '收藏操作',
-                        description: '用户 '+item.user_id+' 收藏了你的文章： '+ item.post_title,
+                        description: '用户 '+item.user_name+' 收藏了你的文章： '+ item.post_title,
                         created_at: item.created_at,
                         link: 'http://localhost:3000/article/'+item.post_id,
                     })
@@ -211,7 +212,7 @@ class Personal extends Component{
                 if (item.user_id === user_id) {
                     tempAction.push({
                         title: '关注操作',
-                        description: '你关注了用户 '+ item.followed_user_id,
+                        description: '你关注了用户 '+ item.followed_user_name,
                         created_at: item.created_at,
                         link: 'http://localhost:3000/u/'+item.followed_user_id,
                     })
@@ -247,7 +248,7 @@ class Personal extends Component{
                 ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
                 <Layout style={{ padding: '24px 0', background: '#fff' }}>
                     <Sider width={200} collapsedWidth="0" style={{ background: '#fff' }}>
-                    <Menu  
+                        <Menu  
                             mode="inline"
                             style={{ width: 200 }}
                             defaultSelectedKeys={['1']}

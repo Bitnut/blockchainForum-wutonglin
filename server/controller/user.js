@@ -23,7 +23,7 @@ function mkdirs(dirname, callback) {
 // 用户文章管理
 const newArticle = async function (ctx) {
     const data = ctx.request.body
-    const newInfo = await user.newArticle(data)
+    const newInfo = await user.newArticle(data) 
     ctx.body = {
         success: true,
         articleData: newInfo,
@@ -33,10 +33,10 @@ const newArticle = async function (ctx) {
 
 const releaseArticle = async function (ctx) {
     const data = ctx.request.body
-    const isReleased = await user.getReleaseData(data.postId)
+    const isReleased = await user.getReleaseData(data.post_id)
     const newInfo = await user.refreshArticle(data, isReleased)
     if(newInfo[0]) {
-        const result = await user.getArticle(data.postId);
+        const result = await user.getArticle(data.post_id);
         ctx.body = {
             success: true,
             articleData: result,
@@ -55,7 +55,7 @@ const saveArticle = async function (ctx) {
     const data = ctx.request.body
     const newInfo = await user.saveArticle(data)
     if(newInfo[0]) {
-        const result = await user.getArticle(data.postId);
+        const result = await user.getArticle(data.post_id);
         ctx.body = {
             success: true,
             articleData: result,

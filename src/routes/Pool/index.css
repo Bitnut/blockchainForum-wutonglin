@@ -1,18 +1,11 @@
 
-.selection-content{
+.pool-content{
     z-index: 10;
     position: relative;
     max-width: 1200px;
-    min-height: 700px;
+    min-height: 890px;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
     margin-top: 20PX;
-}
-
-
-.selection-spin{
-    position: relative;
-    margin: 25% auto;
-    width: 100%
 }

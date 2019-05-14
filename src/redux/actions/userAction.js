@@ -109,7 +109,7 @@ export const skipLoginByToken = () => {
         dispatch(login());
         const userInfo = JSON.parse(localStorage.getItem('userInfo'))
         const userArticles = JSON.parse(localStorage.getItem('userArticles')) 
-        const userNews = JSON.parse(localStorage.getItem('userNews')) 
+        const userNews = JSON.parse(localStorage.getItem('userNews'))
         dispatch(skipLogin(userInfo, userArticles, userNews));
         // 待添加， 向服务器请求数据
     }

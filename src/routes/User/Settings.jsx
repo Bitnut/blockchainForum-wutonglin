@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Menu, Layout} from 'antd'
-import './settings.css';
+import './Settings.css';
 import {WrappedBasic, WrappedProfile, WrappedReward} from '../../components/Settings'
 import { connect } from 'react-redux'
 import {changeSettings, onChangeAvatar} from '../../redux/actions/settings'

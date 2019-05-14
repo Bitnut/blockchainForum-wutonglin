@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('users', {
+  return sequelize.define('forum_user', {
     user_id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -9,11 +9,11 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     user_name: {
-      type: DataTypes.STRING(60),
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     user_pass: {
-      type: DataTypes.STRING(60),
+      type: DataTypes.STRING(30),
       allowNull: false
     },
     user_email: {
@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     user_phone: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(11),
       allowNull: false
     },
     user_avatar: {
@@ -33,11 +33,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     signup_moment: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     user_corpus: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(10),
       allowNull: false
     },
     user_editor: {
@@ -49,7 +49,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     self_introduction: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(200),
       allowNull: false
     },
     reward_setting: {
@@ -60,19 +60,19 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: false
     },
-    followers: {
+    energy_owned: {
       type: DataTypes.INTEGER(11),
-      allowNull: true
+      allowNull: false
     },
     energy_rewarded: {
       type: DataTypes.INTEGER(11),
-      allowNull: true
+      allowNull: false
     },
-    energy_owned: {
+    followers: {
       type: DataTypes.INTEGER(11),
-      allowNull: true
+      allowNull: false
     }
   }, {
-    tableName: 'users'
+    tableName: 'forum_user'
   });
 };

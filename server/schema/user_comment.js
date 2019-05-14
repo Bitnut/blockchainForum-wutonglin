@@ -1,38 +1,50 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('collect', {
+  return sequelize.define('user_comment', {
     id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
     },
-    user_id: {
-      type: DataTypes.STRING(10),
-      allowNull: false
-    },
     post_id: {
       type: DataTypes.STRING(10),
       allowNull: false
     },
-    author_id: {
+    parent_id: {
       type: DataTypes.STRING(10),
       allowNull: false
     },
-    post_title: {
+    user_name: {
+      type: DataTypes.STRING(20),
+      allowNull: false
+    },
+    user_avatar: {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    collect_status: {
-      type: DataTypes.STRING(10),
+    content: {
+      type: DataTypes.STRING(200),
       allowNull: false
     },
-    created_at: {
+    format_time: {
       type: DataTypes.STRING(16),
+      allowNull: false
+    },
+    time_string: {
+      type: DataTypes.STRING(20),
+      allowNull: false
+    },
+    floor: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
+    likes: {
+      type: DataTypes.INTEGER(11),
       allowNull: false
     }
   }, {
-    tableName: 'collect'
+    tableName: 'user_comment'
   });
 };

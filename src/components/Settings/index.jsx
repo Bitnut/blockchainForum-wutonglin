@@ -3,7 +3,7 @@ import {
     Form, InputNumber, 
     Radio, Button, Input
   } from 'antd';
-import PicturesWall from '../upLoadAvator'
+import PicturesWall from '../UpLoadAvator'
 import './index.css'
 
 const {TextArea} = Input;

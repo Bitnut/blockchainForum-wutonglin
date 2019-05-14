@@ -3,7 +3,7 @@ import {
     Form, Icon, Input, Button, Checkbox, Typography
   } from 'antd';
 import { userLogin} from '../../redux/actions/userAction'
-import './login.css';
+import './index.css';
 import { connect } from 'react-redux'
 const { Title} = Typography;
 
@@ -25,9 +25,9 @@ class NormalLoginForm extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <div className='main-wrapper'>  
+            <div className="login-content">
+                <Title>请登录</Title>
                 <Form onSubmit={this.handleSubmit} className="login-form">
-                    <Title>请登录</Title>
                     <Form.Item>
                         {getFieldDecorator('nickName', {
                         rules: [{ required: true, message: '请输入您的用户名!' }],
@@ -57,11 +57,12 @@ class NormalLoginForm extends React.Component {
                     </Form.Item>
                 </Form>
             </div>
+        
         );
     }
   }
   
-const LoginPage = Form.create({ name: 'normal_login' })(NormalLoginForm);
+const Login = Form.create({ name: 'normal_login' })(NormalLoginForm);
 
 const mapStateToProps = state => {
     return {
@@ -69,4 +70,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(LoginPage);
+export default connect(mapStateToProps)(Login);

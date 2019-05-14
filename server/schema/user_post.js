@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('posts', {
+  return sequelize.define('user_post', {
     post_id: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -9,7 +9,11 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     author_id: {
-      type: DataTypes.STRING(40),
+      type: DataTypes.STRING(10),
+      allowNull: false
+    },
+    author_name: {
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     corpus_tag: {
@@ -17,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     release_status: {
-      type: DataTypes.STRING(5),
+      type: DataTypes.STRING(3),
       allowNull: false
     },
     post_title: {
@@ -33,8 +37,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     post_moment: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(20),
       allowNull: false
+    },
+    release_moment: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     },
     post_views: {
       type: DataTypes.INTEGER(11),
@@ -48,31 +56,27 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: false
     },
-    intro_img: {
-      type: DataTypes.STRING(200),
-      allowNull: true
+    post_collects: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
+    post_reward: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
     },
     article_intro: {
       type: DataTypes.STRING(210),
       allowNull: true
     },
-    release_moment: {
-      type: DataTypes.STRING(20),
+    intro_img: {
+      type: DataTypes.STRING(200),
       allowNull: true
-    },
-    author_name: {
-      type: DataTypes.STRING(60),
-      allowNull: false
     },
     blockchain_id: {
       type: DataTypes.STRING(300),
       allowNull: true
-    },
-    post_collects: {
-      type: DataTypes.INTEGER(11),
-      allowNull: true
     }
   }, {
-    tableName: 'posts'
+    tableName: 'user_post'
   });
 };

@@ -5,7 +5,7 @@ import {
 import { skipLoginByToken  } from '../../redux/actions/userAction' 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import './register.css';
+import './Register.css';
 
 const openNotification = (info) => {
   const args = {
@@ -45,6 +45,7 @@ class RegistrationForm extends React.Component {
                         localStorage.setItem('Forum-token', data.token)
                         localStorage.setItem('userInfo', JSON.stringify(data.userInfo))
                         localStorage.setItem('userArticles', JSON.stringify(data.articles))
+                        localStorage.setItem('userNews', JSON.stringify(data.userNews))
                         this.props.dispatch(skipLoginByToken());
                         openNotification( 
                             data.info

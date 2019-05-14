@@ -2,8 +2,6 @@ import { message} from 'antd';
 
 export const REQUEST_POSTS = 'REQUEST_POSTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
-export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
-export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT'
 export const READ_POST = 'READ_POST'
 export const FETCH_ERR = 'FETCH_ERR'
 // 点赞收藏
@@ -15,17 +13,6 @@ export const ADD_FOLLOW = 'ADD_FOLLOW'
 export const CANCEL_FOLLOW = 'CANCEL_FOLLOW'
 // 打赏能量
 export const NEW_REWARD = 'NEW_REWARD'
-
-
-export const selectSubreddit = subreddit => ({
-  type: SELECT_SUBREDDIT,
-  subreddit
-})
-
-export const invalidateSubreddit = subreddit => ({
-  type: INVALIDATE_SUBREDDIT,
-  subreddit
-})
 
 export const requestPosts = subreddit => ({
   type: REQUEST_POSTS,
@@ -85,36 +72,7 @@ export const newReward = (data) => ({
 })
 
 
-const fetchPosts = subreddit => dispatch => {
-  dispatch(requestPosts(subreddit))
-  let token = localStorage.getItem('Forum-token') 
-  fetch('/api/articles', {
-    headers:{
-    "Content-Type": "application/json",
-    "Authorization": 'Bearer ' + token,
-    },
-    method:'GET'}).then(response => {
-        if (response.ok) {
-            return response.json()
-        } else {
-            return Promise.reject({
-                status: response.status,
-                statusText: response.statusText
-            })
-        }
-    })
-    .then(data =>{
-        if (data.success) {
-            dispatch(receivePosts(subreddit, data.hotArticles))
-        } else {
-        }
-    })
-    .catch(err => {
-        console.log('error is', err)
-        message.error('出现错误： '+err.statusText);
-        dispatch(fetchErr())
-    })
-}
+
 // 获取文章和点赞收藏信息用
 export const fetchPostById = (data) =>  (dispatch) => {
     let token = localStorage.getItem('Forum-token')
@@ -167,23 +125,6 @@ export const fetchPostById = (data) =>  (dispatch) => {
     })
 
 }
-const shouldFetchPosts = (state, subreddit) => {
-  const posts = state.postsBySubreddit[subreddit]
-  if (!posts) {
-    return true
-  }
-  if (posts.isFetching) {
-    return false
-  }
-  return posts.didInvalidate
-}
-
-export const fetchPostsIfNeeded = subreddit => (dispatch, getState) => {
-  if (shouldFetchPosts(getState(), subreddit)) {
-    return dispatch(fetchPosts(subreddit))
-  }
-}
-
 
 export const solveLike = (data) => {
     return (dispatch) => {

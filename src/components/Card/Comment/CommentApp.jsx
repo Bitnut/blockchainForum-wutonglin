@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import CommentInput from './commentInput'
-import CommentList from './commentList'
+import CommentInput from './CommentInput'
+import CommentList from './CommentList'
 import {connect} from 'react-redux'
 import {getComment, addNewComment} from '../../../redux/actions/comment'
 import {FormatTime} from '../../utils/formatTime'

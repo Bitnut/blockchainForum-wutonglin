@@ -10,13 +10,12 @@ const IconText = ({ type, text }) => (
     );
 
 export default class CoverCard extends PureComponent{
-
-  state = {
-    initLoading: true,
-    loading: false,
-    listData: [],
-  }
-
+    state = {
+        initLoading: true,
+        loading: false,
+        listData: [],
+    }
+    
     componentDidMount () {
         if(this.props.data!==null) {
             setTimeout(() => {
@@ -39,7 +38,6 @@ export default class CoverCard extends PureComponent{
                 }, 50);
         }
     }
-  
 
     render(){
         

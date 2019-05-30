@@ -21,7 +21,7 @@ export default class IntroCard extends PureComponent{
     componentDidMount () {
         this.setState({list: this.props.data.slice(0,8)})
     }
-    onLoadMore = () => {
+    _onLoadMore = () => {
         if (this.state.listLen >= this.props.data.length) {
             message.warning('没有更多新消息了！')
         }
@@ -51,7 +51,7 @@ export default class IntroCard extends PureComponent{
             textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
             }}
             >
-            <Button onClick={this.onLoadMore}>loading more</Button>
+            <Button onClick={this._onLoadMore}>loading more</Button>
             </div>
         ) : null;
 

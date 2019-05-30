@@ -2,23 +2,20 @@ import React, { PureComponent } from 'react';
 import {  Col, Row ,Skeleton  } from 'antd';
 import {connect} from 'react-redux'
 import { fetchHomeData } from '../../redux/actions/homeData'
-//import Banner from '../../components/Banner';
-//import GridCard from '../../components/Card/GridCard';
-//import RankCard from '../../components/Card/RankCard';
 import CoverCard from '../../components/Card/CoverCard';
 import IntroCard from '../../components/Card/IntroCard';
 import ReadCard from '../../components/Card/ReadCard';
 
 
 class Home extends PureComponent{
-  state = {
-    loading: "true",
-  };
+    state = {
+        loading: "true",
+    };
 
-  componentDidMount () {
-      this.props.dispatch(fetchHomeData())
-  }
-  render(){
+    componentDidMount () {
+        this.props.dispatch(fetchHomeData())
+    }
+    render(){
         const { isFetching } = this.props
         const isEmpty = this.props.hotArticles.length === 0
         const noUsers = this.props.hotUsers.length ===0

@@ -95,7 +95,7 @@ class Wirting extends React.Component {
 
     }
 
-    // 发布文章！
+    // 发布文章！这里需要把数据异步提交到区块链上
     handleSubmit = (event) => {
         event.preventDefault()
         this.props.form.validateFields((error, values) => {
@@ -128,17 +128,22 @@ class Wirting extends React.Component {
             var cleanTitle = sanitizeHtml(values.title)
         
             const index1 = this.state.editArticle
-            const postId = this.props.userArticles[index1].post_id
+            // 文章发布前的信息
+            const postInfo = this.props.userArticles[index1]
             const submitData = {
+                post_id : postInfo.post_id,
+                author_name: this.props.user_name,
                 corpus_tag: '默认文集',
                 post_title: cleanTitle,
                 post_content_raw: values.content.toRAW(), // or values.content.toHTML()
                 post_content_html: clean,
                 article_intro: rawString.substring(0,200)+'...',
                 article_img: srcArr,
-                post_id : postId,
-                author_name: this.props.user_name,
-                release_status: 'yes'
+                release_status: 'yes',
+                post_collects: postInfo.post_collects,
+                post_likes: postInfo.post_likes,
+                post_comments: postInfo.post_comments,
+                post_reward: postInfo.post_reward,
             }
             this.props.dispatch(releaseArticle(submitData, index1))
             const articles = this.props.userArticles

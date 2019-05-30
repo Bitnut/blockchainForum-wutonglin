@@ -16,10 +16,9 @@ class NormalLoginForm extends React.Component {
             dispatch(userLogin(this.props.form.getFieldsValue()));
             this.props.onCancel();
         }
-      });
+      }); 
     }
     handleLogin = () => {
-        
         this.props.onCancel();
     }
     render() {

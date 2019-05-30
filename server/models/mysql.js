@@ -314,7 +314,7 @@ const refreshArticle = async function ( articleInfo, isReleased) {
                 intro_img: intro_img_url,
                 release_moment: time,
                 post_moment: time,
-                blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
+                blockchain_id: ''
             },
             {
                 where: {
@@ -333,8 +333,7 @@ const refreshArticle = async function ( articleInfo, isReleased) {
                 article_intro: articleInfo.article_intro,
                 author_name: articleInfo.author_name,
                 intro_img: intro_img_url,
-                post_moment: time,
-                blockchain_id: '0a0744454641554c5412ba062d2d2d2d2d424547494e2043455254494649434154452d2d2d2d2d0a4d4949434e6a4343416432674177494241674952414d6e66392f646d563952764343567739705a5155665577436759494b6f5a497a6a304541774977675945780a437'
+                post_moment: time
             },
             {
                 where: {
@@ -345,7 +344,19 @@ const refreshArticle = async function ( articleInfo, isReleased) {
     }
     return newArticle;
 }
-
+const refreshTransactionId = async function (post_id, transaction_id) {
+    const result = await Posts.update(
+        {
+            blockchain_id: transaction_id
+        },
+        {
+            where: {
+                post_id: post_id
+            }
+        }
+    )
+    return result
+}
 const saveArticle = async function ( articleInfo) {
     var intro_img_url = ''
     if (articleInfo.article_img.length === 0) {
@@ -802,6 +813,7 @@ module.exports = {
   getUserArticles,
   newArticle,
   refreshArticle,
+  refreshTransactionId,
   saveArticle,
   getArticle,
   getReleasedArticle,

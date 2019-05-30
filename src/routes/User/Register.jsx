@@ -1,21 +1,23 @@
 import React from 'react';
 import {
-    Form, Input, Tooltip, Icon, Select, Checkbox, Button, AutoComplete,notification, message
+    Form, Input, Tooltip, Icon, Select, Checkbox, Button, 
+    AutoComplete,notification, message
   } from 'antd';
 import { skipLoginByToken  } from '../../redux/actions/userAction' 
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import './Register.css';
 
-const openNotification = (info) => {
-  const args = {
-    message: info,
-    duration: 2,
-  };
-  notification.open(args);
+const _openNotification = (info) => {
+    const args = {
+        message: info,
+        duration: 2,
+    };
+    notification.open(args);
 };
+
 const  Option  = AutoComplete.Option;
-  
+
 class RegistrationForm extends React.Component {
     state = {
         confirmDirty: false,
@@ -47,12 +49,12 @@ class RegistrationForm extends React.Component {
                         localStorage.setItem('userArticles', JSON.stringify(data.articles))
                         localStorage.setItem('userNews', JSON.stringify(data.userNews))
                         this.props.dispatch(skipLoginByToken());
-                        openNotification( 
+                        _openNotification( 
                             data.info
                         )
                         this.props.history.push('/') 
                     } else {
-                        openNotification(data.info)
+                        _openNotification(data.info)
                     }
                 })
                 .catch(err => {
@@ -70,7 +72,7 @@ class RegistrationForm extends React.Component {
             autoCompleteResult = ['gmail.com', '163.com', 'qq.com'].map(domain => `${value}@${domain}`);
         }
         this.setState({ autoCompleteResult });
-        }
+    }
 
 
     handleConfirmBlur = (e) => {
@@ -78,7 +80,7 @@ class RegistrationForm extends React.Component {
         this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     }
 
-    compareToFirstPassword = (rule, value, callback) => {
+    _compareToFirstPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('password')) {
         callback('Two passwords that you enter is inconsistent!');
@@ -87,7 +89,7 @@ class RegistrationForm extends React.Component {
         }
     }
 
-    validateToNextPassword = (rule, value, callback) => {
+    _validateToNextPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && this.state.confirmDirty) {
         form.validateFields(['confirm'], { force: true });
@@ -159,7 +161,7 @@ class RegistrationForm extends React.Component {
                         rules: [{
                         required: true, message: 'Please input your password!',
                         }, {
-                        validator: this.validateToNextPassword,
+                        validator: this._validateToNextPassword,
                         }],
                     })(
                         <Input type="password" />
@@ -172,7 +174,7 @@ class RegistrationForm extends React.Component {
                         rules: [{
                         required: true, message: 'Please confirm your password!',
                         }, {
-                        validator: this.compareToFirstPassword,
+                        validator: this._compareToFirstPassword,
                         }],
                     })(
                         <Input type="password" onBlur={this.handleConfirmBlur} />

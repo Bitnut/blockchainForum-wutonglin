@@ -19,6 +19,7 @@ router.post('/cancellike',api.cancellike);
 router.post('/cancelcollect',api.cancelcollect);
 router.post('/cancelfollow',api.cancelfollow);
 router.post('/newreward',api.newReward);
+router.post('/search',api.searchArticle);
 
 
 module.exports = router; // 把router规则暴露出去

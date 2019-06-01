@@ -3,7 +3,7 @@ import { Layout, Icon, Avatar, List, Divider, Skeleton} from 'antd'
 import './index.css';
 import { connect } from 'react-redux'
 import {fetchVisitData} from '../../redux/actions/visit'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 const { Content, Sider } = Layout;
 
 
@@ -64,7 +64,7 @@ class userPage extends Component{
                             avatar: this.props.user_avatar,
                             content: this.props.userArticles[i].article_intro,
                             img: this.props.userArticles[i].intro_img,
-                            link: 'http://localhost:3000/article/'+this.props.userArticles[i].post_id
+                            link: '/article/'+this.props.userArticles[i].post_id
                         });
                     }
                 }
@@ -114,7 +114,7 @@ class userPage extends Component{
                                 }
                             >
                                 <List.Item.Meta
-                                title={<a href={item.link}>{item.title}</a>}
+                                title={<Link to={item.link}>{item.title}</Link>}
                                 description={item.description}
                                 />
                                 {item.content}

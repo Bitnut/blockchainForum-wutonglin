@@ -12,6 +12,7 @@ import readArticle from './routes/Article';
 import jobs from './routes/Jobs'
 import errorPage from './routes/Error'
 import userPage from './routes/UserPage'
+import searchPage from './routes/Search'
 //import CommentApp from './components/Card/Comment/commentApp'
 
 export const routerConfig = [
@@ -60,6 +61,11 @@ export const routerConfig = [
     },{
         path:'/u/:id',
         component:userPage,
+        auth:true,
+    },{
+        path:'/search',
+        component:searchPage,
+        exact: true,
         auth:true,
     },{
         path:'/jobsdone',

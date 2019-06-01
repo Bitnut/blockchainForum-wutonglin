@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import {  Col, Row ,Skeleton  } from 'antd';
+import {  Col, Row ,Skeleton ,Empty } from 'antd';
 import {connect} from 'react-redux'
 import { fetchHomeData } from '../../redux/actions/homeData'
 import CoverCard from '../../components/Card/CoverCard';
@@ -22,7 +22,11 @@ class Home extends PureComponent{
         return (
             <div className="App-content" style={{minHeight: 900}}>
             {isEmpty
-            ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
+            ? (isFetching ? <Skeleton active /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} imageStyle={{height: 200}} description={
+                <span>
+                  这里空空如也
+                </span>
+              }/>):
                 <div>
                     {/* 头条*/}
                     <Row style={{marginBottom: 15}} type="flex" justify="center">  
@@ -34,7 +38,11 @@ class Home extends PureComponent{
                 </div>
             }
             {noUsers
-            ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
+            ? (isFetching ? <Skeleton active /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} imageStyle={{height: 200}} description={
+                <span>
+                  这里空空如也
+                </span>
+              }/>):
                 <div>
                     {/*活跃用户推荐*/}           
                     <Row style={{marginBottom: 15}} type="flex" justify="center">          
@@ -46,7 +54,11 @@ class Home extends PureComponent{
                 </div> 
             }
             {isEmpty
-            ? (isFetching ? <Skeleton active /> : <h2>Empty.</h2>):
+            ? (isFetching ? <Skeleton active /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} imageStyle={{height: 200}} description={
+                <span>
+                  这里空空如也
+                </span>
+              }/>):
                 <div>
                     {/* 浏览帖子*/}  
                     <Row style={{marginBottom: 15}} type="flex" justify="center">          

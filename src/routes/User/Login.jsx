@@ -52,7 +52,7 @@ class NormalLoginForm extends React.Component {
                         <Button type="primary" htmlType="submit" className="login-form-button">
                         登录
                         </Button>
-                        或者 <a href="/user/register">现在注册!</a>
+                        或者 <a href="/register">现在注册!</a>
                     </Form.Item>
                 </Form>
             </div>

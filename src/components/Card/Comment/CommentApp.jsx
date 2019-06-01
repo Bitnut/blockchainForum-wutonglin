@@ -6,10 +6,6 @@ import {getComment, addNewComment} from '../../../redux/actions/comment'
 import {FormatTime} from '../../utils/formatTime'
 import './index.css'
 class CommentApp extends Component {
-    componentDidMount () {
-        this.props.dispatch(getComment(this.props.post_id))
-    }
-
     handleSubmitComment = (comment) => {
         if (!comment) return
         if (!comment.content) return alert('请输入评论内容')
@@ -29,8 +25,8 @@ class CommentApp extends Component {
     render() {
         return (
         <div className='comment-wrapper'>
-            <CommentInput userInfo={this.props.userInfo} onSubmit={this.handleSubmitComment}/>
-            <CommentList userInfo={this.props.userInfo} comments={this.props.commentList} onSubmit={this.handleSubmitComment}/>
+                <CommentInput userInfo={this.props.userInfo} onSubmit={this.handleSubmitComment}/>
+                <CommentList userInfo={this.props.userInfo} comments={this.props.commentList} onSubmit={this.handleSubmitComment}/>
         </div>
         )
     }

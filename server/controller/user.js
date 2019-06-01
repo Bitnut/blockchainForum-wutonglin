@@ -17,10 +17,12 @@ const newArticle = async function (ctx) {
 
 const releaseArticle = async function (ctx) {
     var data = ctx.request.body
+    var transaction_id = ''
     const isReleased = await user.getReleaseData(data.post_id)
     const newInfo = await user.refreshArticle(data, isReleased)
     if(newInfo[0]) {
         const result = await user.getArticle(data.post_id);
+        transaction_id = await addArticleToBlockchain(result)
         ctx.body = {
             success: true,
             articleData: result,
@@ -32,19 +34,20 @@ const releaseArticle = async function (ctx) {
             info: '文章没有变动！'
         }
     }
-    const transaction_id = await addArticleToBlockchain(data)
     if(transaction_id!==null) {
         const writeResult = user.refreshTransactionId(data.post_id, transaction_id)
     }
 }
 
-// 
 const addArticleToBlockchain = async function (articleInfo) {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTc4NTc2MDgsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NTc4MjE2MDh9.maWOB7NeQQV5tSCYgsZkqyu1QqQCv4OaYZKB-6ms5Yw"
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTk0MDk2NDYsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NTkzNzM2NDZ9.4Q9SXkhDxlinof2-ZuWh1dr-FZmZoP1DIhQwN2u2zgo"
     const requestData = {
         peers: ["peer0.org1.example.com","peer1.org1.example.com"],
         fcn: "addPost",
-        args: ["4","什么是区块链?这是我见过的最通俗易懂的解释","<p>最近区块链非常火，关注度和曝光度持续上升，国内众多巨头公司纷纷张开双臂拥抱，把区块链当做互联网时代的伟大颠覆性创新，一窝蜂研究怎样把区块链变成自己抢占商业先机的工具。</p><p>那么，区块链技术究竟是什么呢？分开看每个汉字都认识，但是凑在一起就不知道是什么意思了。针对大家觉得神秘无比的区块链，现在有了一个最通俗易懂的解释方式。</p><p><strong>什么是区块链？我们首先用大家都爱谈的恋爱，举个简单的例子。</strong></p><p><strong>建立一个简单的区块链模型，那么在这个区块链模型里面谈恋爱将会出现一下情况：</strong></p><p></p><p></p><p></p><p></p><p></p><p></p><div><img src=", "100000003","2019-04-22 02:25:08","2019-04-09 07:00:27","64","2","0","4"]
+        args: [articleInfo.post_id.toString(),articleInfo.post_title,articleInfo.post_content_html, articleInfo.author_name,
+            articleInfo.release_moment,articleInfo.post_moment,articleInfo.post_views.toString(),articleInfo.post_collects.toString(),
+            articleInfo.post_likes.toString(),articleInfo.post_reward.toString()]
+        
     }
     console.log(JSON.stringify(requestData))
     var options={
@@ -164,7 +167,7 @@ const getHotArticles = async function (ctx) {
 
 const getHomeData = async function (ctx) {
     hotArticles = await user.getAllArticles();
-    hotUsers = await user.getHotUsers(); 
+    hotUsers = await user.getHotUsers();  
     if (hotArticles && hotUsers) {
         ctx.body = {
             success: true,
@@ -239,18 +242,12 @@ const changeAvatar = async function (ctx) {
     }
     const newUrl = 'http://localhost:8889/'+userName +`/${file.name}`
     const result = await user.changeAvatar(newUrl, userName);
-    if (result) {
-        ctx.body = {
-            success: true,
-            user_avatar: newUrl,
-            info: '成功修改头像！'
-        }
-    } else {
-        ctx.body = {
-            success: false,
-            info: '发生错误！'
-        }
+    ctx.body = {
+        success: true,
+        user_avatar: newUrl,
+        info: '成功修改头像！'
     }
+    
 }
 
 
@@ -393,7 +390,7 @@ const newReward = async function (ctx) {
     const result = await user.newReward(data);
     if (result) {
         ctx.body = {
-            success: 'true',
+            success: true,
             info: '打赏成功！'
         }
         
@@ -402,6 +399,17 @@ const newReward = async function (ctx) {
     }
 }
 
+const searchArticle = async function (ctx) {
+    const data = ctx.request.body
+    const result = await user.searchArticle(data.keyword);
+    ctx.body = {
+        success: true,
+        result: result,
+        info: '打赏成功！'
+    }
+        
+    
+}
 
 module.exports = {
     getHotArticles,
@@ -424,5 +432,6 @@ module.exports = {
     cancelfollow,
     cancellike,
     cancelcollect,
-    newReward
+    newReward,
+    searchArticle
 }

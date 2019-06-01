@@ -101,7 +101,7 @@ class PicturesWall extends React.Component {
                     message.success(data.info);
                     this.setState({
                         uploading: false,
-                        fileList:[{
+                        fileList:[{ 
                             uid: '-1',
                             name: 'xxx.png',
                             status: 'done',

@@ -6,6 +6,7 @@ import {posts} from './posts'
 import {comment} from './comment'
 import {homeData} from './homeData'
 import {visitData} from './visit'
+import {searchData} from './search'
 
 const rootReducer = combineReducers({
     posts,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     changeSettings,
     comment,
     homeData,
-    visitData
+    visitData,
+    searchData
 })
 
 export default rootReducer

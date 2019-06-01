@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import {List, Card, Icon, Button, message} from 'antd';  // 加载 JS
+import { Link } from 'react-router-dom'
 import './IntroCard.css'
 
 const { Meta } = Card;
@@ -64,7 +65,7 @@ export default class IntroCard extends PureComponent{
                 loadMore={loadMore}
                 renderItem={item=> (
                   <List.Item>
-                  <a href={`article/${item.post_id}`}>
+                  <Link to={'/article/'+item.post_id}>
                   <Card 
                   hoverable
                   bordered={false}
@@ -81,7 +82,7 @@ export default class IntroCard extends PureComponent{
                       }
                     />     
                   </Card>
-                  </a>
+                  </Link>
                 </List.Item>
                 )}
                 /> 

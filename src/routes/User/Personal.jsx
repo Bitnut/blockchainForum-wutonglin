@@ -3,6 +3,7 @@ import { Menu, Layout, Icon, Avatar, List,
     Divider, Skeleton, Steps, Button, message } from 'antd'
 import './Personal.css';
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import {fetchUserData} from '../../redux/actions/userAction'
 const { Content, Sider } = Layout;
 const Step = Steps.Step;
@@ -157,7 +158,7 @@ class Personal extends Component{
                         avatar: this.props.user_avatar,
                         content: this.props.userArticles[i].article_intro,
                         img: this.props.userArticles[i].intro_img,
-                        link: 'http://localhost:3000/article/'+this.props.userArticles[i].post_id,
+                        link: '/article/'+this.props.userArticles[i].post_id,
                         collect: this.props.userArticles[i].post_collects,
                         like: this.props.userArticles[i].post_likes,
                         comments: this.props.userArticles[i].post_comments,
@@ -180,14 +181,14 @@ class Personal extends Component{
                         title: '点赞操作',
                         description: '你点赞了用户 '+ item.author_name+' 的文章： '+ item.post_title,
                         created_at: item.created_at,
-                        link: 'http://localhost:3000/article/'+item.post_id,
+                        link: '/article/'+item.post_id,
                     })
                 } else {
                     tempNews.push({
                         title: '点赞操作',
                         description: '用户 '+item.user_name+' 点赞了你的文章： '+ item.post_title,
                         created_at: item.created_at,
-                        link: 'http://localhost:3000/article/'+item.post_id,
+                        link: '/article/'+item.post_id,
                     })
                 }
             })
@@ -197,14 +198,14 @@ class Personal extends Component{
                         title: '收藏操作',
                         description: '你收藏了用户 '+ item.author_name+' 的文章： '+ item.post_title,
                         created_at: item.created_at,
-                        link: 'http://localhost:3000/article/'+item.post_id,
+                        link: '/article/'+item.post_id,
                     })
                 } else {
                     tempNews.push({
                         title: '收藏操作',
                         description: '用户 '+item.user_name+' 收藏了你的文章： '+ item.post_title,
                         created_at: item.created_at,
-                        link: 'http://localhost:3000/article/'+item.post_id,
+                        link: '/article/'+item.post_id,
                     })
                 }
             })
@@ -214,14 +215,14 @@ class Personal extends Component{
                         title: '关注操作',
                         description: '你关注了用户 '+ item.followed_user_name,
                         created_at: item.created_at,
-                        link: 'http://localhost:3000/u/'+item.followed_user_id,
+                        link: '/u/'+item.followed_user_id,
                     })
                 } else {
                     tempNews.push({
                         title: '关注操作',
                         description: '用户 '+ item.user_name +'关注了你',
                         created_at: item.created_at,
-                        link: 'http://localhost:3000/u/'+item.user_id,
+                        link: '/u/'+item.user_id,
                     })
                 }
             })
@@ -285,7 +286,7 @@ class Personal extends Component{
                                 }
                             >
                                 <List.Item.Meta
-                                title={<a href={item.link}>{item.title}</a>}
+                                title={<Link to={item.link}>{item.title}</Link>}
                                 description={item.description}
                                 />
                                 {item.content}
@@ -309,7 +310,7 @@ class Personal extends Component{
                             actions={[item.created_at]}>
                                 <List.Item.Meta
                                 title={item.title}
-                                description={<a href={item.link}>{item.description}</a>}
+                                description={<Link to={item.link}>{item.description}</Link>}
                                 />
                             </List.Item>
                             )}
@@ -331,7 +332,7 @@ class Personal extends Component{
                             actions={[item.created_at]}>
                                 <List.Item.Meta
                                 title={item.title}
-                                description={<a href={item.link}>{item.description}</a>}
+                                description={<Link to={item.link}>{item.description}</Link>}
                                 />
                             </List.Item>
                             )}

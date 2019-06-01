@@ -6,7 +6,8 @@ import { Layout, Input, Menu, Divider, Button,
 import {
     Link
   } from 'react-router-dom'
-import { userLogout, goWriting } from '../../redux/actions/userAction' 
+import { userLogout, goWriting } from '../../redux/actions/userAction'
+import { searchArticle } from '../../redux/actions/search' 
 import Login from '../../components/Login'
 import Headroom from 'react-headroom'
 import { connect } from 'react-redux'
@@ -65,6 +66,13 @@ class  NewHeader extends Component{
     handleWriting = () => {
         this.props.dispatch(goWriting());
     }
+    handleSearch = (data) => {
+        if(data === undefined ||  data === null || data.replace(/(^\s*)|(\s*$)/g, "") === ""){
+            this.props.dispatch(searchArticle({keyword: '区块链'}))
+        } else {
+            this.props.dispatch(searchArticle({keyword:data}))
+        }
+    }
     componentWillMount(){
         if(this.props.location === undefined){
             this.setState({defaultSelectedKeys: ['4']});
@@ -109,14 +117,11 @@ class  NewHeader extends Component{
                         <Col xs={2} sm={4} md={6} lg={8} xl={8}>
                             <Search
                             className={"header-search"}
-                            placeholder="区块链发展过程"
+                            placeholder="区块链"
                             enterButton={true}
                             onSearch={value => {
-                                if(value === undefined ||  value === null || value.replace(/(^\s*)|(\s*$)/g, "") === ""){
-                                    this.props.history.push(`/Search/区块链发展过程`);
-                                    return;
-                                }
-                                this.props.history.push(`/Search/${value}`); 
+                                this.handleSearch(value)
+                                this.props.history.push('/search')
                             }}
                             />
                         </Col>

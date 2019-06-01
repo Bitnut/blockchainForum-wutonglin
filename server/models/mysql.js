@@ -578,11 +578,10 @@ const getVisitInfo = async function (id) {
 const getHotUsers = async function () {
     const userInfo = await User.findAll(
         {
-            limit: 6,
             where: {
                 user_Id: {[Op.gte]: 100000000}
             },
-            attributes: ['user_name', 'user_avatar', 'user_id']
+            attributes: ['user_name', 'user_avatar', 'user_id', 'signup_moment']
         }
     )
     return userInfo
@@ -787,11 +786,11 @@ const newReward = async function (data) {
         {
             id: null,
             reward_number: data.reward_number,
-            post_id: data.post_id,
             user_id: data.user_id,
             user_name: data.user_name,
-            user_avatar: data.user_avatar,
-            rewarded_user_id: data.rewarded_user_id,            
+            rewarded_user_name: data.rewarded_user_name,
+            rewarded_user_id: data.rewarded_user_id,
+            post_id: data.post_id,            
             post_title: data.post_title,
             created_at: data.created_at
         }
@@ -799,6 +798,19 @@ const newReward = async function (data) {
     User.increment( 'energy_rewarded' ,{by: data.reward_number, where:{user_id: data.rewarded_user_id}})
     User.decrement( 'energy_owned' ,{by: data.reward_number, where:{user_id: data.user_id}})
     Posts.increment( 'post_reward' ,{by: data.reward_number, where:{post_id: data.post_id}})
+    return result
+}
+const searchArticle = async function (data) {
+    const result = Posts.findAll(
+        {
+            where:{
+                post_title:{
+                    [Op.like]: '%'+data+'%'
+                }
+            },
+            attributes: ['post_id','author_name', 'intro_img', 'article_intro', 'release_moment', 'post_title', 'release_status']
+        }
+    )
     return result
 }
 
@@ -837,5 +849,6 @@ module.exports = {
   cancellike,
   cancelcollect,
   getArticleStatus,
-  newReward
+  newReward,
+  searchArticle
 }

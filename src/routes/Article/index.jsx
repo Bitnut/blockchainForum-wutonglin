@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { fetchPostById, solveLike, solveCollect, solveFollow, solveReward} from '../../redux/actions/posts'
+import {getComment} from '../../redux/actions/comment'
 import CommentApp from '../../components/Card/Comment/CommentApp'
-//import Picker from '../../components/Picker'
 import './index.css';
 import collect from '../../assets/collect.png'
 import nullCollect from '../../assets/nullCollect.png'
@@ -78,7 +78,7 @@ class readArticle extends Component{
             user_id: userInfo.user_id,
         }
         this.props.dispatch(fetchPostById(data))
-
+        this.props.dispatch(getComment(data.post_id))
         setTimeout(function timer() {
         // TODO: 待添加一个10秒后自增的阅读数
         console.log('10086')

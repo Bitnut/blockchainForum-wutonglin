@@ -136,7 +136,7 @@ const userLoginByToken = async function (ctx) {
 
 
 const getArticle = async function () {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTc0OTUxNTEsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NTc0NTkxNTF9.oEgppGRahJHDPV7-VgL4EkqVunoxmyLE-kQXQHJVyac"
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTk0MDk2NDYsInVzZXJuYW1lIjoiSmltIiwib3JnTmFtZSI6Ik9yZzEiLCJpYXQiOjE1NTkzNzM2NDZ9.4Q9SXkhDxlinof2-ZuWh1dr-FZmZoP1DIhQwN2u2zgo"
     var options={
         hostname:'localhost',
         port:4000,

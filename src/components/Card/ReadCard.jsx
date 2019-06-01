@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import {List, Card, Icon } from 'antd';  // 加载 JS
+import { Link } from 'react-router-dom'
 import './CoverCard.css'
 
 const IconText = ({ type, text }) => (
@@ -7,7 +8,7 @@ const IconText = ({ type, text }) => (
         <Icon type={type} style={{ marginRight: 8 }} />
         {text}
     </span>
-    );
+);
 
 export default class CoverCard extends PureComponent{
     state = {
@@ -25,7 +26,7 @@ export default class CoverCard extends PureComponent{
                         title: this.props.data[i].post_title,
                         content: this.props.data[i].article_intro,
                         img: this.props.data[i].intro_img,
-                        link: 'http://localhost:3000/article/'+this.props.data[i].post_id,
+                        link: '/article/'+this.props.data[i].post_id,
                         collect: this.props.data[i].post_collects,
                         like: this.props.data[i].post_likes,
                         comments: this.props.data[i].post_comments,
@@ -66,7 +67,7 @@ export default class CoverCard extends PureComponent{
                         }
                     >
                         <List.Item.Meta
-                        title={<a href={item.link}>{item.title}</a>}
+                        title={<Link to={item.link}>{item.title}</Link>}
                         description={item.description}
                         />
                         {item.content}

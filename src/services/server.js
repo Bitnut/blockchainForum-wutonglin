@@ -26,4 +26,4 @@ http.get = function (api, data) {
     })
 }
 
-export default http
+//xport default http

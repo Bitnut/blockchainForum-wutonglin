@@ -71,8 +71,8 @@ yarn start 启动前端
 
 论坛主页：
 
-<img src="https://github.com/Bitnut/blockchainForum-bob/blob/master/ReadMeImg/mainpage.gif"  width="390px"/>
+<img src="https://github.com/Bitnut/blockchainForum-bob/blob/master/ReadMeImg/mainpage.gif"  width="800px"/>
 
 论坛登录/退出登录：
 
-![Image text](https://github.com/Bitnut/blockchainForum-bob/blob/master/ReadMeImg/login.gif)
+<img src="https://github.com/Bitnut/blockchainForum-bob/blob/master/ReadMeImg/login.gif"  width="800px"/>
